@@ -61,6 +61,7 @@ export const eas = {
   schemas: {
     metadata: process.env.NEXT_PUBLIC_METADATA_SCHEMA!,
     approval: process.env.NEXT_PUBLIC_APPROVAL_SCHEMA!,
+    ballot: process.env.NEXT_PUBLIC_BALLOT_SCHEMA!,
   },
 };
 
