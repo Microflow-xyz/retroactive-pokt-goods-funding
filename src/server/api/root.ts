@@ -1,4 +1,3 @@
-import { ballotRouter } from "~/server/api/routers/ballot";
 import { configRouter } from "~/server/api/routers/config";
 import { resultsRouter } from "~/server/api/routers/results";
 import { projectsRouter } from "~/server/api/routers/projects";
@@ -17,7 +16,6 @@ import { discussionRouter } from "~/server/api/routers/discussion";
 export const appRouter = createTRPCRouter({
   config: configRouter,
   results: resultsRouter,
-  ballot: ballotRouter,
   lists: listsRouter,
   applications: applicationsRouter,
   profile: profileRouter,
