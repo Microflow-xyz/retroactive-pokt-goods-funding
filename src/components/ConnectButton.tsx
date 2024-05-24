@@ -10,7 +10,7 @@ import { UserRound } from "lucide-react";
 
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
-import { useBallot } from "~/features/ballot/hooks/useBallot";
+import { useBallot } from "~/features/ballot-/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
 import { useLayoutOptions } from "~/layouts/BaseLayout";
 import { getAppState, type AppState } from "~/utils/state";

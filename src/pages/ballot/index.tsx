@@ -1,25 +1,76 @@
-import { Form } from "~/components/ui/Form";
-import { useBallot } from "~/features/ballot/hooks/useBallot";
-import { BallotSchema } from "~/features/ballot/types";
-import { LayoutWithBallot } from "~/layouts/DefaultLayout";
-import { BallotAllocationForm } from "../../features/ballot/components/BallotAllocationForm";
+import { useState } from "react";
+import { Layout } from "~/layouts/DefaultLayout";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import Ballot from "~/features/ballot";
 
 export default function BallotPage() {
-  const { data: ballot, isPending } = useBallot();
+  function DraggableItem() {
+    const [{ isDragging }, drag] = useDrag(() => ({
+      type: "ITEM",
+      item: { id: "unique-id" },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }));
 
-  if (isPending) return null;
+    return (
+      <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
+        Drag me!
+      </div>
+    );
+  }
 
-  const votes = ballot?.votes.sort((a, b) => b.amount - a.amount);
+  function DropTargetAccordion() {
+    const [isOpen, setIsOpen] = useState(false);
+    const [droppedItems, setDroppedItems] = useState([]);
+
+    const [{ isOver }, drop] = useDrop(() => ({
+      accept: "ITEM",
+      drop: (item) => {
+        setDroppedItems((prevItems) => [...prevItems, item]);
+        setIsOpen(true); // Open the accordion when an item is dropped
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    }));
+
+    const toggleAccordion = () => {
+      setIsOpen(!isOpen);
+    };
+
+    return (
+      <div ref={drop} style={{ backgroundColor: isOver ? "lightgray" : "red" }}>
+        <div
+          onClick={toggleAccordion}
+          style={{
+            backgroundColor: isOpen ? "lightgray" : "red",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Drop items here! (Accordion)
+          <span style={{ float: "right" }}>{isOpen ? "▲" : "▼"}</span>
+        </div>
+        {isOpen && (
+          <div style={{ padding: "10px" }}>
+            <h3>Dropped Items:</h3>
+            <ul>
+              {droppedItems.map((item, index) => (
+                <li key={index}>{JSON.stringify(item)}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  }
   return (
-    <LayoutWithBallot sidebar="right" requireAuth>
-      <Form
-        schema={BallotSchema}
-        defaultValues={{ votes }}
-        onSubmit={console.log}
-      >
-        <BallotAllocationForm />
-      </Form>
-      <div className="py-8" />
-    </LayoutWithBallot>
+    <Layout isFullWidth>
+      <DndProvider backend={HTML5Backend}>
+        <Ballot />
+      </DndProvider>
+    </Layout>
   );
 }

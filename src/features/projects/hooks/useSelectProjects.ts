@@ -3,7 +3,7 @@ import {
   ballotContains,
   useAddToBallot,
   useBallot,
-} from "~/features/ballot/hooks/useBallot";
+} from "~/features/ballot-/hooks/useBallot";
 
 export function useSelectProjects() {
   const add = useAddToBallot();

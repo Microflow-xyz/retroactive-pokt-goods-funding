@@ -51,7 +51,7 @@ export const Header = ({
   const isAdmin = useIsAdmin();
 
   return (
-    <header className="relative z-10 bg-background-dark shadow-md dark:shadow-none">
+    <header className="relative z-10 bg-onBackground-dark py-2 shadow-md dark:shadow-none">
       <div className="container mx-auto flex h-[72px] max-w-screen-2xl items-center px-2">
         <div className="mr-4 flex items-center xl:mr-16">
           <IconButton

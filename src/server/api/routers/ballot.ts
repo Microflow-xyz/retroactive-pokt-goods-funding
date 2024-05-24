@@ -6,12 +6,12 @@ import {
   BallotPublishSchema,
   BallotSchema,
   type Vote,
-} from "~/features/ballot/types";
+} from "~/features/ballot-/types";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { ballotTypedData } from "~/utils/typedData";
 import type { db } from "~/server/db";
 import { config } from "~/config";
-import { sumBallot } from "~/features/ballot/hooks/useBallot";
+import { sumBallot } from "~/features/ballot-/hooks/useBallot";
 import { type Prisma } from "@prisma/client";
 import { fetchApprovedVoter } from "~/utils/fetchAttestations";
 
