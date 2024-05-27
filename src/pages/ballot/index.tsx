@@ -32,10 +32,6 @@ export default function Ballot() {
 
   useEffect(() => {
     localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
-    console.log(
-      "BallotImpactsSchema?.safeParse",
-      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors,
-    );
     setRulesCheck(
       BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
         (error) => error?.path[0],
