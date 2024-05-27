@@ -1,75 +1,56 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocalStorage } from "react-use";
 import { Layout } from "~/layouts/DefaultLayout";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import Ballot from "~/features/ballot";
+import BallotAllocation from "~/features/ballot/ballotAllocation";
+import Rules from "~/features/ballot/Rules";
+import {
+  BallotImpactsSchema,
+  type ballotImpacts,
+} from "~/features/ballot/types";
 
-export default function BallotPage() {
-  function DraggableItem() {
-    const [{ isDragging }, drag] = useDrag(() => ({
-      type: "ITEM",
-      item: { id: "unique-id" },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }));
+export default function Ballot() {
+  const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
+  const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
+    lowImpactProjects: [],
+    mediumImpactProjects: [],
+    highImpactProjects: [],
+    highestImpactProjects: [],
+  });
 
-    return (
-      <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-        Drag me!
-      </div>
+  const [rulesCheck, setRulesCheck] = useState<string[]>([]);
+
+  useEffect(() => {
+    setDroppedItems({
+      lowImpactProjects: localData?.lowImpactProjects || [],
+      mediumImpactProjects: localData?.mediumImpactProjects || [],
+      highImpactProjects: localData?.highImpactProjects || [],
+      highestImpactProjects: localData?.highestImpactProjects || [],
+    });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
+    console.log(
+      "BallotImpactsSchema?.safeParse",
+      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors,
     );
-  }
-
-  function DropTargetAccordion() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [droppedItems, setDroppedItems] = useState([]);
-
-    const [{ isOver }, drop] = useDrop(() => ({
-      accept: "ITEM",
-      drop: (item) => {
-        setDroppedItems((prevItems) => [...prevItems, item]);
-        setIsOpen(true); // Open the accordion when an item is dropped
-      },
-      collect: (monitor) => ({
-        isOver: monitor.isOver(),
-      }),
-    }));
-
-    const toggleAccordion = () => {
-      setIsOpen(!isOpen);
-    };
-
-    return (
-      <div ref={drop} style={{ backgroundColor: isOver ? "lightgray" : "red" }}>
-        <div
-          onClick={toggleAccordion}
-          style={{
-            backgroundColor: isOpen ? "lightgray" : "red",
-            padding: "10px",
-            cursor: "pointer",
-          }}
-        >
-          Drop items here! (Accordion)
-          <span style={{ float: "right" }}>{isOpen ? "▲" : "▼"}</span>
-        </div>
-        {isOpen && (
-          <div style={{ padding: "10px" }}>
-            <h3>Dropped Items:</h3>
-            <ul>
-              {droppedItems.map((item, index) => (
-                <li key={index}>{JSON.stringify(item)}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+    setRulesCheck(
+      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
+        (error) => error?.path[0],
+      ),
     );
-  }
+  }, [droppedItems]);
+
   return (
     <Layout isFullWidth>
       <DndProvider backend={HTML5Backend}>
-        <Ballot />
+        <Rules rulesCheck={rulesCheck} />
+        <BallotAllocation
+          setDroppedItems={setDroppedItems}
+          droppedItems={droppedItems}
+        />
       </DndProvider>
     </Layout>
   );
