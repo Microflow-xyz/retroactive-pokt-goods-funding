@@ -10,7 +10,7 @@ import {
   useSubmitBallot,
   useBallot,
   sumBallot,
-} from "~/features/ballot/hooks/useBallot";
+} from "~/features/ballot-/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "~/components/ui/Dialog";
 import { VotingEndsIn } from "./VotingEndsIn";
@@ -32,7 +32,7 @@ function BallotOverview() {
   const sum = sumBallot(ballot?.votes);
 
   const allocations = ballot?.votes ?? [];
-  const canSubmit = router.route === "/ballot" && allocations.length;
+  const canSubmit = router.route === "/ballot-" && allocations.length;
 
   const { data: projectCount } = useProjectCount();
 
@@ -114,7 +114,7 @@ function BallotOverview() {
       ) : canSubmit ? (
         <SubmitBallotButton disabled={sum > config.votingMaxTotal} />
       ) : allocations.length ? (
-        <Button className="w-full" variant="primary" as={Link} href={"/ballot"}>
+        <Button className="w-full" variant="primary" as={Link} href={"/ballot-"}>
           View ballot
         </Button>
       ) : (

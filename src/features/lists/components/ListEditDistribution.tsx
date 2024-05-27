@@ -24,12 +24,12 @@ import {
   ballotContains,
   sumBallot,
   useBallot,
-} from "~/features/ballot/hooks/useBallot";
-import { useAddToBallot } from "~/features/ballot/hooks/useBallot";
+} from "~/features/ballot-/hooks/useBallot";
+import { useAddToBallot } from "~/features/ballot-/hooks/useBallot";
 import { Spinner } from "~/components/ui/Spinner";
 
 import { AllocationForm } from "~/components/AllocationList";
-import { BallotSchema, type Vote } from "~/features/ballot/types";
+import { BallotSchema, type Vote } from "~/features/ballot-/types";
 import { config } from "~/config";
 import { getAppState } from "~/utils/state";
 

@@ -1,25 +1,57 @@
-import { Form } from "~/components/ui/Form";
-import { useBallot } from "~/features/ballot/hooks/useBallot";
-import { BallotSchema } from "~/features/ballot/types";
-import { LayoutWithBallot } from "~/layouts/DefaultLayout";
-import { BallotAllocationForm } from "../../features/ballot/components/BallotAllocationForm";
+import React, { useState, useEffect } from "react";
+import { useLocalStorage } from "react-use";
+import { Layout } from "~/layouts/DefaultLayout";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import BallotAllocation from "~/features/ballot/ballotAllocation";
+import Rules from "~/features/ballot/Rules";
+import {
+  BallotImpactsSchema,
+  type ballotImpacts,
+} from "~/features/ballot/types";
 
-export default function BallotPage() {
-  const { data: ballot, isPending } = useBallot();
+export default function Ballot() {
+  const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
+  const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
+    lowImpactProjects: [],
+    mediumImpactProjects: [],
+    highImpactProjects: [],
+    highestImpactProjects: [],
+  });
 
-  if (isPending) return null;
+  const [rulesCheck, setRulesCheck] = useState<string[]>([]);
 
-  const votes = ballot?.votes.sort((a, b) => b.amount - a.amount);
+  useEffect(() => {
+    setDroppedItems({
+      lowImpactProjects: localData?.lowImpactProjects || [],
+      mediumImpactProjects: localData?.mediumImpactProjects || [],
+      highImpactProjects: localData?.highImpactProjects || [],
+      highestImpactProjects: localData?.highestImpactProjects || [],
+    });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
+    console.log(
+      "BallotImpactsSchema?.safeParse",
+      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors,
+    );
+    setRulesCheck(
+      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
+        (error) => error?.path[0],
+      ),
+    );
+  }, [droppedItems]);
+
   return (
-    <LayoutWithBallot sidebar="right" requireAuth>
-      <Form
-        schema={BallotSchema}
-        defaultValues={{ votes }}
-        onSubmit={console.log}
-      >
-        <BallotAllocationForm />
-      </Form>
-      <div className="py-8" />
-    </LayoutWithBallot>
+    <Layout isFullWidth>
+      <DndProvider backend={HTML5Backend}>
+        <Rules rulesCheck={rulesCheck} />
+        <BallotAllocation
+          setDroppedItems={setDroppedItems}
+          droppedItems={droppedItems}
+        />
+      </DndProvider>
+    </Layout>
   );
 }

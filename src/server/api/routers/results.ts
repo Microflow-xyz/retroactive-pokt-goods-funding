@@ -5,7 +5,7 @@ import { FilterSchema } from "~/features/filter/types";
 import { fetchAttestations } from "~/utils/fetchAttestations";
 import { eas } from "~/config";
 import { calculateVotes } from "~/utils/calculateResults";
-import { type Vote } from "~/features/ballot/types";
+import { type Vote } from "~/features/ballot-/types";
 import { getSettings } from "./config";
 
 export const resultsRouter = createTRPCRouter({
