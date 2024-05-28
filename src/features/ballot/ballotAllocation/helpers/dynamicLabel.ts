@@ -96,6 +96,5 @@ export const dynamicLabel = (input, missing) => {
       text: `Add 0-${missing.low} more projects`,
     };
   }
-  console.log(message);
   return message;
 };
