@@ -20,25 +20,27 @@ function BallotAllocation({
 }) {
   // const projects = useSearchProjects();
   const projects = [
-    { name: "project1" },
-    { name: "project2" },
-    { name: "project3" },
-    { name: "project4" },
-    { name: "project5" },
-    { name: "project6" },
-    { name: "project7" },
-    { name: "project8" },
-    { name: "project9" },
-    { name: "project10" },
-    { name: "project11" },
-    { name: "project12" },
-    { name: "project13" },
-    { name: "project14" },
-    { name: "project15" },
-    { name: "project16" },
+    { id: 1, name: "project1" },
+    { id: 2, name: "project2" },
+    { id: 3, name: "project3" },
+    { id: 4, name: "project4" },
+    { id: 5, name: "project5" },
+    { id: 6, name: "project6" },
+    { id: 7, name: "project7" },
+    { id: 8, name: "project8" },
+    { id: 9, name: "project9" },
+    { id: 10, name: "project10" },
+    { id: 11, name: "project11" },
+    { id: 12, name: "project12" },
+    { id: 13, name: "project13" },
+    { id: 14, name: "project14" },
+    { id: 15, name: "project15" },
+    { id: 16, name: "project16" },
   ];
   const allProjects = projects.filter((project) => {
-    const droppedProject = Object.values(droppedItems).flat().includes(project.name);
+    const droppedProject = Object.values(droppedItems)
+      .flat()
+      .includes(project.name);
     return !droppedProject;
   });
 
@@ -76,12 +78,14 @@ function BallotAllocation({
         <div className="flex flex-col items-center gap-6 rounded-xl border border-outline-dark bg-onBackground-dark p-5">
           <Input placeholder="Search among projects" />
           <div className="flex flex-wrap gap-2">
-            {allProjects?.map((project) => <ProjectItem project={project} />)}
+            {allProjects?.map((project, index) => (
+              <ProjectItem key={project.id} project={project} />
+            ))}
           </div>
         </div>
       </div>
       <div className="flex w-1/2 flex-col justify-between gap-3">
-        <h4 className="text-base font-semibold">Ballot(0)</h4>
+        <h4 className="text-base font-semibold">Ballot</h4>
         <div className="rounded-xl border border-outline-dark bg-onBackground-dark">
           <Form
             schema={SubmitBallotSchema}
@@ -92,38 +96,33 @@ function BallotAllocation({
               });
             }}
           >
-            <FormControl name="impacts.highestImpactProjects" required>
-              <DropTargetAccordion
-                shelveName="highestImpactProjects"
-                label={`Highest Extra Impact`}
-                setDroppedItems={setDroppedItems}
-                droppedItems={droppedItems}
-              />
-            </FormControl>
-            <FormControl name="impacts.highImpactProjects" required>
-              <DropTargetAccordion
-                shelveName="highImpactProjects"
-                label={`High Extra Impact`}
-                setDroppedItems={setDroppedItems}
-                droppedItems={droppedItems}
-              />
-            </FormControl>
-            <FormControl name="impacts.mediumImpactProjects" required>
-              <DropTargetAccordion
-                shelveName="mediumImpactProjects"
-                label={`Medium Extra Impact`}
-                setDroppedItems={setDroppedItems}
-                droppedItems={droppedItems}
-              />
-            </FormControl>
-            <FormControl name="impacts.lowImpactProjects" required>
-              <DropTargetAccordion
-                shelveName="lowImpactProjects"
-                label={`Low Extra Impact`}
-                setDroppedItems={setDroppedItems}
-                droppedItems={droppedItems}
-              />
-            </FormControl>
+            <DropTargetAccordion
+              shelveName="highestImpactProjects"
+              label={`Highest Extra Impact`}
+              setDroppedItems={setDroppedItems}
+              droppedItems={droppedItems}
+            />
+
+            <DropTargetAccordion
+              shelveName="highImpactProjects"
+              label={`High Extra Impact`}
+              setDroppedItems={setDroppedItems}
+              droppedItems={droppedItems}
+            />
+
+            <DropTargetAccordion
+              shelveName="mediumImpactProjects"
+              label={`Medium Extra Impact`}
+              setDroppedItems={setDroppedItems}
+              droppedItems={droppedItems}
+            />
+
+            <DropTargetAccordion
+              shelveName="lowImpactProjects"
+              label={`Low Extra Impact`}
+              setDroppedItems={setDroppedItems}
+              droppedItems={droppedItems}
+            />
           </Form>
         </div>
       </div>

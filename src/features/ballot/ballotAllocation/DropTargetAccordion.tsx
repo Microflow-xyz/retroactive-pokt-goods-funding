@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { dynamicLabel } from "./helpers/dynamicLabel";
 import { type ballotImpacts } from "../types";
 import { type Attestation } from "~/utils/fetchAttestations";
+import { X } from "lucide-react";
 
 const DropTargetAccordion = ({
   label,
@@ -28,7 +29,7 @@ const DropTargetAccordion = ({
   const [{ isOver }, drop] = useDrop(() => {
     return {
       accept: "ITEM",
-      drop: (item: Attestation) => {
+      drop: (item: { name: string }) => {
         setDroppedItems((prevDroppedItems) => ({
           ...prevDroppedItems,
           [shelveName]: [...(prevDroppedItems[shelveName] || []), item.name],
@@ -50,6 +51,15 @@ const DropTargetAccordion = ({
     };
 
     function gen(input) {
+      let inputSum = 0;
+      for (let i in input) inputSum += input[i];
+      if (inputSum === 0)
+        return {
+          highest: 0,
+          high: 0,
+          mid: 0,
+          low: 0,
+        };
       let i = 1;
       let suggest;
       while (true) {
@@ -142,30 +152,77 @@ const DropTargetAccordion = ({
   }, [droppedItems]);
   const renderEmptyBoxes = (count: number) => {
     const boxes: JSX.Element[] = [];
-
-    for (let i = 0; i < count; i++) {
+    if (
+      count === 0 &&
+      Object.values(droppedItems).every((arr) => arr.length === 0)
+    ) {
       boxes.push(
         <li
-          className={`rounded-lg border border-onSurface-dark bg-onError-dark px-8 py-4 text-sm font-medium`}
-          key={i}
-        />,
+          className={`rounded-lg border border-dashed border-primaryFixedDim-dark px-[0.75rem]  py-[0.375rem] text-sm font-medium text-primaryFixedDim-dark`}
+        >
+          Drag & drop here
+        </li>,
       );
-    }
+    } else
+      for (let i = 0; i < count; i++) {
+        boxes.push(
+          <li
+            className={`rounded-lg border border-onError-dark bg-[#2C0004] px-8 py-4 text-sm font-medium`}
+            key={i}
+          />,
+        );
+      }
 
     return boxes;
   };
+
+  const dynamicLabelObj = dynamicLabel(
+    {
+      highest: droppedItems.highestImpactProjects.length,
+      high: droppedItems.highImpactProjects.length,
+      mid: droppedItems.mediumImpactProjects.length,
+      low: droppedItems.lowImpactProjects.length,
+    },
+    {
+      highest: suggestCount.highestImpactProjects,
+      high: suggestCount.highImpactProjects,
+      mid: suggestCount.mediumImpactProjects,
+      low: suggestCount.lowImpactProjects,
+    },
+  )[shelveName];
+  console.log("suggestCount[shelveName]",suggestCount)
   return (
-    <div className="p-5" ref={drop}>
-      <div className=" flex cursor-pointer items-center justify-between">
-        {label} ({droppedItems[shelveName]?.length})
+    <div className="p-5 pb-3" ref={drop}>
+      <div className=" flex cursor-pointer items-center gap-2">
+        {label}
+        <span
+          className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
+        >
+          {dynamicLabelObj.text}
+        </span>
       </div>
       <div className="flex">
         <ul className="mt-3 flex flex-wrap gap-2">
           {droppedItems[shelveName]?.map((item: string, index: number) => (
             <li
-              className={`rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
+              className={`flex items-center justify-between gap-1 rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
               key={index}
             >
+              <button
+                onClick={() => {
+                  setDroppedItems({
+                    ...droppedItems,
+                    [shelveName]: [
+                      ...droppedItems[shelveName].filter(
+                        (project) => item !== project,
+                      ),
+                    ],
+                  });
+                }}
+              >
+                <X color="#ffffff" className="h-4 w-4" />
+              </button>
+
               {item}
             </li>
           ))}
