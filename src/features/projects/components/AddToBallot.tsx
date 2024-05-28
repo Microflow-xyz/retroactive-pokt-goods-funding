@@ -45,7 +45,9 @@ export const ProjectAddToBallot = ({ id, name }: Props) => {
           variant="primary"
           icon={Check}
         >
-          {formatNumber(inBallot.amount)} allocated
+          FIXME: Remove This
+          {/* {formatNumber(inBallot.amount)} allocated */}
+          Add to ballot
         </IconButton>
       ) : (
         <div />
