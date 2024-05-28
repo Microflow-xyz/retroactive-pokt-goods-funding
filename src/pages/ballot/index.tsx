@@ -10,7 +10,8 @@ import {
   type ballotImpacts,
 } from "~/features/ballot/types";
 
-export default function Ballot() {
+//FIXME: Ballot Page props should be removed
+export default function Ballot({ isModal = false }: { isModal?: boolean }) {
   const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
     lowImpactProjects: [],
@@ -39,15 +40,41 @@ export default function Ballot() {
     );
   }, [droppedItems]);
 
-  return (
-    <Layout isFullWidth>
+  // FIXME: This should be removed
+  if (isModal)
+    return (
       <DndProvider backend={HTML5Backend}>
-        <Rules rulesCheck={rulesCheck} />
         <BallotAllocation
           setDroppedItems={setDroppedItems}
           droppedItems={droppedItems}
+          isModal
         />
       </DndProvider>
-    </Layout>
-  );
+    );
+  else
+    return (
+      <Layout isFullWidth>
+        <DndProvider backend={HTML5Backend}>
+          <Rules rulesCheck={rulesCheck} />
+          <BallotAllocation
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+            isModal
+          />
+        </DndProvider>
+      </Layout>
+    );
+
+  //FIXME: Original response
+  // return (
+  //   <Layout isFullWidth>
+  //     <DndProvider backend={HTML5Backend}>
+  //     <Rules rulesCheck={rulesCheck} />
+  //     <BallotAllocation
+  //       setDroppedItems={setDroppedItems}
+  //       droppedItems={droppedItems}
+  //     />
+  //   </DndProvider>
+  // </Layout>
+  // );
 }

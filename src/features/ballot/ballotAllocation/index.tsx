@@ -11,12 +11,15 @@ import DropTargetAccordion from "./DropTargetAccordion";
 import { useSubmitBallot } from "./hooks/useSubmitBallot";
 import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
 
+//FIXME: This is modal should be removed
 function BallotAllocation({
   droppedItems,
   setDroppedItems,
+  isModal,
 }: {
   droppedItems: ballotImpacts;
   setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
+  isModal: boolean;
 }) {
   // const projects = useSearchProjects();
   const projects = [
@@ -70,8 +73,12 @@ function BallotAllocation({
     },
   });
   return (
-    <div className="mt-16 flex items-baseline justify-between gap-5">
-      <div className="flex w-1/2 flex-col justify-between gap-3">
+    <div
+      className={`${!isModal && "mt-16 flex"} items-baseline justify-between gap-5`}
+    >
+      <div
+        className={`flex ${isModal ? "w-full" : "w-1/2"} flex-col justify-between gap-3`}
+      >
         <h4 className="text-base font-semibold">
           Application Pool ({allProjects?.length})
         </h4>
@@ -84,7 +91,9 @@ function BallotAllocation({
           </div>
         </div>
       </div>
-      <div className="flex w-1/2 flex-col justify-between gap-3">
+      <div
+        className={`flex ${isModal ? "mt-3 w-full" : "w-1/2"} flex-col justify-between gap-3`}
+      >
         <h4 className="text-base font-semibold">Ballot</h4>
         <div className="rounded-xl border border-outline-dark bg-onBackground-dark">
           <Form
