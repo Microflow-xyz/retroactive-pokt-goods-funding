@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
-import { dynamicLabel } from "./helpers/dynamicLabel";
+import { dynamicLabel, gen } from "./helpers";
 import { type ballotImpacts } from "../types";
 import { type Attestation } from "~/utils/fetchAttestations";
 import { X } from "lucide-react";
@@ -41,101 +41,7 @@ const DropTargetAccordion = ({
     };
   });
 
-  //TODO: Move this to the right file
   useEffect(() => {
-    const ratio = {
-      HIGHEST: 0.1,
-      HIGH: 0.2,
-      MID: 0.3,
-      LOW: 0.4,
-    };
-
-    function gen(input) {
-      let inputSum = 0;
-      for (let i in input) inputSum += input[i];
-      if (inputSum === 0)
-        return {
-          highest: 0,
-          high: 0,
-          mid: 0,
-          low: 0,
-        };
-      let i = 1;
-      let suggest;
-      while (true) {
-        suggest = suggestor(i);
-        i++;
-        // highest check
-        if (input.highest > suggest.highestImpactProjects) continue;
-        if (
-          input.high >
-          suggest.highImpactProjects +
-            (suggest.highestImpactProjects - input.highest)
-        )
-          continue;
-        if (
-          input.mid >
-          suggest.mediumImpactProjects +
-            (suggest.highImpactProjects - input.high) +
-            (suggest.highestImpactProjects - input.highest)
-        )
-          continue;
-        break;
-      }
-      const missing = {
-        highest: suggest.highestImpactProjects - input.highest,
-        high: suggest.highImpactProjects - input.high,
-        mid: suggest.mediumImpactProjects - input.mid,
-        low: suggest.lowImpactProjects - input.low,
-      };
-      if (missing.high < 0) {
-        missing.highest += missing.high;
-        missing.high = 0;
-      }
-      if (missing.mid < 0) {
-        missing.high += missing.mid;
-        if (missing.high < 0) {
-          missing.highest += missing.high;
-          missing.high = 0;
-        }
-        missing.mid = 0;
-      }
-      if (missing.low < 0) {
-        if (missing.low * -1 > missing.mid + missing.high + missing.highest)
-          return {
-            highest: 0,
-            high: 0,
-            mid: 0,
-            low: 0,
-          };
-        missing.mid += missing.low;
-        if (missing.mid < 0) {
-          missing.high += missing.mid;
-          if (missing.high < 0) {
-            missing.highest += missing.high;
-            missing.high = 0;
-          }
-          missing.mid = 0;
-        }
-        missing.low = 0;
-      }
-      return missing;
-    }
-    function suggestor(base) {
-      return {
-        highestImpactProjects: Math.floor(
-          Math.fround((base * ratio.HIGHEST) / ratio.LOW),
-        ),
-        highImpactProjects: Math.floor(
-          Math.fround((base * ratio.HIGH) / ratio.LOW),
-        ),
-        mediumImpactProjects: Math.floor(
-          Math.fround((base * ratio.MID) / ratio.LOW),
-        ),
-        lowImpactProjects: base,
-      };
-    }
-
     const result = gen({
       highest: droppedItems.highestImpactProjects.length,
       high: droppedItems.highImpactProjects.length,
@@ -152,10 +58,7 @@ const DropTargetAccordion = ({
   }, [droppedItems]);
   const renderEmptyBoxes = (count: number) => {
     const boxes: JSX.Element[] = [];
-    if (
-      count === 0 &&
-      Object.values(droppedItems).every((arr) => arr.length === 0)
-    ) {
+    if (count === 0 && droppedItems[shelveName].length === 0) {
       boxes.push(
         <li
           className={`rounded-lg border border-dashed border-primaryFixedDim-dark px-[0.75rem]  py-[0.375rem] text-sm font-medium text-primaryFixedDim-dark`}
@@ -190,7 +93,6 @@ const DropTargetAccordion = ({
       low: suggestCount.lowImpactProjects,
     },
   )[shelveName];
-  console.log("suggestCount[shelveName]",suggestCount)
   return (
     <div className="p-5 pb-3" ref={drop}>
       <div className=" flex cursor-pointer items-center gap-2">
