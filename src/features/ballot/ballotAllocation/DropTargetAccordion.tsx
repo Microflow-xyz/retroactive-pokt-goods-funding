@@ -19,7 +19,7 @@ const DropTargetAccordion = ({
     | "highImpactProjects"
     | "highestImpactProjects";
 }) => {
-  const [res, setRes] = useState({
+  const [suggestCount, setSuggestCount] = useState({
     highestImpactProjects: 0,
     highImpactProjects: 0,
     mediumImpactProjects: 0,
@@ -50,31 +50,33 @@ const DropTargetAccordion = ({
     };
 
     function gen(input) {
-      console.log("initial input", input);
       let i = 1;
       let suggest;
       while (true) {
         suggest = suggestor(i);
-        console.log("\n", suggest);
         i++;
         // highest check
-        if (input.highest > suggest.highest) continue;
-        if (input.high > suggest.high + (suggest.highest - input.highest))
+        if (input.highest > suggest.highestImpactProjects) continue;
+        if (
+          input.high >
+          suggest.highImpactProjects +
+            (suggest.highestImpactProjects - input.highest)
+        )
           continue;
         if (
           input.mid >
-          suggest.mid +
-            (suggest.high - input.high) +
-            (suggest.highest - input.highest)
+          suggest.mediumImpactProjects +
+            (suggest.highImpactProjects - input.high) +
+            (suggest.highestImpactProjects - input.highest)
         )
           continue;
         break;
       }
       const missing = {
-        highest: suggest.highest - input.highest,
-        high: suggest.high - input.high,
-        mid: suggest.mid - input.mid,
-        low: suggest.low - input.low,
+        highest: suggest.highestImpactProjects - input.highest,
+        high: suggest.highImpactProjects - input.high,
+        mid: suggest.mediumImpactProjects - input.mid,
+        low: suggest.lowImpactProjects - input.low,
       };
       if (missing.high < 0) {
         missing.highest += missing.high;
@@ -89,6 +91,13 @@ const DropTargetAccordion = ({
         missing.mid = 0;
       }
       if (missing.low < 0) {
+        if (missing.low * -1 > missing.mid + missing.high + missing.highest)
+          return {
+            highest: 0,
+            high: 0,
+            mid: 0,
+            low: 0,
+          };
         missing.mid += missing.low;
         if (missing.mid < 0) {
           missing.high += missing.mid;
@@ -100,7 +109,7 @@ const DropTargetAccordion = ({
         }
         missing.low = 0;
       }
-      console.log("final", missing);
+      return missing;
     }
     function suggestor(base) {
       return {
@@ -116,8 +125,35 @@ const DropTargetAccordion = ({
         lowImpactProjects: base,
       };
     }
-  }, []);
 
+    const result = gen({
+      highest: droppedItems.highestImpactProjects.length,
+      high: droppedItems.highImpactProjects.length,
+      mid: droppedItems.mediumImpactProjects.length,
+      low: droppedItems.lowImpactProjects.length,
+    });
+    if (result)
+      setSuggestCount({
+        highestImpactProjects: result?.highest,
+        highImpactProjects: result?.high,
+        mediumImpactProjects: result?.mid,
+        lowImpactProjects: result?.low,
+      });
+  }, [droppedItems]);
+  const renderEmptyBoxes = (count: number) => {
+    const boxes: JSX.Element[] = [];
+  
+    for (let i = 0; i < count; i++) {
+      boxes.push(
+        <li
+          className={`rounded-lg border border-onSurface-dark bg-onError-dark px-8 py-4 text-sm font-medium`}
+          key={i}
+        />
+      );
+    }
+  
+    return boxes;
+  };
   return (
     <div className="p-5" ref={drop}>
       <div className=" flex cursor-pointer items-center justify-between">
@@ -133,10 +169,7 @@ const DropTargetAccordion = ({
               {item}
             </li>
           ))}
-          <li
-            className={`rounded-lg border border-onSurface-dark bg-onError-dark px-8 py-4 text-sm font-medium`}
-            // key={index}
-          />
+          {renderEmptyBoxes(suggestCount[shelveName])}
         </ul>
       </div>
     </div>
