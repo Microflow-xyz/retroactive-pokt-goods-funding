@@ -45,7 +45,7 @@ export const ProjectAddToBallot = ({ id, name }: Props) => {
           variant="primary"
           icon={Check}
         >
-          FIXME: Remove This
+          {/* FIXME: Remove This */}
           {/* {formatNumber(inBallot.amount)} allocated */}
           Add to ballot
         </IconButton>
