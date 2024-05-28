@@ -142,16 +142,16 @@ const DropTargetAccordion = ({
   }, [droppedItems]);
   const renderEmptyBoxes = (count: number) => {
     const boxes: JSX.Element[] = [];
-  
+
     for (let i = 0; i < count; i++) {
       boxes.push(
         <li
           className={`rounded-lg border border-onSurface-dark bg-onError-dark px-8 py-4 text-sm font-medium`}
           key={i}
-        />
+        />,
       );
     }
-  
+
     return boxes;
   };
   return (
