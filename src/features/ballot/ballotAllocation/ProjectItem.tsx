@@ -2,7 +2,7 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { type Attestation } from "~/utils/fetchAttestations";
 
-const ProjectItem = React.memo(({ project }: { project: Attestation }) => {
+const ProjectItem = React.memo(({ project }: { project: { name: string } }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "ITEM",
     item: project,

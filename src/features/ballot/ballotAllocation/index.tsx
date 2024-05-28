@@ -18,15 +18,30 @@ function BallotAllocation({
   droppedItems: ballotImpacts;
   setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
 }) {
-  const projects = useSearchProjects();
-  const allProjects: Attestation[] = projects?.data?.pages
-    ? [].concat(...projects?.data?.pages).filter((project) => {
-        const droppedProject = Object.values(droppedItems)
-          .flat()
-          .includes(project?.name);
-        return !droppedProject;
-      })
-    : [];
+  // const projects = useSearchProjects();
+  const projects = [
+    { name: "project1" },
+    { name: "project2" },
+    { name: "project3" },
+    { name: "project4" },
+    { name: "project5" },
+    { name: "project6" },
+    { name: "project7" },
+    { name: "project8" },
+    { name: "project9" },
+    { name: "project10" },
+    { name: "project11" },
+    { name: "project12" },
+    { name: "project13" },
+    { name: "project14" },
+    { name: "project15" },
+    { name: "project16" },
+  ];
+  const allProjects = projects.filter((project) => {
+    const droppedProject = Object.values(droppedItems).flat().includes(project.name);
+    return !droppedProject;
+  });
+
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
   const { data: session } = useSession();
 
@@ -61,9 +76,7 @@ function BallotAllocation({
         <div className="flex flex-col items-center gap-6 rounded-xl border border-outline-dark bg-onBackground-dark p-5">
           <Input placeholder="Search among projects" />
           <div className="flex flex-wrap gap-2">
-            {allProjects?.map((project) => (
-              <ProjectItem key={project.id} project={project} />
-            ))}
+            {allProjects?.map((project) => <ProjectItem project={project} />)}
           </div>
         </div>
       </div>
