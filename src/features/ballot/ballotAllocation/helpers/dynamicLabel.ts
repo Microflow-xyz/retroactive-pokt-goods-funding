@@ -36,12 +36,12 @@ export const dynamicLabel = (input, missing) => {
   } else if (missing.high > 0 && input.high == 0) {
     message.highImpactProjects = {
       type: "error",
-      text: `Add 0-${missing.high} projects`,
+      text: `Add 0-${missing.high} projects (Can use extra capacity from upper shelves)`,
     };
   } else if (missing.high > 0 && input.high > 0) {
     message.highImpactProjects = {
       type: "error",
-      text: `Add 0-${missing.high} more projects`,
+      text: `Add 0-${missing.high} more projects (Can use extra capacity from upper shelves)`,
     };
   }
   // mid
@@ -58,12 +58,12 @@ export const dynamicLabel = (input, missing) => {
   } else if (missing.mid > 0 && input.mid == 0) {
     message.mediumImpactProjects = {
       type: "error",
-      text: `Add 0-${missing.mid} projects`,
+      text: `Add 0-${missing.mid} projects (Can use extra capacity from upper shelves)`,
     };
   } else if (missing.mid > 0 && input.mid > 0) {
     message.mediumImpactProjects = {
       type: "error",
-      text: `Add 0-${missing.mid} more projects`,
+      text: `Add 0-${missing.mid} more projects (Can use extra capacity from upper shelves)`,
     };
   }
   // low
@@ -88,12 +88,12 @@ export const dynamicLabel = (input, missing) => {
   } else if (missing.low > 0 && input.low == 0) {
     message.lowImpactProjects = {
       type: "error",
-      text: `Add 0-${missing.low} projects`,
+      text: `Add 0-${missing.low} projects (Can use extra capacity from upper shelves)`,
     };
   } else if (missing.low > 0 && input.low > 0) {
     message.lowImpactProjects = {
       type: "error",
-      text: `Add 0-${missing.low} more projects`,
+      text: `Add 0-${missing.low} more projects (Can use extra capacity from upper shelves)`,
     };
   }
   return message;
