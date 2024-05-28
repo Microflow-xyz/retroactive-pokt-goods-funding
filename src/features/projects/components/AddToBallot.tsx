@@ -46,14 +46,15 @@ export const ProjectAddToBallot = ({ id, name }: Props) => {
           {formatNumber(inBallot.amount)} allocated
         </IconButton>
       ) : (
-        <Button
-          disabled={!address}
-          onClick={() => setOpen(true)}
-          variant="primary"
-          className="w-full md:w-auto"
-        >
-          Add to ballot
-        </Button>
+        <div />
+        // <Button
+        //   disabled={!address}
+        //   onClick={() => setOpen(true)}
+        //   variant="primary"
+        //   className="w-full md:w-auto"
+        // >
+        //   Add to ballot
+        // </Button>
       )}
       <Dialog
         size="sm"
