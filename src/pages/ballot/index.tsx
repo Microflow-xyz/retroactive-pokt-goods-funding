@@ -59,7 +59,8 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
           <BallotAllocation
             setDroppedItems={setDroppedItems}
             droppedItems={droppedItems}
-            isModal
+            //FIXME: This might need modification
+            isModal={isModal}
           />
         </DndProvider>
       </Layout>
