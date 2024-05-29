@@ -43,7 +43,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
         className={`mb-2 flex items-center gap-2 ${hasNoProject || rulesCheck?.length > 0 ? "text-[#FFB3B2]" : "text-[#CCF2DB]"}`}
       >
         {hasNoProject || rulesCheck?.length > 0 ? <ErrorIcon /> : <CheckIcon />}
-        Dedicating each project in each shelf is not in a correct order:
+        Your ballot should comply with the following distribution:
       </p>
 
       <ul className=" flex flex-col gap-2 pl-12">
@@ -55,7 +55,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Highest Extra Impact</b>: 10% of the projects can be here.
+          <b>Highest Impact</b>: 10% of the projects can be here.
         </li>
         <li
           className={`flex items-center gap-1 ${hasNoProject || rulesCheck?.includes("HIGH_IMPACT") ? "text-[#FFB3B2]" : "text-[#CCF2DB]"}`}
@@ -76,7 +76,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Medium Extra Impact</b>: 30% of your projects + unused upper shelf
+          <b>Medium Impact</b>: 30% of your projects + unused upper shelf
           capacity can be here.
         </li>
         <li
@@ -87,8 +87,8 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Low Extra Impact</b>: 40% of your projects + unused upper shelf
-          capacity can be here.
+          <b>Low Impact</b>: 40% of your projects + unused upper shelf capacity
+          can be here.
         </li>
       </ul>
     </div>

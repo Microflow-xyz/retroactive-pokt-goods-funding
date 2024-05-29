@@ -94,7 +94,7 @@ function BallotAllocation({
       <div
         className={`flex ${isModal ? "mt-3 w-full" : "w-1/2"} flex-col justify-between gap-3`}
       >
-        <h4 className="text-base font-semibold">Ballot</h4>
+        <h4 className="text-base font-semibold">Impact Tiers</h4>
         <div className="rounded-xl border border-outline-dark bg-onBackground-dark">
           <Form
             schema={SubmitBallotSchema}
@@ -107,28 +107,28 @@ function BallotAllocation({
           >
             <DropTargetAccordion
               shelveName="highestImpactProjects"
-              label={`Highest Extra Impact`}
+              label={`Highest Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
             />
 
             <DropTargetAccordion
               shelveName="highImpactProjects"
-              label={`High Extra Impact`}
+              label={`High Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
             />
 
             <DropTargetAccordion
               shelveName="mediumImpactProjects"
-              label={`Medium Extra Impact`}
+              label={`Medium Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
             />
 
             <DropTargetAccordion
               shelveName="lowImpactProjects"
-              label={`Low Extra Impact`}
+              label={`Low Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
             />

@@ -8,12 +8,14 @@ import { ProjectAddToBallot } from "~/features/projects/components/AddToBallot";
 import { getAppState } from "~/utils/state";
 import { ProjectAwarded } from "~/features/projects/components/ProjectAwarded";
 import { DiscussionComponent } from "~/features/projects/components/discussion";
+import { useIsAdmin } from "~/hooks/useIsAdmin";
 
 export default function ProjectDetailsPage({ projectId = "" }) {
   const project = useProjectById(projectId);
   const { name } = project.data ?? {};
   const { address } = useAccount();
   const state = getAppState();
+  const isAdmin = useIsAdmin();
 
   const action =
     state === "RESULTS" ? (
@@ -24,12 +26,18 @@ export default function ProjectDetailsPage({ projectId = "" }) {
   return (
     <LayoutWithBallot title={name} showBallot eligibilityCheck>
       <ProjectDetails
+        isAdmin={isAdmin}
         address={address}
         attestation={project.data}
         action={action}
         state={state}
       />
-      <DiscussionComponent projectId={projectId} state={state} address={address} />
+      <DiscussionComponent
+        projectId={projectId}
+        state={state}
+        address={address}
+        isAdmin={isAdmin}
+      />
     </LayoutWithBallot>
   );
 }
