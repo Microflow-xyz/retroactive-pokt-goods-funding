@@ -14,7 +14,6 @@ import { type Attestation } from "~/utils/fetchAttestations";
 import { LinkBox } from "./LinkBox";
 import { Button } from "~/components/ui/Button";
 import { useProfileWithMetadata } from "~/hooks/useProfile";
-import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { useVoters } from "~/features/voters/components/VotersList";
 
 export default function ProjectDetails({
@@ -22,11 +21,13 @@ export default function ProjectDetails({
   action,
   address,
   state,
+  isAdmin = false,
 }: {
   action: ReactNode;
   attestation?: Attestation;
   address?: string;
   state?: AppState;
+  isAdmin: boolean;
 }) {
   const metadata = useProjectMetadata(attestation?.metadataPtr);
   const profile = useProfileWithMetadata(attestation?.recipient);
@@ -36,7 +37,6 @@ export default function ProjectDetails({
     // payoutAddress,
     fundingSources,
   } = metadata.data ?? {};
-  const isAdmin = useIsAdmin();
   const { data: voters } = useVoters();
 
   return (
