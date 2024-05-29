@@ -2,8 +2,6 @@ import Script from "next/script";
 import "~/styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import "~/builderIdeas/component/Checkbox/Checkbox.css";
-import TextEditor from './TextEditor';
-import ContentViewer from './ContentViewer';
 
 
 import type { AppProps } from "next/app";

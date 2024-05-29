@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Layout } from "~/layouts/DefaultLayout";
 import { Chip } from "~/components/ui/Chip";
 
+
 export default function HomePage({}) {
   return (
     <Layout isFullWidth>

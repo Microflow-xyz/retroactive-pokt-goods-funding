@@ -37,7 +37,6 @@ import { isBefore } from "date-fns";
 import { config } from "~/config";
 import Link from "next/link";
 import { Session } from "next-auth";
-import { Editor } from '@tinymce/tinymce-react';
 import TextEditor from "./TextEditor";
 
 
@@ -56,23 +55,12 @@ export function ApplicationForm({
   isEditMode?: boolean;
 }) {
 
-  // function TextEditor({ apiKey, initialValue, onChange }: TextEditorProps) {
-  //   const handleEditorChange = (content: string, _editor: any) => {
-  //     console.log('Content was updated:', content);
-  //     onChange(content);
-  //   };
-
   const metadata = useProjectMetadata(projectInfo?.metadataPtr);
   const profile = useProfileWithMetadata(projectInfo?.recipient);
-
   const clearDraft = useLocalStorage("application-draft")[2];
-
   const [defaultValues, setDefaultValues] = useState();
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
   const { data: session } = useSession();
-  const handleContentChange = (content: string) => {
-    console.log("Updated editor content:", content);
-};
 
   useEffect(() => {
     if (isEditMode && projectInfo && metadata?.data && profile?.data)
@@ -89,8 +77,8 @@ export function ApplicationForm({
           wPOKTReceivingAddress: metadata?.data?.wPOKTReceivingAddress,
           arbReceivingAddress: metadata?.data?.arbReceivingAddress,
           opReceivingAddress: metadata?.data?.opReceivingAddress,
-          contributionDescription: metadata?.data?.contributionDescription,
-          impactDescription: metadata?.data?.impactDescription,
+          contributionDescription:`<p>Initial content</p>`,
+          impactDescription: `<p>Initial content</p>`,
           impactCategory: metadata?.data?.impactCategory,
           contributionLinks: metadata?.data?.contributionLinks,
           impactMetrics: metadata?.data?.impactMetrics,
@@ -144,7 +132,6 @@ export function ApplicationForm({
 }
   const error = create.error;
   const now = new Date();
-
   return (
     <div>
       {isBefore(now, config.startsAt) ? (
@@ -333,8 +320,7 @@ export function ApplicationForm({
               required
             >
                 <TextEditor
-                  apiKey="hv0w18lypxwntcngoezdn9a9181kgg1qetbz2rzjff0zv0dj"
-                  onChange={handleContentChange} initialValue={""}                
+                 name="application.contributionDescription"         
                 />
             </FormControl>
 
@@ -344,8 +330,7 @@ export function ApplicationForm({
               required
             >
                 <TextEditor
-                  apiKey="hv0w18lypxwntcngoezdn9a9181kgg1qetbz2rzjff0zv0dj"
-                  onChange={handleContentChange} initialValue={""}                
+                 name="application.impactDescription"              
                 />
             </FormControl>
             <ImpactTags />
