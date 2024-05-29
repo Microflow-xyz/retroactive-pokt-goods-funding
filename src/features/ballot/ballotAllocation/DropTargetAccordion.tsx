@@ -4,6 +4,7 @@ import { dynamicLabel, gen } from "./helpers";
 import { type ballotImpacts } from "../types";
 import { type Attestation } from "~/utils/fetchAttestations";
 import { X } from "lucide-react";
+import { ExternalLinkIcon } from "lucide-react";
 
 const DropTargetAccordion = ({
   label,
@@ -126,6 +127,7 @@ const DropTargetAccordion = ({
               </button>
 
               {item}
+              <ExternalLinkIcon className=" h-4 w-4" />
             </li>
           ))}
           {renderEmptyBoxes(suggestCount[shelveName])}
