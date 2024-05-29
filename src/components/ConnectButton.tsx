@@ -10,7 +10,7 @@ import { UserRound } from "lucide-react";
 
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
-import { useBallot } from "~/features/ballot-/hooks/useBallot";
+import { useBallot } from "~/features/ballot/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
 import { useLayoutOptions } from "~/layouts/BaseLayout";
 import { getAppState, type AppState } from "~/utils/state";
@@ -115,13 +115,16 @@ const ConnectedDetails = ({
       <div className="flex gap-2 text-white">
         {state === "VOTING" ? (
           <>
-            {/* {!showBallot ? null : ballot?.publishedAt ? (
+            {!showBallot ? null : ballot?.publishedAt ? (
               <Chip>Already submitted</Chip>
-            ) : ( */}
-            <Chip className="gap-2" as={Link} href={"/ballot"}>
-              {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
-            </Chip>
-            {/* )} */}
+            ) : (
+              <Chip className="gap-2" as={Link} href={"/ballot"}>
+                {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-surfaceContainerLow-dark text-xs">
+                  {ballotSize}
+                </div>
+              </Chip>
+            )}
           </>
         ) : (
           state === "APPLICATION" && (

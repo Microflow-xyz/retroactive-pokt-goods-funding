@@ -86,7 +86,6 @@ export const BaseLayout = ({
           <div
             className={clsx("w-full min-w-0 px-2 pb-6 xl:pb-16", {
               ["mx-auto max-w-5xl"]: !sidebar && !isFullWidth,
-              ["xl:max-w-7xl mx-auto"]: isFullWidth,
             })}
           >
             {children}

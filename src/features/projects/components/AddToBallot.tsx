@@ -15,12 +15,10 @@ import {
   useBallot,
   useRemoveFromBallot,
   sumBallot,
-} from "~/features/ballot-/hooks/useBallot";
+} from "~/features/ballot/hooks/useBallot";
 import { AllocationInput } from "~/components/AllocationInput";
 import { config } from "~/config";
 import { getAppState } from "~/utils/state";
-// FIXME: remove direct page import here
-import Ballot from "~/pages/ballot";
 
 type Props = { id?: string; name?: string };
 
@@ -45,24 +43,54 @@ export const ProjectAddToBallot = ({ id, name }: Props) => {
           variant="primary"
           icon={Check}
         >
-          {/* FIXME: Remove This */}
-          {/* {formatNumber(inBallot.amount)} allocated */}
-          Add to ballot
+          {formatNumber(inBallot.amount)} allocated
         </IconButton>
       ) : (
-        <div />
-        // <Button
-        //   disabled={!address}
-        //   onClick={() => setOpen(true)}
-        //   variant="primary"
-        //   className="w-full md:w-auto"
-        // >
-        //   Add to ballot
-        // </Button>
+        <Button
+          disabled={!address}
+          onClick={() => setOpen(true)}
+          variant="primary"
+          className="w-full md:w-auto"
+        >
+          Add to ballot
+        </Button>
       )}
-      <Dialog size="md" isOpen={isOpen} onOpenChange={setOpen} title={`Ballot`}>
-        {/* FIXME: Ballot Page should be refactored here also modify the name */}
-        <Ballot isModal />
+      <Dialog
+        size="sm"
+        isOpen={isOpen}
+        onOpenChange={setOpen}
+        title={`Vote for ${name}`}
+      >
+        <p className="pb-4 leading-relaxed">
+          How much votes should this Project receive to fill the gap between the
+          impact they generated for Optimism and the profit they received for
+          generating this impact
+        </p>
+        <Form
+          defaultValues={{ amount: inBallot?.amount }}
+          schema={z.object({
+            amount: z
+              .number()
+              .min(0)
+              .max(
+                Math.min(config.votingMaxProject, config.votingMaxTotal - sum),
+              )
+              .default(0),
+          })}
+          onSubmit={({ amount }) => {
+            add.mutate([{ projectId: id!, amount }]);
+            setOpen(false);
+          }}
+        >
+          <ProjectAllocation
+            current={sum}
+            inBallot={Boolean(inBallot)}
+            onRemove={() => {
+              remove.mutate(id!);
+              setOpen(false);
+            }}
+          />
+        </Form>
       </Dialog>
     </div>
   );

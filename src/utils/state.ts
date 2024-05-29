@@ -11,5 +11,5 @@ export const getAppState = (): AppState => {
   if (isAfter(config.votingEndsAt, now)) return "VOTING";
   if (isBefore(now, config.resultsAt)) return "TALLYING";
 
-  return "RESULTS";
+  return "APPLICATION";
 };

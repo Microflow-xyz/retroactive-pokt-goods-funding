@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ImageUpload } from "~/components/ImageUpload";
 import { Button } from "~/components/ui/Button";
 import {
@@ -36,6 +36,10 @@ import { type Attestation } from "~/utils/fetchAttestations";
 import { isBefore } from "date-fns";
 import { config } from "~/config";
 import Link from "next/link";
+import { Session } from "next-auth";
+import { Editor } from '@tinymce/tinymce-react';
+import TextEditor from "./TextEditor";
+
 
 const ApplicationCreateSchema = z.object({
   profile: ProfileSchema,
@@ -51,6 +55,13 @@ export function ApplicationForm({
   projectInfo?: Attestation;
   isEditMode?: boolean;
 }) {
+
+  // function TextEditor({ apiKey, initialValue, onChange }: TextEditorProps) {
+  //   const handleEditorChange = (content: string, _editor: any) => {
+  //     console.log('Content was updated:', content);
+  //     onChange(content);
+  //   };
+
   const metadata = useProjectMetadata(projectInfo?.metadataPtr);
   const profile = useProfileWithMetadata(projectInfo?.recipient);
 
@@ -59,6 +70,9 @@ export function ApplicationForm({
   const [defaultValues, setDefaultValues] = useState();
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
   const { data: session } = useSession();
+  const handleContentChange = (content: string) => {
+    console.log("Updated editor content:", content);
+};
 
   useEffect(() => {
     if (isEditMode && projectInfo && metadata?.data && profile?.data)
@@ -70,7 +84,6 @@ export function ApplicationForm({
         },
         application: {
           name: metadata?.data?.name,
-          email: metadata?.data?.email,
           bio: metadata?.data?.bio,
           websiteUrl: metadata?.data?.websiteUrl,
           wPOKTReceivingAddress: metadata?.data?.wPOKTReceivingAddress,
@@ -109,26 +122,29 @@ export function ApplicationForm({
   });
   if (create.isSuccess) {
     return (
-      <Alert variant="success" title="Application created!">
-        Your submission will now be reviewed by our administrators and
-        subsequently added to the projects.
-        <p>
-          Please contact the&nbsp;
-          <Link
-            className="underline hover:text-primary-dark"
-            href="https://discord.com/channels/553741558869131266/1168923397842022571"
-            target="_blank"
-          >
-            help-desk channel
-          </Link>
-          &nbsp;if your application has not been added after 48 hours. Do not
-          resubmit your application.
-        </p>
-      </Alert>
+        <div>
+            <Alert variant="success" title="Application created!">
+                Your submission will now be reviewed by our administrators and
+                subsequently added to the projects.
+                <p>
+                    Please contact the&nbsp;
+                    <Link
+                        className="underline hover:text-primary-dark"
+                        href="https://discord.com/channels/553741558869131266/1168923397842022571"
+                        target="_blank"
+                    >
+                        help-desk channel
+                    </Link>
+                    &nbsp;if your application has not been added after 48 hours. Do not
+                    resubmit your application.
+                </p>
+            </Alert>
+        </div>
     );
-  }
+}
   const error = create.error;
   const now = new Date();
+
   return (
     <div>
       {isBefore(now, config.startsAt) ? (
@@ -165,9 +181,6 @@ export function ApplicationForm({
           >
             <FormControl name="profile.name" label="Profile name" required>
               <Input placeholder="Your name" />
-            </FormControl>
-            <FormControl name="application.email" label="Email" required>
-              <Input placeholder="Your email" />
             </FormControl>
             <div className="mb-1 gap-4 md:flex">
               <FormControl
@@ -319,10 +332,10 @@ export function ApplicationForm({
               label="Contribution description"
               required
             >
-              <Textarea
-                rows={4}
-                placeholder="What have your project contributed to?"
-              />
+                <TextEditor
+                  apiKey="hv0w18lypxwntcngoezdn9a9181kgg1qetbz2rzjff0zv0dj"
+                  onChange={handleContentChange} initialValue={""}                
+                />
             </FormControl>
 
             <FormControl
@@ -330,10 +343,10 @@ export function ApplicationForm({
               label="Impact description"
               required
             >
-              <Textarea
-                rows={4}
-                placeholder="What impact has your project had?"
-              />
+                <TextEditor
+                  apiKey="hv0w18lypxwntcngoezdn9a9181kgg1qetbz2rzjff0zv0dj"
+                  onChange={handleContentChange} initialValue={""}                
+                />
             </FormControl>
             <ImpactTags />
           </FormSection>
@@ -350,10 +363,10 @@ export function ApplicationForm({
             <FieldArray
               name="application.contributionLinks"
               isRequired
-              renderField={(field, i) => (
+              renderField={(_field, i) => (
                 <>
                   <FormControl
-                    className="w-full flex-1 md:min-w-96"
+                    className="flex-1 md:min-w-96 w-full"
                     name={`application.contributionLinks.${i}.description`}
                     required
                   >
@@ -367,7 +380,7 @@ export function ApplicationForm({
                     <Input placeholder="https://" />
                   </FormControl>
                   <FormControl
-                    className="w-full"
+                  className="w-full"
                     name={`application.contributionLinks.${i}.type`}
                     required
                   >
@@ -401,10 +414,10 @@ export function ApplicationForm({
             <FieldArray
               name="application.impactMetrics"
               isRequired
-              renderField={(field, i) => (
+              renderField={(_field, i) => (
                 <>
                   <FormControl
-                    className="w-full flex-1 md:min-w-96"
+                    className="flex-1 md:min-w-96 w-full"
                     name={`application.impactMetrics.${i}.description`}
                     required
                   >
@@ -441,7 +454,7 @@ export function ApplicationForm({
           >
             <FieldArray
               name="application.fundingSources"
-              renderField={(field, i) => (
+              renderField={(_field, i) => (
                 <>
                   <FormControl
                     className="flex-1 md:min-w-96"
@@ -497,7 +510,7 @@ export function ApplicationForm({
           >
             <FieldArray
               name="application.socialMedias"
-              renderField={(field, i) => (
+              renderField={(_field, i) => (
                 <>
                   <FormControl
                     className=" md:w-2/4"

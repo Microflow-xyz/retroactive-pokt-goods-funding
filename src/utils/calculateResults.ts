@@ -1,4 +1,4 @@
-import { type Vote } from "~/features/ballot-/types";
+import { type Vote } from "~/features/ballot/types";
 
 /*
 Payout styles:

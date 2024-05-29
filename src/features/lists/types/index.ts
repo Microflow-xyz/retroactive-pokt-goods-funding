@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { VoteSchema } from "~/features/ballot-/types";
+import { VoteSchema } from "~/features/ballot/types";
 
 export const ListSchema = z.object({
   name: z.string().min(3),

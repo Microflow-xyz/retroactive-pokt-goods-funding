@@ -22,8 +22,8 @@ import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
 import { Spinner } from "~/components/ui/Spinner";
 import { AllocationFormWithSearch } from "~/components/AllocationList";
 import { formatNumber } from "~/utils/formatNumber";
-import { sumBallot } from "~/features/ballot-/hooks/useBallot";
-import { type Vote } from "~/features/ballot-/types";
+import { sumBallot } from "~/features/ballot/hooks/useBallot";
+import { type Vote } from "~/features/ballot/types";
 
 const ListTags = () => {
   const { control, watch } = useFormContext();

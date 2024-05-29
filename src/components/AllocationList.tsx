@@ -19,7 +19,7 @@ import {
 } from "react-hook-form";
 import { AllocationInput } from "./AllocationInput";
 import { IconButton } from "~/components/ui/Button";
-import { type Vote } from "../features/ballot-/types";
+import { type Vote } from "../features/ballot/types";
 import { useProjectById } from "~/features/projects/hooks/useProjects";
 import { SearchProjects } from "~/features/lists/components/SearchProjects";
 import { ProjectAvatar } from "~/features/projects/components/ProjectAvatar";

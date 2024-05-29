@@ -19,7 +19,7 @@ export function Projects() {
 
   return (
     <div>
-      {/* <div
+      <div
         className={clsx(
           "fixed right-0 top-0 z-20 flex justify-end gap-2 rounded-bl-3xl bg-white px-2 pb-2 pt-4 dark:bg-surfaceContainerHighest-dark",
           {
@@ -37,7 +37,7 @@ export function Projects() {
           Add {select.count} projects to ballot
         </Button>
         <Button icon={XIcon} size="sm" onClick={select.reset} />
-      </div> */}
+      </div>
 
       <SortFilter />
 
@@ -52,7 +52,7 @@ export function Projects() {
                 prefetch
                 className={clsx("relative", { ["animate-pulse"]: isLoading })}
               >
-                {/* {!isLoading && getAppState() === "VOTING" ? (
+                {!isLoading && getAppState() === "VOTING" ? (
                   <div className="absolute right-2 top-[100px] z-10 -mt-2">
                     <ProjectSelectButton
                       state={select.getState(item.id)}
@@ -62,7 +62,7 @@ export function Projects() {
                       }}
                     />
                   </div>
-                ) : null} */}
+                ) : null}
                 {!results.isPending && getAppState() === "RESULTS" ? (
                   <ProjectItemAwarded
                     amount={results.data?.projects?.[item.id]?.votes}

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useBeforeUnload } from "react-use";
 import { useAccount, useChainId, useSignTypedData } from "wagmi";
-import type { Vote, Ballot } from "~/features/ballot-/types";
+import type { Vote, Ballot } from "~/features/ballot/types";
 
 import { ballotTypedData } from "~/utils/typedData";
 import { api } from "~/utils/api";
