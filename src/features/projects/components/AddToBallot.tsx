@@ -50,15 +50,14 @@ export const ProjectAddToBallot = ({ id, name }: Props) => {
           Add to ballot
         </IconButton>
       ) : (
-        <div />
-        // <Button
-        //   disabled={!address}
-        //   onClick={() => setOpen(true)}
-        //   variant="primary"
-        //   className="w-full md:w-auto"
-        // >
-        //   Add to ballot
-        // </Button>
+        <Button
+          disabled={!address}
+          onClick={() => setOpen(true)}
+          variant="primary"
+          className="w-full md:w-auto"
+        >
+          Add to ballot
+        </Button>
       )}
       <Dialog size="md" isOpen={isOpen} onOpenChange={setOpen} title={`Ballot`}>
         {/* FIXME: Ballot Page should be refactored here also modify the name */}
