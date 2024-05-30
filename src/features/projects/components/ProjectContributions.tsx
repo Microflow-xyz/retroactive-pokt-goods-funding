@@ -14,7 +14,7 @@ export default function ProjectContributions({ isLoading, project }: Props) {
         <Heading className="m-0" as="h3" size="lg">
         Contributions
       </Heading>
-          <p dangerouslySetInnerHTML={{ __html: project?.contributionDescription }} className=" break-words text-sm font-normal">
+          <p dangerouslySetInnerHTML={{ __html: project?.contributionDescription }} className="editorClasses break-words text-sm font-normal">
           </p>
         </div>
         <div className="md:w-1/3 w-full">

@@ -4,18 +4,33 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Bold from '@tiptap/extension-bold';
 import Italic from '@tiptap/extension-italic';
-import Heading from '@tiptap/extension-heading';
-import BulletList from '@tiptap/extension-bullet-list';
-import OrderedList from '@tiptap/extension-ordered-list';
 import Placeholder from '@tiptap/extension-placeholder'
-import { FC, useEffect, useRef } from 'react';
+import Link from '@tiptap/extension-link';
+import { FC, useEffect, useRef, useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { useFormContext } from 'react-hook-form';
 
 const MenuBar: FC<{ editor: any }> = ({ editor }) => {
+  const [isLinkInputVisible, setLinkInputVisible] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
   if (!editor) {
     return null;
   }
+
+  const addLink = () => {
+    if (linkUrl) {
+      editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+      setLinkUrl('');
+      setLinkInputVisible(false);
+    }
+  };
+
+
+  const toggleLinkInput = () => {
+    setLinkInputVisible(!isLinkInputVisible);
+    setLinkUrl('');
+    editor.chain().focus().unsetLink().run();
+  };
 
   return (
     <div className="flex gap-2 mb-1 text-white">
@@ -36,23 +51,34 @@ const MenuBar: FC<{ editor: any }> = ({ editor }) => {
         <i className={`fas fa-italic ${editor.isActive('italic') ? 'text-black' : 'text-white'}`}></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`px-3 py-1 border rounded ${
-          editor.isActive('heading', { level: 1 }) ? 'bg-white text-black' : 'bg-gray-600 text-white'
-        }`}
+        onClick={toggleLinkInput}
+        className="px-3 py-1 border rounded bg-gray-600 text-white"
       >
-        <i className={`fas fa-heading ${editor.isActive('heading', { level: 1 }) ? 'text-black' : 'text-white'}`}></i>
-        <span className="align-sub text-sm mx-[2px]">1</span>
+        <i className="fas fa-link"></i>
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`px-3 py-1 border rounded ${
-          editor.isActive('heading', { level: 2 }) ? 'bg-white text-black' : 'bg-gray-600 text-white'
-        }`}
+        onClick={() => editor.chain().focus().unsetLink().run()}
+        className="px-3 py-1 border rounded bg-gray-600 text-white"
       >
-        <i className={`fas fa-heading ${editor.isActive('heading', { level: 2 }) ? 'text-black' : 'text-white'}`}></i>
-        <span className="align-sub text-sm mx-[2px]">2</span>
+        <i className="fas fa-unlink"></i>
       </button>
+      {isLinkInputVisible && (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            placeholder="Enter URL"
+            className="px-3 py-1 border rounded outline-none focus:border-white focus:ring-0 !bg-transparent text-white"
+          />
+          <button
+            onClick={addLink}
+            className="px-3 py-1 border rounded bg-gray-600 text-white"
+          >
+            Add Link
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -71,9 +97,12 @@ const TextEditor: FC<{ name: string }> = ({ name }) => {
       StarterKit,
       Bold,
       Italic,
-      Heading,
-      BulletList,
-      OrderedList,
+      Link.configure({
+        openOnClick: true, 
+      }),
+      Placeholder.configure({
+        placeholder: 'Enter your description...',
+      }),
     ],
     content: editorContentRef.current,
     onUpdate: ({ editor }) => {
@@ -82,9 +111,6 @@ const TextEditor: FC<{ name: string }> = ({ name }) => {
       setValue(name, content);
     },
   });
-  Placeholder.configure({
-    placeholder: 'My Custom Placeholder',
-  })
 
   useEffect(() => {
     setValue(name, editorContentRef.current);
