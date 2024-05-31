@@ -318,11 +318,11 @@ export function ApplicationForm({
               label="Contribution description"
               required
             >
-                <TextEditor
+              <TextEditor
                 // @ts-ignore
-                 draftedValue={draft.application.contributionDescription}
-                 name="application.contributionDescription"         
-                />
+                draftedValue={draft?.application?.contributionDescription}
+                name="application.contributionDescription"
+              />
             </FormControl>
 
             <FormControl
@@ -330,11 +330,11 @@ export function ApplicationForm({
               label="Impact description"
               required
             >
-                <TextEditor
+              <TextEditor
                 // @ts-ignore
-                 draftedValue={draft.application.impactDescription}
-                 name="application.impactDescription"              
-                />
+                draftedValue={draft?.application?.impactDescription}
+                name="application.impactDescription"
+              />
             </FormControl>
             <ImpactTags />
           </FormSection>
