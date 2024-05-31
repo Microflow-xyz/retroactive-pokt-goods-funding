@@ -39,20 +39,23 @@ export const socialMediaTypes = {
   Telegram: "Telegram",
 } as const;
 
-export const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+export const urlRegex =
+  /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
 export const ApplicationSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   bio: z.string().min(3),
-  websiteUrl: z.string()
+  websiteUrl: z
+    .string()
     .min(1, "Website URL is required")
     .refine((data: string) => urlRegex.test(data), {
-      message: "Invalid URL format. URL must be a valid web address with or without 'https://'.",
+      message:
+        "Invalid URL format. URL must be a valid web address with or without 'https://'.",
     }),
-  wPOKTReceivingAddress: z.union([EthAddressSchema, EnsAddressSchema]),
-  arbReceivingAddress: z.union([EthAddressSchema, EnsAddressSchema]),
-  opReceivingAddress: z.union([EthAddressSchema, EnsAddressSchema]),
+  wPOKTReceivingAddress: EthAddressSchema,
+  arbReceivingAddress: EthAddressSchema,
+  opReceivingAddress: EthAddressSchema,
   contributionDescription: z.string().min(3),
   impactDescription: z.string().min(3),
   impactCategory: z.array(z.string()).min(1),
@@ -61,11 +64,13 @@ export const ApplicationSchema = z.object({
       z.object({
         description: z.string().min(3),
         type: z.nativeEnum(reverseKeys(contributionTypes)),
-        url: z.string()
-        .min(1, "Website URL is required")
-        .refine((data: string) => urlRegex.test(data), {
-          message: "Invalid URL format. URL must be a valid web address with or without 'https://'.",
-        }),
+        url: z
+          .string()
+          .min(1, "Website URL is required")
+          .refine((data: string) => urlRegex.test(data), {
+            message:
+              "Invalid URL format. URL must be a valid web address with or without 'https://'.",
+          }),
       }),
     )
     .min(1),
@@ -74,11 +79,13 @@ export const ApplicationSchema = z.object({
     .array(
       z.object({
         description: z.string().min(3),
-        url: z.string()
-            .min(1, "URL is required")
-            .refine((data: string) => urlRegex.test(data), {
-                message: "Invalid URL format. URL must be a valid address with or without 'https://'.",
-            }),
+        url: z
+          .string()
+          .min(1, "URL is required")
+          .refine((data: string) => urlRegex.test(data), {
+            message:
+              "Invalid URL format. URL must be a valid address with or without 'https://'.",
+          }),
         number: z.number(),
       }),
     )
@@ -102,5 +109,5 @@ export const ApplicationSchema = z.object({
 
 export type Application = z.infer<typeof ApplicationSchema>;
 
-export const resolveENSSchema = z.object({address: z.string().min(1)});
+export const resolveENSSchema = z.object({ address: z.string().min(1) });
 export type resolveENS = z.infer<typeof resolveENSSchema>;
