@@ -82,7 +82,7 @@ export const ApplicationSchema = z.object({
   ),
   socialMedias: z.array(
     z.object({
-      url: z.string().url(),
+      url: z.string().min(1),
       type: z.nativeEnum(reverseKeys(socialMediaTypes)),
     }),
   ),
