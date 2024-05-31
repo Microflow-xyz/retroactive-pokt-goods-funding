@@ -27,12 +27,12 @@ export function useCreateApplication({
       if (!config.roundId) throw new Error("Round ID must be defined");
       console.log("Uploading profile and application metadata");
       return Promise.all([
-        upload.mutateAsync(values.application).then(({ url: metadataPtr }) => {
+        upload.mutateAsync(values?.application).then(({ url: metadataPtr }) => {
           console.log("Creating application attestation data");
           return attestation.mutateAsync({
             schemaUID: eas.schemas.metadata,
             values: {
-              name: values.application.name,
+              name: values?.application.name,
               metadataType: 0, // "http"
               metadataPtr,
               type: "application",

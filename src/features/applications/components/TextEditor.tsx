@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Bold from '@tiptap/extension-bold';
-import Italic from '@tiptap/extension-italic';
-import Placeholder from '@tiptap/extension-placeholder'
-import Link from '@tiptap/extension-link';
-import { FC, useEffect, useRef, useState } from 'react';
-import '@fortawesome/fontawesome-free/css/all.css';
-import { useFormContext } from 'react-hook-form';
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import Placeholder from "@tiptap/extension-placeholder";
+import Link from "@tiptap/extension-link";
+import { FC, useEffect, useRef, useState } from "react";
+import "@fortawesome/fontawesome-free/css/all.css";
+import { useFormContext } from "react-hook-form";
 
 const MenuBar: FC<{ editor: any }> = ({ editor }) => {
   const [isLinkInputVisible, setLinkInputVisible] = useState(false);
-  const [linkUrl, setLinkUrl] = useState('');
+  const [linkUrl, setLinkUrl] = useState("");
   if (!editor) {
     return null;
   }
@@ -20,52 +20,64 @@ const MenuBar: FC<{ editor: any }> = ({ editor }) => {
   const addLink = () => {
     if (linkUrl) {
       let url;
-      if (!/^https?:\/\//i.test(linkUrl)){
-       url = 'https://' + linkUrl;
+      if (!/^https?:\/\//i.test(linkUrl)) {
+        url = "https://" + linkUrl;
       } else {
-       url = linkUrl
+        url = linkUrl;
       }
 
-      editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-      setLinkUrl('');
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
+      setLinkUrl("");
       setLinkInputVisible(false);
     }
   };
 
-
   const toggleLinkInput = () => {
     setLinkInputVisible(!isLinkInputVisible);
-    setLinkUrl('');
+    setLinkUrl("");
     editor.chain().focus().unsetLink().run();
   };
 
   return (
-    <div className="flex gap-2 mb-1 text-white">
+    <div className="mb-1 flex gap-2 text-white">
       <div
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`px-3 py-1 border rounded ${
-          editor.isActive('bold') ? 'bg-white text-black' : 'bg-gray-600 text-white'
+        className={`rounded border px-3 py-1 ${
+          editor.isActive("bold")
+            ? "bg-white text-black"
+            : "bg-gray-600 text-white"
         }`}
       >
-        <i className={`fas fa-bold ${editor.isActive('bold') ? 'text-black' : 'text-white'}`}></i>
+        <i
+          className={`fas fa-bold ${editor.isActive("bold") ? "text-black" : "text-white"}`}
+        ></i>
       </div>
       <div
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`px-3 py-1 border rounded ${
-          editor.isActive('italic') ? 'bg-white text-black' : 'bg-gray-600 text-white'
+        className={`rounded border px-3 py-1 ${
+          editor.isActive("italic")
+            ? "bg-white text-black"
+            : "bg-gray-600 text-white"
         }`}
       >
-        <i className={`fas fa-italic ${editor.isActive('italic') ? 'text-black' : 'text-white'}`}></i>
+        <i
+          className={`fas fa-italic ${editor.isActive("italic") ? "text-black" : "text-white"}`}
+        ></i>
       </div>
       <div
         onClick={toggleLinkInput}
-        className="px-3 cursor-pointer py-1 border rounded bg-gray-600 text-white"
+        className="cursor-pointer rounded border bg-gray-600 px-3 py-1 text-white"
       >
         <i className="fas fa-link"></i>
       </div>
       <div
         onClick={() => editor.chain().focus().unsetLink().run()}
-        className="px-3 cursor-pointer py-1 border rounded bg-gray-600 text-white"
+        className="cursor-pointer rounded border bg-gray-600 px-3 py-1 text-white"
       >
         <i className="fas fa-unlink"></i>
       </div>
@@ -76,11 +88,11 @@ const MenuBar: FC<{ editor: any }> = ({ editor }) => {
             value={linkUrl}
             onChange={(e) => setLinkUrl(e.target.value)}
             placeholder="Enter URL"
-            className="px-3 cursor-pointer py-1 border rounded outline-none focus:border-white focus:ring-0 !bg-transparent text-white"
+            className="cursor-pointer rounded border !bg-transparent px-3 py-1 text-white outline-none focus:border-white focus:ring-0"
           />
           <div
             onClick={addLink}
-            className="px-3 cursor-pointer py-1 border rounded bg-gray-600 text-white"
+            className="cursor-pointer rounded border bg-gray-600 px-3 py-1 text-white"
           >
             Add Link
           </div>
@@ -90,14 +102,17 @@ const MenuBar: FC<{ editor: any }> = ({ editor }) => {
   );
 };
 
-const TextEditor: FC<{ name: string, draftedValue: string }> = ({ name, draftedValue }) => {
-  const { setValue, watch } = useFormContext();
-  const editorContentRef: { current: string } = useRef(watch(name));
-  
+const TextEditor: FC<{ name: string }> = ({ name }) => {
+  const { setValue, watch, getValues } = useFormContext();
+  const editorContentRef = useRef(watch(name));
+  const property = name.split(".")[1];
+  const values = getValues();
+  const nestedValue = values?.application?.[property];
+
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: 'focus:outline-none h-full break-words text-wrap',
+        class: "focus:outline-none h-full break-words text-wrap",
       },
     },
     extensions: [
@@ -107,16 +122,16 @@ const TextEditor: FC<{ name: string, draftedValue: string }> = ({ name, draftedV
       Link.configure({
         openOnClick: true,
         HTMLAttributes: {
-          target: '_blank',
-          rel: 'noopener noreferrer',
-          class: "text-blue-300"
+          target: "_blank",
+          rel: "noopener noreferrer",
+          class: "text-blue-300",
         },
       }),
       Placeholder.configure({
-        placeholder: 'Enter your description...',
+        placeholder: "Enter your description...",
       }),
     ],
-    content: editorContentRef.current || draftedValue,
+    content: nestedValue || editorContentRef.current,
     onUpdate: ({ editor }) => {
       const content = editor.getHTML();
       editorContentRef.current = content;
@@ -133,7 +148,7 @@ const TextEditor: FC<{ name: string, draftedValue: string }> = ({ name, draftedV
       <MenuBar editor={editor} />
       <EditorContent
         editor={editor}
-        className="border p-2 h-[200px] max-h-[200px] overflow-y-auto text-white rounded-md bg-gray-800 break-words text-wrap"
+        className="h-[200px] max-h-[200px] overflow-y-auto text-wrap break-words rounded-md border bg-gray-800 p-2 text-white"
       />
     </div>
   );
