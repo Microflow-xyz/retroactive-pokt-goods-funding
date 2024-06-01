@@ -1,12 +1,6 @@
-# EasyRetroPGF
+#  Retroactive POKT Goods Funding
 
-<div style="font-size:18px">
-
-<a href="https://easy-retro-pgf.vercel.app">View demo</a>
-<span>|</span>
-<a href="https://t.me/+0oycDCvX3QY1NjEx">Telegram Group</a>
-
-<div>
+POKT’s experimental first round of retroactive grants is open to projects & individuals for contributions that delivered impact to the POKT ecosystem.
 
 [<img src="./docs/images/screenshot.png">](https://easy-retro-pgf.vercel.app)
 
@@ -14,7 +8,6 @@
 
 - [Setup & Deployment](./docs/01_setup.md)
 - [Adding Projects & Approving](./docs/02_adding_projects.md)
-- [Creating Badgeholders/Voters](./docs/03_creating_badgeholders.md)
 - [Voting](./docs/04_voting.md)
 - [Lists](./docs/05_lists.md)
 - [Results](./docs/06_results.md)
