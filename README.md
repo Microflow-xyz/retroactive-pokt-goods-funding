@@ -11,7 +11,6 @@ POKT’s experimental first round of retroactive grants is open to projects & in
 - [Adding Projects & Approving](./docs/02_adding_projects.md)
 - [Voting](./docs/04_voting.md)
 - [Results](./docs/06_results.md)
-- [Distribute](./docs/07_distribute.md)
 
 ## Supported Networks
 
