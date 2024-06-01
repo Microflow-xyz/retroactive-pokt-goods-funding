@@ -1,8 +1,9 @@
-#  Retroactive POKT Goods Funding
+# Retroactive POKT Goods Funding
 
 POKT’s experimental first round of retroactive grants is open to projects & individuals for contributions that delivered impact to the POKT ecosystem.
+[**Production Website**](https://impact.pokt.network/)
 
-[<img src="./docs/images/screenshot.png">](https://easy-retro-pgf.vercel.app)
+[<img src="./docs/images/main.png">](https://impact.pokt.network/)
 
 ## Documentation
 
