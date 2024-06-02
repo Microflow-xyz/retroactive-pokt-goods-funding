@@ -155,13 +155,13 @@ const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
   return next({ ctx });
 });
 
-const enforceSubmissionPeriodCheck = t.middleware(({ ctx, next }) => {
+const enforceReviewPeriodCheck = t.middleware(({ ctx, next }) => {
   const address = ctx.session?.user.name;
-  const endOfSubmissionPeriod = config.registrationEndsAt;
+  const endOfReviewPeriod = config.reviewEndsAt;
   const now = new Date();
 
-  // after submission period
-  if (now >= endOfSubmissionPeriod) {
+  // after review period
+  if (now >= endOfReviewPeriod) {
     if (!address) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
@@ -169,10 +169,10 @@ const enforceSubmissionPeriodCheck = t.middleware(({ ctx, next }) => {
       });
     }
 
-    if (!isAdmin(address)) {
+    if (!(isAdmin(address) || isVoter(address))) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Must be admin to access this route",
+        message: "Must be admin or voter to access this route",
       });
     }
   }
@@ -205,8 +205,8 @@ export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 export const adminProcedure = protectedProcedure.use(enforceUserIsAdmin);
 export const voterProcedure = protectedProcedure.use(enforceUserIsVoter);
 export const protectedDiscussionProcedure = protectedProcedure.use(
-  enforceSubmissionPeriodCheck,
+  enforceReviewPeriodCheck,
 );
 export const unprotectedDiscussionProcedure = t.procedure.use(
-  enforceSubmissionPeriodCheck,
+  enforceReviewPeriodCheck,
 );
