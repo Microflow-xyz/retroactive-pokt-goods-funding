@@ -27,6 +27,9 @@ export const config = {
   network:
     wagmiChains[process.env.NEXT_PUBLIC_CHAIN_NAME as keyof typeof wagmiChains],
   alchemyEthMainnetApiKey: process.env.NEXT_PUBLIC_ALCHEMY_ETH_MAINNET_API_KEY,
+  voters: (process.env.NEXT_PUBLIC_VOTER_ADDRESSES ?? "").split(
+    ",",
+  ) as `0x${string}`[],
 };
 
 export const nativeToken = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
