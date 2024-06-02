@@ -15,12 +15,17 @@ const isBetween = function (value: number, min: number, max: number) {
   return false;
 };
 
+const ProjectSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
 export const BallotImpactsSchema = z
   .object({
-    lowImpactProjects: z.array(z.string()),
-    mediumImpactProjects: z.array(z.string()),
-    highImpactProjects: z.array(z.string()),
-    highestImpactProjects: z.array(z.string()),
+    lowImpactProjects: z.array(ProjectSchema),
+    mediumImpactProjects: z.array(ProjectSchema),
+    highImpactProjects: z.array(ProjectSchema),
+    highestImpactProjects: z.array(ProjectSchema),
   })
   .superRefine((val, ctx) => {
     const lowImpactProjectsCount = val.lowImpactProjects?.length ?? 0;
@@ -116,4 +121,5 @@ const RevokeBallotSchema = z.object({
   ballotId: z.string(),
 });
 
+export type projectSchema = z.infer<typeof ProjectSchema>;
 export type ballotImpacts = z.infer<typeof BallotImpactsSchema>;

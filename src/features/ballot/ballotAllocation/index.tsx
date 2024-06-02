@@ -4,8 +4,13 @@ import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useSearchProjects } from "~/features/projects/hooks/useProjects";
 import { type Attestation } from "~/utils/fetchAttestations";
-import { BallotImpactsSchema, type ballotImpacts } from "../types";
+import {
+  BallotImpactsSchema,
+  type ballotImpacts,
+  type projectSchema,
+} from "../types";
 import { Input, Form, FormControl } from "~/components/ui/Form";
+import { useDrop } from "react-dnd";
 import ProjectItem from "./ProjectItem";
 import DropTargetAccordion from "./DropTargetAccordion";
 import { useSubmitBallot } from "./hooks/useSubmitBallot";
@@ -22,7 +27,7 @@ function BallotAllocation({
   isModal: boolean;
 }) {
   // const projects = useSearchProjects();
-  const projects = [
+  const projects: projectSchema[] = [
     { id: 1, name: "project1" },
     { id: 2, name: "project2" },
     { id: 3, name: "project3" },
@@ -41,10 +46,14 @@ function BallotAllocation({
     { id: 16, name: "project16" },
   ];
   const allProjects = projects.filter((project) => {
-    const droppedProject = Object.values(droppedItems)
-      .flat()
-      .includes(project.name);
-    return !droppedProject;
+    for (let shelve in droppedItems) {
+      if (
+        droppedItems[shelve]?.findIndex((item) => item.id === project.id) !== -1
+      ) {
+        return false; // Exclude this project from the filtered array
+      }
+    }
+    return true; // Include this project in the filtered array
   });
 
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
@@ -86,6 +95,34 @@ function BallotAllocation({
     );
   }, [allProjects, searchTerm]);
 
+  const [{ isOverApplicationPool }, dropApplicationPool] = useDrop(() => {
+    return {
+      accept: "ITEM",
+      drop: (item) => {
+        setDroppedItems((prevDroppedItems) => {
+          // Remove the item from the corresponding shelf
+          for (let shelve in prevDroppedItems) {
+            if (
+              prevDroppedItems[shelve]?.findIndex((i) => i.id === item.id) !==
+              -1
+            ) {
+              return {
+                ...prevDroppedItems,
+                [shelve]: prevDroppedItems[shelve].filter(
+                  (i) => i.id !== item.id,
+                ),
+              };
+            }
+          }
+          return prevDroppedItems;
+        });
+      },
+      collect: (monitor) => ({
+        isOverApplicationPool: monitor.isOver(),
+      }),
+    };
+  });
+
   return (
     <div
       className={`${!isModal && "mt-16 flex"} items-baseline justify-between gap-5`}
@@ -102,7 +139,12 @@ function BallotAllocation({
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
-          <div className="flex flex-wrap gap-2">
+          <div
+            ref={dropApplicationPool}
+            className={`flex min-h-10 w-full flex-wrap gap-2 rounded-lg p-1 ${
+              isOverApplicationPool ? " bg-inverseSurface-light" : ""
+            }`}
+          >
             {filteredProjects.map((project, index) => (
               <ProjectItem key={project.id} project={project} />
             ))}
@@ -128,6 +170,7 @@ function BallotAllocation({
               label={`Highest Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
+              className="border-b border-outline-dark"
             />
 
             <DropTargetAccordion
@@ -135,6 +178,7 @@ function BallotAllocation({
               label={`High Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
+              className="border-b border-outline-dark"
             />
 
             <DropTargetAccordion
@@ -142,6 +186,7 @@ function BallotAllocation({
               label={`Medium Impact`}
               setDroppedItems={setDroppedItems}
               droppedItems={droppedItems}
+              className="border-b border-outline-dark"
             />
 
             <DropTargetAccordion

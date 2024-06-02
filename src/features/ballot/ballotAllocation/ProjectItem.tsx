@@ -17,7 +17,7 @@ const ProjectItem = React.memo(
     return (
       <div
         ref={drag}
-        className={`${isDragging ? " opacity-50" : " opacity-100"} flex items-center gap-1 rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
+        className={`${isDragging ? " opacity-50" : " opacity-100"} flex cursor-pointer items-center gap-1 rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
       >
         {project.name}
         <Link
