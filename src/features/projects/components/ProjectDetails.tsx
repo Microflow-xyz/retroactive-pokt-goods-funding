@@ -40,6 +40,8 @@ export default function ProjectDetails({
   } = metadata.data ?? {};
   const { data: voters } = useVoters();
 
+  console.log("metadata?.data", metadata?.data?.impactCategory);
+
   return (
     <div className="relative">
       <div className="overflow-hidden">
@@ -77,7 +79,14 @@ export default function ProjectDetails({
       </div>
       <div className="flex flex-col-reverse items-start justify-between gap-5 md:flex-row md:items-center md:gap-4">
         <div className="flex flex-col items-start justify-between gap-2">
-          <h1 className="text-2xl font-bold">{attestation?.name}</h1>
+          <div className="flex items-end gap-3  ">
+            <h1 className="text-2xl font-bold">{attestation?.name}</h1>
+            {metadata?.data?.impactCategory && (
+              <span className=" rounded-full bg-gray-200 px-3 py-1 text-sm transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-outline-dark">
+                {metadata?.data?.impactCategory}
+              </span>
+            )}
+          </div>
           <p className="break-words text-justify text-lg ">{bio}</p>
           {(isAdmin || voters?.some((item) => item.recipient === address)) &&
             metadata?.data?.email && (

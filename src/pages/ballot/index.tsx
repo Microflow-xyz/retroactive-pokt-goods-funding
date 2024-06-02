@@ -8,16 +8,17 @@ import Rules from "~/features/ballot/Rules";
 import {
   BallotImpactsSchema,
   type ballotImpacts,
+  type projectSchema,
 } from "~/features/ballot/types";
 
 //FIXME: Ballot Page props should be removed
 export default function Ballot({ isModal = false }: { isModal?: boolean }) {
   const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
-    lowImpactProjects: [],
-    mediumImpactProjects: [],
-    highImpactProjects: [],
-    highestImpactProjects: [],
+    lowImpactProjects: [] as projectSchema[],
+    mediumImpactProjects: [] as projectSchema[],
+    highImpactProjects: [] as projectSchema[],
+    highestImpactProjects: [] as projectSchema[],
   });
 
   const [rulesCheck, setRulesCheck] = useState<string[]>([]);

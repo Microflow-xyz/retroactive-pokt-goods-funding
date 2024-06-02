@@ -5,14 +5,17 @@ import { type ballotImpacts } from "../types";
 import { type Attestation } from "~/utils/fetchAttestations";
 import { X } from "lucide-react";
 import { ExternalLinkIcon } from "lucide-react";
+import ProjectItem from "./ProjectItem";
 
 const DropTargetAccordion = ({
   label,
   shelveName,
   droppedItems,
   setDroppedItems,
+  className,
 }: {
   label: string;
+  className?: string;
   droppedItems: ballotImpacts;
   setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
   shelveName:
@@ -30,11 +33,32 @@ const DropTargetAccordion = ({
   const [{ isOver }, drop] = useDrop(() => {
     return {
       accept: "ITEM",
-      drop: (item: { name: string }) => {
-        setDroppedItems((prevDroppedItems) => ({
-          ...prevDroppedItems,
-          [shelveName]: [...(prevDroppedItems[shelveName] || []), item.name],
-        }));
+      drop: (item) => {
+        setDroppedItems((prevDroppedItems) => {
+          // Find the index of the item in the source DropTargetAccordion
+          const sourceShelveName = Object.keys(prevDroppedItems).find(
+            (shelve) =>
+              prevDroppedItems[shelve]?.some((i) => i?.id === item?.id),
+          );
+
+          // Remove the item from the source DropTargetAccordion
+          if (sourceShelveName) {
+            const updatedSourceItems = prevDroppedItems[
+              sourceShelveName
+            ].filter((i) => i?.id !== item?.id);
+            return {
+              ...prevDroppedItems,
+              [sourceShelveName]: updatedSourceItems,
+              [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
+            };
+          }
+
+          // If the item is not found in any DropTargetAccordion, add it to the target DropTargetAccordion
+          return {
+            ...prevDroppedItems,
+            [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
+          };
+        });
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -95,39 +119,28 @@ const DropTargetAccordion = ({
     },
   )[shelveName];
   return (
-    <div className="p-5 pb-3" ref={drop}>
+    <div
+      className={`${className} m-1 p-5 pb-3  ${
+        isOver ? " bg-inverseSurface-light" : ""
+      }`}
+      ref={drop}
+    >
       <div className=" flex cursor-pointer items-center gap-2">
         {label}
         <span
-          className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
+          className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj?.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
         >
-          {dynamicLabelObj.text}
+          {dynamicLabelObj?.text}
         </span>
       </div>
-      <div className="flex">
-        <ul className="mt-3 flex flex-wrap gap-2">
-          {droppedItems[shelveName]?.map((item: string, index: number) => (
+      <div className="flex w-full">
+        <ul className="mt-3 flex w-full flex-wrap gap-2">
+          {droppedItems[shelveName]?.map((item, index: number) => (
             <li
-              className={`flex items-center justify-between gap-1 rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
+              className={`flex items-center justify-between gap-1`}
               key={index}
             >
-              <button
-                onClick={() => {
-                  setDroppedItems({
-                    ...droppedItems,
-                    [shelveName]: [
-                      ...droppedItems[shelveName].filter(
-                        (project) => item !== project,
-                      ),
-                    ],
-                  });
-                }}
-              >
-                <X color="#ffffff" className="h-4 w-4" />
-              </button>
-
-              {item}
-              <ExternalLinkIcon className=" h-4 w-4" />
+              <ProjectItem key={item.id} project={item} />
             </li>
           ))}
           {renderEmptyBoxes(suggestCount[shelveName])}
