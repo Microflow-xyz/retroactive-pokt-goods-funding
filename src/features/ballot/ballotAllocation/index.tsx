@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -49,6 +49,8 @@ function BallotAllocation({
 
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
   const { data: session } = useSession();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProjects, setFilteredProjects] = useState(allProjects);
 
   const SubmitBallotSchema = z.object({
     voterId: z.string(),
@@ -72,6 +74,18 @@ function BallotAllocation({
       });
     },
   });
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+
+  useEffect(() => {
+    setFilteredProjects(
+      allProjects.filter((project) =>
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+    );
+  }, [allProjects, searchTerm]);
+
   return (
     <div
       className={`${!isModal && "mt-16 flex"} items-baseline justify-between gap-5`}
@@ -83,9 +97,13 @@ function BallotAllocation({
           Application Pool ({allProjects?.length})
         </h4>
         <div className="flex flex-col items-center gap-6 rounded-xl border border-outline-dark bg-onBackground-dark p-5">
-          <Input placeholder="Search among projects" />
+          <Input
+            placeholder="Search among projects"
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
           <div className="flex flex-wrap gap-2">
-            {allProjects?.map((project, index) => (
+            {filteredProjects.map((project, index) => (
               <ProjectItem key={project.id} project={project} />
             ))}
           </div>
