@@ -7,8 +7,8 @@ import { Button, IconButton } from "~/components/ui/Button";
 import { Dialog } from "~/components/ui/Dialog";
 import { Spinner } from "~/components/ui/Spinner";
 import { AllocationForm } from "~/components/AllocationList";
-import { sumBallot, useSaveBallot } from "~/features/ballot/hooks/useBallot";
-import { type Vote } from "~/features/ballot/types";
+import { sumBallot, useSaveBallot } from "~/features/ballot-/hooks/useBallot";
+import { type Vote } from "~/features/ballot-/types";
 import { useProjectsById } from "~/features/projects/hooks/useProjects";
 import { parse, format } from "~/utils/csv";
 import { formatNumber } from "~/utils/formatNumber";
@@ -27,12 +27,13 @@ export function BallotAllocationForm() {
   const save = useSaveBallot();
 
   const votes = form.watch("votes");
+  console.log("votes",votes)
   function handleSaveBallot({ votes }: { votes: Vote[] }) {
     save.mutate({ votes });
   }
 
   return (
-    <div>
+    <div className="px-20">
       <h1 className="mb-2 text-2xl font-bold">Review your ballot</h1>
       <p className="mb-6">
         Once you have reviewed your vote allocation, you can submit your ballot.

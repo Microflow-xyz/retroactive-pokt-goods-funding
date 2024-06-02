@@ -6,10 +6,11 @@ import { Chip } from "~/components/ui/Chip";
 export default function HomePage({}) {
   return (
     <Layout isFullWidth>
-      <div className="flex w-full flex-col items-center  justify-start  md:flex-row ">
-        <div className="flex flex-col  px-5 pb-5 pt-0 md:w-1/2 md:px-7  xl:px-20">
+      <div className="flex w-full flex-col items-center  justify-start  md:flex-row xl:gap-10">
+        <div className="flex flex-col px-5 pb-5  pt-0 md:w-1/2 xl:px-0 ">
           <h1 className=" font-bold lg:text-xl xl:text-2xl">
-            Applications for Retroactive POKT Goods Funding Round 1 are open until May 31 2024!
+            Applications for Retroactive POKT Goods Funding Round 1 are open
+            until May 31 2024!
           </h1>
           <p className=" mt-4 leading-relaxed lg:text-lg xl:text-xl">
             Have you created an impact for POKT Network? Eligible applicants can

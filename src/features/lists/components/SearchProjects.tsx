@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { Command } from "cmdk";
 import { useClickAway } from "react-use";
 
-import { type Vote } from "~/features/ballot/types";
+import { type Vote } from "~/features/ballot-/types";
 import { SearchInput } from "~/components/ui/Form";
 import { useSearchProjects } from "~/features/projects/hooks/useProjects";
 import { type Filter } from "~/features/filter/types";
