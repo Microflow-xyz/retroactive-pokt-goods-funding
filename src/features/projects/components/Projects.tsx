@@ -11,14 +11,27 @@ import { getAppState } from "~/utils/state";
 import { useResults } from "~/hooks/useResults";
 import { SortFilter } from "~/components/SortFilter";
 import { ProjectItem, ProjectItemAwarded } from "./ProjectItem";
+import {useEffect, useRef} from "react";
+import LoadingBar from 'react-top-loading-bar';
+import type { LoadingBarRef } from 'react-top-loading-bar';
 
 export function Projects() {
   const projects = useSearchProjects();
   const select = useSelectProjects();
   const results = useResults();
+  const LoadingStateRef = useRef<LoadingBarRef>(null)
+
+  useEffect(()=>{
+    if(projects?.isLoading) {
+      return LoadingStateRef?.current?.continuousStart()
+    } else {
+      return LoadingStateRef?.current?.complete()
+    }
+  },[projects?.isLoading])
 
   return (
     <div>
+      <LoadingBar color='white' ref={LoadingStateRef} />
       <div
         className={clsx(
           "fixed right-0 top-0 z-20 flex justify-end gap-2 rounded-bl-3xl bg-white px-2 pb-2 pt-4 dark:bg-surfaceContainerHighest-dark",

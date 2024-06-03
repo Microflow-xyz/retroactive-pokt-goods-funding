@@ -7,8 +7,11 @@ import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { Providers } from "~/providers";
 import { api } from "~/utils/api";
+import LoadingBar from 'react-top-loading-bar';
+import type { LoadingBarRef } from 'react-top-loading-bar';
 
 import { Kumbh_Sans } from "next/font/google";
+import { useEffect, useRef } from "react";
 
 export const kumbhSans = Kumbh_Sans({
   subsets: ["latin"],
@@ -16,7 +19,31 @@ export const kumbhSans = Kumbh_Sans({
   variable: "--font-kumbhSans",
 });
 
-function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
+
+
+function MyApp({ Component, pageProps, router }: AppProps<{ session: Session }>) {
+  const refLoadingBar = useRef<LoadingBarRef>(null);
+  
+  useEffect(() => {
+    const handleRouteChangeComplete = (route: string) => {
+      if(route.includes("/projects")) return;
+      refLoadingBar?.current?.complete?.();
+    };
+
+    const handleRouteChangeStart = (route: string) => {      
+      if(route.includes("/projects")) return;
+      refLoadingBar?.current?.continuousStart?.();
+    };
+    
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
+      
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
+    };
+  }, [router.events]);
+
   return (
     <Providers session={pageProps.session}>
       <Script
@@ -34,6 +61,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
         }
       `}</style>
       <main className={`${kumbhSans.variable}  min-h-screen font-sans`}>
+        <LoadingBar color="white" ref={refLoadingBar} />
         <Component {...pageProps} />
       </main>
     </Providers>
