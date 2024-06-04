@@ -162,7 +162,7 @@ export default {
         onBackground: {
           light: "rgb(26 27 33)",
           DEFAULT: "#1D1B1E",
-          dark: "rgb(227 225 233)",
+          dark: "rgb(28 27 27)",
         },
         surface: {
           light: "rgb(250 248 255)",

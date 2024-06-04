@@ -1,10 +1,10 @@
 # Setup
 
-Follow these instructions to deploy your own instance of EasyRetroPGF.
+Follow these instructions to deploy your own instance of Retroactive POKT Goods Funding.
 
 ## 1. Fork Repo
 
-[Fork EasyRetroPGF](https://github.com/gitcoinco/easy-retro-pgf/fork)
+[Fork Retroactive POKT Goods Funding](https://github.com/Microflow-xyz/retroactive-pokt-goods-funding/fork)
 
 1. Click to view the `.env.example` file in your newly created repo
 2. Copy its contents and paste into a text editor

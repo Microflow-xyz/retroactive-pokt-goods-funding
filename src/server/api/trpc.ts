@@ -136,6 +136,14 @@ const isAdmin = (walletAddr: string | null | undefined) => {
   return true;
 };
 
+const isVoter = (walletAddr: string | null | undefined) => {
+  if (!config.voters.includes(walletAddr as `0x${string}`)) {
+    return false;
+  }
+
+  return true;
+};
+
 const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
   const address = ctx.session?.user.name;
   if (!isAdmin(address)) {
@@ -172,6 +180,19 @@ const enforceSubmissionPeriodCheck = t.middleware(({ ctx, next }) => {
   return next({ ctx });
 });
 
+const enforceUserIsVoter = t.middleware(({ ctx, next }) => {
+  const address = ctx.session?.user.name;
+
+  if (!isVoter(address)) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Must be voter to access this route",
+    });
+  }
+
+  return next({ ctx });
+});
+
 /**
  * Protected (authenticated) procedure
  *
@@ -182,6 +203,7 @@ const enforceSubmissionPeriodCheck = t.middleware(({ ctx, next }) => {
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 export const adminProcedure = protectedProcedure.use(enforceUserIsAdmin);
+export const voterProcedure = protectedProcedure.use(enforceUserIsVoter);
 export const protectedDiscussionProcedure = protectedProcedure.use(
   enforceSubmissionPeriodCheck,
 );

@@ -1,5 +1,5 @@
 import React from "react";
-import { useVoters } from "~/features/voters/components/VotersList";
+import { config } from "~/config";
 import { type Attestation } from "~/utils/fetchAttestations";
 import { type AppState } from "~/utils/state";
 import { Skeleton } from "~/components/ui/Skeleton";
@@ -19,16 +19,18 @@ export const DiscussionComponent = ({
   projectId: string;
   isAdmin: boolean;
 }) => {
-  const { data: voters } = useVoters();
+  const voters = config?.voters;
   const { data, refetch, isLoading } = useGetDiscussions({
     projectId: projectId,
   });
   return (
     <div className="mt-10 flex flex-col items-baseline gap-5 border-t border-outlineVariant-dark pt-10">
       <div className=" text-lg font-bold text-onSurface-dark">Discussions</div>
+
       {(state !== "VOTING" && state !== "TALLYING") ||
       isAdmin ||
       voters?.some((item) => item.recipient === address) ? (
+
         <>
           <CreateNew onRefetch={() => refetch()} projectId={projectId} />
           <Skeleton className="mb-1 min-h-24 w-full" isLoading={isLoading}>
