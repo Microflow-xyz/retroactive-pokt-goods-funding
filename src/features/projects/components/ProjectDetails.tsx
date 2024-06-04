@@ -83,7 +83,7 @@ export default function ProjectDetails({
       </div>
       <div className="flex flex-col-reverse items-start justify-between gap-5 md:flex-row md:items-center md:gap-4">
         <div className="flex flex-col items-start justify-between gap-2">
-          <div className="flex items-center gap-3  ">
+          <div className="flex items-center gap-2 ">
             <h1 className="text-2xl font-bold">{attestation?.name}</h1>
             {impactCategory && (
               <span className=" rounded-lg bg-gray-200 px-2 py-1 text-sm font-medium transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-onSurface-dark">

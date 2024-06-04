@@ -14,6 +14,8 @@ import { useRouter } from "next/router";
 import { metadata } from "~/config";
 import { useTheme } from "next-themes";
 import { Footer } from "~/components/Footer";
+import { useIsAdmin } from "~/hooks/useIsAdmin";
+
 
 const Context = createContext({ eligibilityCheck: false, showBallot: false });
 export const useLayoutOptions = () => useContext(Context);
@@ -72,6 +74,7 @@ export const BaseLayout = ({
   const wrappedSidebar = <Sidebar side={sidebar}>{sidebarComponent}</Sidebar>;
 
   title = title ? `${title} - ${metadata.title}` : metadata.title;
+  const isAdmin = useIsAdmin();
 
   return (
     <Context.Provider value={{ eligibilityCheck, showBallot }}>
@@ -114,7 +117,7 @@ export const BaseLayout = ({
           </div>
           {sidebar === "right" ? wrappedSidebar : null}
         </div>
-        {stickyElement && (
+        {stickyElement && isAdmin && (
           <div
             className={` sticky bottom-0 z-10 w-full bg-onBackground-dark shadow-sm ${showStickyElement ? "" : "hidden"}`}
           >

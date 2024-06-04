@@ -19,29 +19,12 @@ function BallotAllocation({
   isModal: boolean;
   projectName?: string;
 }) {
-  // const projects = useSearchProjects();
-  const projects: projectSchema[] = [
-    { id: 1, name: "project1" },
-    { id: 2, name: "project2" },
-    { id: 3, name: "project3" },
-    { id: 4, name: "project4" },
-    { id: 5, name: "project5" },
-    { id: 6, name: "project6" },
-    { id: 7, name: "project7" },
-    { id: 8, name: "project8" },
-    { id: 9, name: "project9" },
-    { id: 10, name: "project10" },
-    { id: 11, name: "project11" },
-    { id: 12, name: "project12" },
-    { id: 13, name: "project13" },
-    { id: 14, name: "project14" },
-    { id: 15, name: "project15" },
-    { id: 16, name: "project16" },
-  ];
-  const allProjects = projects.filter((project) => {
+  const projects = useSearchProjects();
+
+  const allProjects = projects.data?.pages?.flat()?.filter((project) => {
     for (let shelve in droppedItems) {
       if (
-        droppedItems[shelve]?.findIndex((item) => item.id === project.id) !== -1
+        droppedItems[shelve]?.findIndex((item) => item?.id === project.id) !== -1
       ) {
         return false; // Exclude this project from the filtered array
       }
@@ -56,7 +39,7 @@ function BallotAllocation({
   };
 
   const filteredProjects = useMemo(() => {
-    return allProjects.filter((project) =>
+    return allProjects?.filter((project) =>
       project.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [allProjects, searchTerm]);
@@ -114,7 +97,7 @@ function BallotAllocation({
           <div
             className={`flex min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
           >
-            {filteredProjects.map((project, index) => (
+            {filteredProjects?.map((project, index) => (
               <ProjectItem key={project.id} project={project} />
             ))}
           </div>
