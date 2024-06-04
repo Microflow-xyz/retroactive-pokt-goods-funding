@@ -36,14 +36,23 @@ function BallotAllocation({
     [approved.data],
   );
 
-  const applicationsToApprove = applications.data?.filter(
-    (application) => approvedById?.get(application.id),
+  const approvedProjects = applications.data?.filter((application) =>
+    approvedById?.get(application.id),
   );
 
-  console.log('applicationsToApprove',applicationsToApprove)
+  const refUIDs: string[] | undefined = approvedProjects
+    ?.filter(
+      (item) =>
+        item.refUID !==
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+    )
+    .map((item) => item.refUID);
+
+    const filteredData = approvedProjects?.filter((item) => !refUIDs?.includes(item.id));
+    console.log("filteredData", filteredData);
 
 
-  const allProjects = applicationsToApprove?.filter((project) => {
+  const allProjects = filteredData?.filter((project) => {
     for (let shelve in droppedItems) {
       if (
         droppedItems[shelve]?.findIndex((item) => item?.id === project.id) !==
