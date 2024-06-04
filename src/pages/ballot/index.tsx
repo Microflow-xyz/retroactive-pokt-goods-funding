@@ -17,7 +17,6 @@ import {
 import { useSubmitBallot } from "~/features/ballot/hooks/useSubmitBallot";
 import { Button } from "~/components/ui/Button";
 import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
-import { Alert } from "~/components/ui/Alert";
 import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { config } from "~/config";
 
@@ -54,14 +53,6 @@ export default function Ballot({
 
   useEffect(() => {
     localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
-    console.log(
-      "BallotImpactsSchema",
-      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
-        (error) => {
-          console.log("error2222",error)
-          return error?.path[0]},
-      ),
-    );
     setRulesCheck(
       BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
         (error) => error?.path[0],

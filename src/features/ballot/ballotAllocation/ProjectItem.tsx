@@ -10,7 +10,7 @@ const ProjectItem = React.memo(
     project,
     onDelete,
   }: {
-    project: { id: number; name: string };
+    project: { id: string; name: string };
     onDelete?: () => void;
   }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
