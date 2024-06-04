@@ -1,32 +1,26 @@
-import { useState } from "react";
 import { useAccount } from "wagmi";
 import { Button } from "~/components/ui/Button";
-import { Dialog } from "~/components/ui/Dialog";
 import { getAppState } from "~/utils/state";
-// FIXME: remove direct page import here
-import Ballot from "~/pages/ballot";
 
-type Props = { id?: string; name?: string };
-
-export const ProjectAddToBallot = ({ id, name }: Props) => {
+export const ProjectAddToBallot = ({
+  label,
+  onClick,
+}: {
+  label?: string;
+  onClick: () => void;
+}) => {
   const { address } = useAccount();
-  const [isOpen, setOpen] = useState(false);
   if (getAppState() !== "VOTING") return null;
   return (
-    <div>
+    <div className="ml-2">
       <Button
         disabled={!address}
-        onClick={() => setOpen(true)}
+        onClick={onClick}
         variant="primary"
-        className="w-full md:w-auto"
+        className="h-auto w-full px-6 py-[0.625rem] text-sm font-medium md:w-auto"
       >
-        Add to ballot
+        {label ? label : "Manage Project on Ballot"}
       </Button>
-
-      <Dialog size="md" isOpen={isOpen} onOpenChange={setOpen} title={`Ballot`}>
-        {/* FIXME: Ballot Page should be refactored here also modify the name */}
-        <Ballot isModal />
-      </Dialog>
     </div>
   );
 };

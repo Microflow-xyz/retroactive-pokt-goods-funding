@@ -22,10 +22,15 @@ import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { config } from "~/config";
 
 //FIXME: Ballot Page props should be removed
-export default function Ballot({ isModal = false }: { isModal?: boolean }) {
+export default function Ballot({
+  isModal = false,
+  projectName,
+}: {
+  isModal?: boolean;
+  projectName?: string;
+}) {
   const { isConnected, address } = useAccount();
   const isAdmin = useIsAdmin();
-  console.log("isConnected", config.voters);
 
   const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
@@ -122,6 +127,7 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
           setDroppedItems={setDroppedItems}
           droppedItems={droppedItems}
           isModal
+          projectName={projectName}
         />
       </DndProvider>
     );
@@ -139,7 +145,11 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
               financial interest in the project (as an employee, contractor, or
               equity holder) or the project has asked you to vote for them.
               These may lead to the project being disqualified. (
-              <Link className=" underline" target="_blank" href="https://docs.pokt.network/community/retro-pokt-goods-funding/rules-of-conduct">
+              <Link
+                className=" underline"
+                target="_blank"
+                href="https://docs.pokt.network/community/retro-pokt-goods-funding/rules-of-conduct"
+              >
                 Learn more
               </Link>
               )

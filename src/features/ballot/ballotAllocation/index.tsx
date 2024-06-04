@@ -12,10 +12,12 @@ function BallotAllocation({
   droppedItems,
   setDroppedItems,
   isModal,
+  projectName,
 }: {
   droppedItems: ballotImpacts;
   setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
   isModal: boolean;
+  projectName?: string;
 }) {
   // const projects = useSearchProjects();
   const projects: projectSchema[] = [
@@ -47,13 +49,11 @@ function BallotAllocation({
     return true; // Include this project in the filtered array
   });
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(projectName ?? "");
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
   };
-
-  console.log("droppedItems", Object.values(droppedItems).flat());
 
   const filteredProjects = useMemo(() => {
     return allProjects.filter((project) =>
@@ -98,17 +98,21 @@ function BallotAllocation({
         <h4 className="text-base font-semibold">
           Application Pool ({allProjects?.length})
         </h4>
-        <div className="flex flex-col items-center gap-6 rounded-xl border border-outline-dark bg-onBackground-dark p-5">
+        <div
+          ref={dropApplicationPool}
+          className={`flex flex-col items-center gap-6 rounded-xl border border-outline-dark  p-5 ${
+            isOverApplicationPool
+              ? " bg-inverseSurface-light"
+              : "bg-onBackground-dark"
+          }`}
+        >
           <Input
             placeholder="Search among projects"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
           <div
-            ref={dropApplicationPool}
-            className={`flex min-h-10 w-full flex-wrap gap-2 rounded-lg p-1 ${
-              isOverApplicationPool ? " bg-inverseSurface-light" : ""
-            }`}
+            className={`flex min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
           >
             {filteredProjects.map((project, index) => (
               <ProjectItem key={project.id} project={project} />
