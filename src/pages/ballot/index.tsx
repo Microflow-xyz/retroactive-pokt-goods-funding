@@ -17,7 +17,6 @@ import {
 import { useSubmitBallot } from "~/features/ballot/hooks/useSubmitBallot";
 import { Button } from "~/components/ui/Button";
 import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
-import { Alert } from "~/components/ui/Alert";
 import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { config } from "~/config";
 

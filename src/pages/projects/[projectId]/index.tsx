@@ -23,24 +23,28 @@ export default function ProjectDetailsPage({ projectId = "" }) {
   const metadata = useProjectMetadata(project?.data?.metadataPtr);
   const [isOpen, setOpen] = useState(false);
 
-  const action = (label?: string) => {
-    if (state === "RESULTS") return <ProjectAwarded id={projectId} />;
-    return <ProjectAddToBallot onClick={() => setOpen(true)} label={label} />;
-  };
+  const action =
+    state === "RESULTS" ? (
+      <ProjectAwarded id={projectId} />
+    ) : (
+      isAdmin && <ProjectAddToBallot onClick={() => setOpen(true)} />
+    );
 
   return (
     <Layout
       stickyElement={
         <div className="flex items-center justify-between ">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">{project?.data?.name}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="max-w-[75%] truncate text-2xl font-bold">
+              {project?.data?.name}
+            </h1>
             {metadata?.data?.impactCategory && (
               <span className=" rounded-lg bg-gray-200 px-2 py-1 text-sm font-medium transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-onSurface-dark">
                 {metadata?.data?.impactCategory}
               </span>
             )}
           </div>
-          {action("I want to add this project to my ballot")}
+          {action}
         </div>
       }
     >
@@ -50,7 +54,7 @@ export default function ProjectDetailsPage({ projectId = "" }) {
         isAdmin={isAdmin}
         address={address}
         attestation={project.data}
-        action={action()}
+        action={action}
         state={state}
       />
       <DiscussionComponent

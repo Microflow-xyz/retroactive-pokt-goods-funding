@@ -16,7 +16,7 @@ const isBetween = function (value: number, min: number, max: number) {
 };
 
 const ProjectSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
 });
 
