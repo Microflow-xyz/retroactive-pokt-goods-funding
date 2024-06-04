@@ -78,7 +78,7 @@ export default function ProjectDetails({
           <div className="flex items-end gap-3  ">
             <h1 className="text-2xl font-bold">{attestation?.name}</h1>
             {metadata?.data?.impactCategory && (
-              <span className=" rounded-full bg-gray-200 px-3 py-1 text-sm transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-outline-dark">
+              <span className=" font-medium rounded-lg bg-gray-200 px-2 py-1 text-sm transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-onSurface-dark">
                 {metadata?.data?.impactCategory}
               </span>
             )}
