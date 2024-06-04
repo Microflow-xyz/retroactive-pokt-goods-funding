@@ -80,7 +80,7 @@ export default function Ballot({
 
   const error = submit.error;
 
-  if (!isConnected || !isAdmin || (address && !config.voters.includes(address)))
+  if (!isConnected || (!isAdmin && (address && !config.voters.includes(address))))
     return (
       <Layout isFullWidth>
         <div className="mt-20 flex w-full flex-col items-center justify-between gap-10">
@@ -203,3 +203,4 @@ export default function Ballot({
   // </Layout>
   // );
 }
+
