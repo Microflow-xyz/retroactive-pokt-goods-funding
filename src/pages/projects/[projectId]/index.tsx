@@ -27,7 +27,7 @@ export default function ProjectDetailsPage({ projectId = "" }) {
     state === "RESULTS" ? (
       <ProjectAwarded id={projectId} />
     ) : (
-      isAdmin && <ProjectAddToBallot onClick={() => setOpen(true)} />
+      <ProjectAddToBallot onClick={() => setOpen(true)} />
     );
 
   return (
