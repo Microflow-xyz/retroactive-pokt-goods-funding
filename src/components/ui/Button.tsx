@@ -10,11 +10,11 @@ import { cn } from "~/utils/classNames";
 import { Spinner } from "./Spinner";
 
 const button = tv({
-  base: "inline-flex items-center justify-center font-semibold text-center transition-colors rounded-full duration-150 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:ring-offset-gray-800",
+  base: "inline-flex items-center justify-center font-semibold text-center transition-colors rounded-full dark:disabled:opacity-50 duration-150 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:ring-offset-gray-800",
   variants: {
     variant: {
       primary:
-        "bg-primary-600 hover:bg-primary-dark dark:bg-onPrimary-light dark:hover:bg-primary-dark dark:hover:shadow dark:text-scrim-dark text-white dark:disabled:bg-outline-dark",
+        "bg-primary-600 hover:bg-primary-dark dark:bg-onPrimary-light dark:hover:bg-primary-dark dark:hover:shadow dark:text-scrim-dark text-white dark:disabled:text-onSurfaceVariant-dark dark:disabled:bg-outline-dark",
       ghost: "hover:bg-gray-100 dark:hover:bg-surfaceContainerLow-dark",
       default:
         "bg-gray-100 dark:bg-surfaceContainerLow-dark hover:bg-gray-200 dark:hover:bg-onSurfaceVariant-dark",

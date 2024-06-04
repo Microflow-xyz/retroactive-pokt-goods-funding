@@ -20,7 +20,7 @@ const CheckIcon = () => {
 const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
   const hasNoProject = rulesCheck?.includes("AT_LEAST_ONE");
   return (
-    <div className="mt-12 flex flex-col rounded-xl bg-onBackground-dark p-5 text-sm font-normal">
+    <div className="mt-5 flex flex-col rounded-xl bg-onBackground-dark p-5 text-sm font-normal">
       <div className="mb-8 flex  items-center gap-2">
         <h3 className=" text-lg font-bold text-onPrimary-light">
           Your voting check
@@ -65,7 +65,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>High Impact</b>: 20% of your projects + unused upper shelf capacity
+          <b>High Impact</b>: 20% of your projects + unused upper tier capacity
           can be here.
         </li>
         <li
@@ -76,7 +76,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Medium Impact</b>: 30% of your projects + unused upper shelf
+          <b>Medium Impact</b>: 30% of your projects + unused upper tier
           capacity can be here.
         </li>
         <li
@@ -87,7 +87,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Low Impact</b>: 40% of your projects + unused upper shelf capacity
+          <b>Low Impact</b>: 40% of your projects + unused upper tier capacity
           can be here.
         </li>
       </ul>
