@@ -81,7 +81,7 @@ export const BallotImpactsSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "20% of your projects + unused upper shelf capacity can be HIGH_IMPACT.",
+          "20% of your projects + unused upper tier capacity can be HIGH_IMPACT.",
         path: ["HIGH_IMPACT"],
       });
     }
@@ -96,7 +96,7 @@ export const BallotImpactsSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "30% of your projects + unused upper shelf capacity can be MEDIUM_EXTRA_IMPACT.",
+          "30% of your projects + unused upper tier capacity can be MEDIUM_EXTRA_IMPACT.",
         path: ["MEDIUM_EXTRA_IMPACT"],
       });
     }
@@ -111,7 +111,7 @@ export const BallotImpactsSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "40% of your projects + unused upper shelf capacity can be LOW_EXTRA_IMPACT.",
+          "40% of your projects + unused upper tier capacity can be LOW_EXTRA_IMPACT.",
         path: ["LOW_EXTRA_IMPACT"],
       });
     }
