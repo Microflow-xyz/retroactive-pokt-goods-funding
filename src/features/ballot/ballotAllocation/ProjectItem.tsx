@@ -23,7 +23,6 @@ const ProjectItem = React.memo(
         <Link
           href={`/projects/${project?.id}`}
           as={`/projects/${project?.id}`}
-          prefetch
           target="_blank"
         >
           <ExternalLinkIcon className=" h-4 w-4" />

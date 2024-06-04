@@ -10,7 +10,6 @@ import { UserRound } from "lucide-react";
 
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
-import { useBallot } from "~/features/ballot-/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
 import { useLayoutOptions } from "~/layouts/BaseLayout";
 import { getAppState, type AppState } from "~/utils/state";
@@ -107,8 +106,7 @@ const ConnectedDetails = ({
   isMobile: boolean;
   state: AppState;
 }) => {
-  const { data: ballot } = useBallot();
-  const ballotSize = (ballot?.votes ?? []).length;
+ 
   const { eligibilityCheck, showBallot } = useLayoutOptions();
   return (
     <div>

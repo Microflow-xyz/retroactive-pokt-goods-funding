@@ -102,7 +102,6 @@ export const env = createEnv({
     NEXT_PUBLIC_ADMIN_ADDRESSES: z.string().startsWith("0x"),
     NEXT_PUBLIC_APPROVAL_SCHEMA: z.string().startsWith("0x"),
     NEXT_PUBLIC_METADATA_SCHEMA: z.string().startsWith("0x"),
-    NEXT_PUBLIC_BALLOT_SCHEMA: z.string().startsWith("0x"),
 
     NEXT_PUBLIC_ROUND_ID: z.string(),
     NEXT_PUBLIC_WALLETCONNECT_ID: z.string().optional(),
@@ -165,7 +164,6 @@ export const env = createEnv({
     NEXT_PUBLIC_ADMIN_ADDRESSES: process.env.NEXT_PUBLIC_ADMIN_ADDRESSES,
     NEXT_PUBLIC_APPROVAL_SCHEMA: process.env.NEXT_PUBLIC_APPROVAL_SCHEMA,
     NEXT_PUBLIC_METADATA_SCHEMA: process.env.NEXT_PUBLIC_METADATA_SCHEMA,
-    NEXT_PUBLIC_BALLOT_SCHEMA: process.env.NEXT_PUBLIC_BALLOT_SCHEMA,
 
     NEXT_PUBLIC_ROUND_ID: process.env.NEXT_PUBLIC_ROUND_ID,
 
