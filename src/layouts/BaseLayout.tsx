@@ -5,6 +5,8 @@ import {
   type PropsWithChildren,
   createContext,
   useContext,
+  useState,
+  useEffect,
 } from "react";
 import { useAccount } from "wagmi";
 
@@ -22,6 +24,7 @@ export type LayoutProps = {
   eligibilityCheck?: boolean;
   showBallot?: boolean;
   isFullWidth?: boolean;
+  stickyElement?: ReactNode;
 };
 export const BaseLayout = ({
   isFullWidth = false,
@@ -33,6 +36,7 @@ export const BaseLayout = ({
   eligibilityCheck = false,
   showBallot = false,
   children,
+  stickyElement,
 }: PropsWithChildren<
   {
     sidebar?: "left" | "right";
@@ -49,9 +53,26 @@ export const BaseLayout = ({
     return null;
   }
 
+  const [showStickyElement, setShowStickyElement] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.pageYOffset >= 200) {
+        setShowStickyElement(true);
+      } else {
+        setShowStickyElement(false);
+      }
+    };
+    if (stickyElement) window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const wrappedSidebar = <Sidebar side={sidebar}>{sidebarComponent}</Sidebar>;
 
   title = title ? `${title} - ${metadata.title}` : metadata.title;
+
   return (
     <Context.Provider value={{ eligibilityCheck, showBallot }}>
       <Head>
@@ -86,13 +107,23 @@ export const BaseLayout = ({
           <div
             className={clsx("w-full min-w-0 px-2 pb-6 xl:pb-16", {
               ["mx-auto max-w-5xl"]: !sidebar && !isFullWidth,
-              ["xl:max-w-7xl mx-auto"]: isFullWidth,
+              ["mx-auto xl:max-w-7xl"]: isFullWidth,
             })}
           >
             {children}
           </div>
           {sidebar === "right" ? wrappedSidebar : null}
         </div>
+        {stickyElement && (
+          <div
+            className={` sticky bottom-0 z-10 w-full bg-onBackground-dark shadow-sm ${showStickyElement ? "" : "hidden"}`}
+          >
+            <div className="mx-auto w-full min-w-0 max-w-5xl py-5">
+              {stickyElement}
+            </div>
+          </div>
+        )}
+
         <Footer />
       </div>
     </Context.Provider>

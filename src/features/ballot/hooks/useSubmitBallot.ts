@@ -18,7 +18,6 @@ export function useSubmitBallot({
   const signer = useEthersSigner();
   const upload = useUploadMetadata();
   const attestation = useCreateAttestation();
-  console.log("2424232");
   const mutation =  useMutation({
     mutationFn: async (values: { impacts: ballotImpacts }) => {
       if (!signer) throw new Error("Connect wallet first");
