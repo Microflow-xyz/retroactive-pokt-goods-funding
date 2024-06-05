@@ -2,15 +2,15 @@ import React from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import Link from "next/link";
 import { useDrag } from "react-dnd";
-import { type Attestation } from "~/utils/fetchAttestations";
 import { X, ExternalLinkIcon } from "lucide-react";
+import { useProjectMetadata } from "~/features/projects/hooks/useProjects";
 
 const ProjectItem = React.memo(
   ({
     project,
     onDelete,
   }: {
-    project: { id: string; name: string };
+    project: { id: string; name: string;metadataPtr:string };
     onDelete?: () => void;
   }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
@@ -21,6 +21,8 @@ const ProjectItem = React.memo(
       }),
     }));
 
+    const metadata = useProjectMetadata(project?.metadataPtr);
+    const { impactCategory } = metadata.data ?? {};
     return (
       <>
         <div
@@ -46,8 +48,17 @@ const ProjectItem = React.memo(
         <ReactTooltip
           id={project?.id.toString()}
           place="bottom"
-          className="bg-background-dark bg-opacity-100 text-onSurfaceVariant-dark shadow-sm text-sm font-normal"
-          content={project.name}
+          className="bg-background-dark bg-opacity-100 text-sm font-normal text-onSurfaceVariant-dark shadow-sm"
+          content={
+            <div className="flex items-center gap-2 ">
+              <p className="text-sm font-medium">{project?.name}</p>
+              {impactCategory && (
+                <span className=" rounded-lg bg-gray-200 px-2 py-1 text-sm font-medium transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-onSurface-dark">
+                  {impactCategory}
+                </span>
+              )}
+            </div>
+          }
           style={{ backgroundColor: "#231f20" }}
         />
       </>
