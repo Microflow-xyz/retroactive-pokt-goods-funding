@@ -28,7 +28,7 @@ export const Dialog = ({
             <RadixDialog.Title className="mb-6 text-2xl font-bold">
               {title}
             </RadixDialog.Title>
-            {children}
+            <div className="max-h-[100%] overflow-y-auto">{children}</div>
             {onOpenChange ? (
               <RadixDialog.Close asChild>
                 <IconButton
