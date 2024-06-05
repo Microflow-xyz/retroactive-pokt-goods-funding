@@ -13,6 +13,7 @@ import { Chip } from "./ui/Chip";
 import { EligibilityDialog } from "./EligibilityDialog";
 import { useLayoutOptions } from "~/layouts/BaseLayout";
 import { getAppState, type AppState } from "~/utils/state";
+import { useIsAdmin } from "~/hooks/useIsAdmin";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 
@@ -106,12 +107,13 @@ const ConnectedDetails = ({
   isMobile: boolean;
   state: AppState;
 }) => {
- 
+  const isAdmin = useIsAdmin();
+
   const { eligibilityCheck, showBallot } = useLayoutOptions();
   return (
     <div>
       <div className="flex gap-2 text-white">
-        {state === "VOTING" ? (
+        {state === "VOTING" || isAdmin ? (
           <>
             {/* {!showBallot ? null : ballot?.publishedAt ? (
               <Chip>Already submitted</Chip>

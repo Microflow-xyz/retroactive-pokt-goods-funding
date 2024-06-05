@@ -3,8 +3,6 @@ import { useDrop } from "react-dnd";
 import { dynamicLabel, gen } from "./helpers";
 import { type ballotImpacts } from "../types";
 import { type Attestation } from "~/utils/fetchAttestations";
-import { X } from "lucide-react";
-import { ExternalLinkIcon } from "lucide-react";
 import ProjectItem from "./ProjectItem";
 
 const DropTargetAccordion = ({
@@ -140,7 +138,20 @@ const DropTargetAccordion = ({
               className={`flex items-center justify-between gap-1`}
               key={index}
             >
-              <ProjectItem key={item.id} project={item} />
+              <ProjectItem
+                onDelete={() => {
+                  setDroppedItems({
+                    ...droppedItems,
+                    [shelveName]: [
+                      ...droppedItems[shelveName].filter(
+                        (project) => item !== project,
+                      ),
+                    ],
+                  });
+                }}
+                key={item.id}
+                project={item}
+              />
             </li>
           ))}
           {renderEmptyBoxes(suggestCount[shelveName])}
