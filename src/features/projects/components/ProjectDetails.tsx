@@ -91,7 +91,7 @@ export default function ProjectDetails({
                 {impactCategory}
               </span>
             )}
-            {isAdmin && action}
+            {action}
           </div>
           <p className="break-words text-justify text-lg ">{bio}</p>
           {(isAdmin || voters?.some((item) => item === address)) && email && (

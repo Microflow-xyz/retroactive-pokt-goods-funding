@@ -18,6 +18,7 @@ const isBetween = function (value: number, min: number, max: number) {
 const ProjectSchema = z.object({
   id: z.string(),
   name: z.string(),
+  metadataPtr: z.string(),
 });
 
 export const BallotImpactsSchema = z
