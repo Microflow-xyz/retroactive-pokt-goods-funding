@@ -16,6 +16,8 @@ import { useProfileWithMetadata } from "~/hooks/useProfile";
 import { config } from "~/config";
 import LoadingBar from 'react-top-loading-bar';
 import type { LoadingBarRef } from 'react-top-loading-bar';
+import {useProjectMetadata} from "../hooks/useProjects";
+import {Application} from "~/features/applications/types";
 
 export default function ProjectDetails({
   attestation,
@@ -210,7 +212,6 @@ export default function ProjectDetails({
                 <LinkBox
                   shouldValidateWithHttps={false}
                   links={[{ url: attestation?.refUID }]}
-                  shouldValidateWithHttps={false}
                   renderItem={(link) => (
                     <div className="flex-1 truncate" title={link.url}>
                       {link.url}
