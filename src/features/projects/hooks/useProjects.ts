@@ -35,3 +35,7 @@ export function useProjectMetadata(metadataPtr?: string) {
 export function useProjectCount() {
   return api.projects.count.useQuery();
 }
+
+export function useProjectsIds() {
+  return api.projects.ids.useQuery();
+}
