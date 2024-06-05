@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { X, Check, ExternalLinkIcon, Globe, Mail } from "lucide-react";
 import { ProjectBanner } from "~/features/projects/components/ProjectBanner";
@@ -15,6 +15,8 @@ import { LinkBox } from "./LinkBox";
 import { Button } from "~/components/ui/Button";
 import { useProfileWithMetadata } from "~/hooks/useProfile";
 import { config } from "~/config";
+import LoadingBar from 'react-top-loading-bar';
+import type { LoadingBarRef } from 'react-top-loading-bar';
 
 export default function ProjectDetails({
   attestation,
@@ -29,6 +31,7 @@ export default function ProjectDetails({
   state?: AppState;
   isAdmin: boolean;
 }) {
+  const LoadingStateRef = useRef<LoadingBarRef>(null)
   const metadata = useProjectMetadata(attestation?.metadataPtr);
   const profile = useProfileWithMetadata(attestation?.recipient);
   const {
@@ -38,8 +41,17 @@ export default function ProjectDetails({
     fundingSources,
   } = metadata.data ?? {};
   const voters = config?.voters;
+  useEffect(()=>{
+    if(metadata?.isPending) {
+      return LoadingStateRef?.current?.continuousStart()
+    } else {
+      return LoadingStateRef?.current?.complete()
+    }
+  }, [metadata?.isPending])
+
   return (
     <div className="relative">
+      <LoadingBar color='white' ref={LoadingStateRef} />
       <div className="overflow-hidden">
         <ProjectBanner size="lg" profileId={attestation?.recipient} />
       </div>

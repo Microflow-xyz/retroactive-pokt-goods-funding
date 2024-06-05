@@ -6,13 +6,26 @@ import { getAppState } from "~/utils/state";
 import { useResults } from "~/hooks/useResults";
 import { SortFilter } from "~/components/SortFilter";
 import { ProjectItem, ProjectItemAwarded } from "./ProjectItem";
+import {useEffect, useRef} from "react";
+import LoadingBar from 'react-top-loading-bar';
+import type { LoadingBarRef } from 'react-top-loading-bar';
 
 export function Projects() {
   const projects = useSearchProjects();
   const results = useResults();
+  const LoadingStateRef = useRef<LoadingBarRef>(null)
+
+  useEffect(()=>{
+    if(projects?.isLoading) {
+      return LoadingStateRef?.current?.continuousStart()
+    } else {
+      return LoadingStateRef?.current?.complete()
+    }
+  },[projects?.isLoading])
 
   return (
     <div>
+      <LoadingBar color='white' ref={LoadingStateRef} />
       <SortFilter />
 
       <InfiniteLoading
