@@ -26,9 +26,11 @@ export const DiscussionComponent = ({
   return (
     <div className="mt-10 flex flex-col items-baseline gap-5 border-t border-outlineVariant-dark pt-10">
       <div className=" text-lg font-bold text-onSurface-dark">Discussions</div>
-      {state === "APPLICATION" ||
+
+      {(state !== "VOTING" && state !== "TALLYING") ||
       isAdmin ||
-      voters?.some((item) => item === address) ? (
+      voters?.some((item) => item.recipient === address) ? (
+
         <>
           <CreateNew onRefetch={() => refetch()} projectId={projectId} />
           <Skeleton className="mb-1 min-h-24 w-full" isLoading={isLoading}>
