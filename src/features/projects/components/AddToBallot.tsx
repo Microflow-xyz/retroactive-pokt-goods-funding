@@ -3,14 +3,14 @@ import { Button } from "~/components/ui/Button";
 import { getAppState } from "~/utils/state";
 
 export const ProjectAddToBallot = ({
-  label,
   onClick,
+  isAdmin = false,
 }: {
-  label?: string;
   onClick: () => void;
+  isAdmin?: boolean;
 }) => {
   const { address } = useAccount();
-  if (getAppState() !== "VOTING") return null;
+  if (getAppState() !== "VOTING" || !isAdmin) return null;
   return (
     <div className="ml-2">
       <Button
@@ -19,7 +19,7 @@ export const ProjectAddToBallot = ({
         variant="primary"
         className="h-auto w-full px-6 py-[0.625rem] text-sm font-medium md:w-auto"
       >
-        {label ? label : "Manage Project on Ballot"}
+        Manage Project on Ballot
       </Button>
     </div>
   );

@@ -14,6 +14,7 @@ import {
   type ballotImpacts,
   type projectSchema,
 } from "~/features/ballot/types";
+
 import { useSubmitBallot } from "~/features/ballot/hooks/useSubmitBallot";
 import { Button } from "~/components/ui/Button";
 import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
@@ -53,12 +54,22 @@ export default function Ballot({
 
   useEffect(() => {
     localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
+    console.log(
+      "BallotImpactsSchema",
+      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
+        (error) => {
+          console.log("error2222",error)
+          return error?.path[0]},
+      ),
+    );
     setRulesCheck(
       BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
         (error) => error?.path[0],
       ),
     );
   }, [droppedItems]);
+
+  console.log("rules", rulesCheck);
 
   const submit = useSubmitBallot({
     onSuccess: () => {
@@ -80,7 +91,7 @@ export default function Ballot({
 
   const error = submit.error;
 
-  if (!isConnected || (!isAdmin && (address && !config.voters.includes(address))))
+  if (!isConnected || (!isAdmin && address && !config.voters.includes(address)))
     return (
       <Layout isFullWidth>
         <div className="mt-20 flex w-full flex-col items-center justify-between gap-10">
@@ -203,4 +214,3 @@ export default function Ballot({
   // </Layout>
   // );
 }
-

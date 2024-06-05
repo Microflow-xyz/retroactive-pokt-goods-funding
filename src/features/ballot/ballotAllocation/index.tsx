@@ -49,7 +49,6 @@ function BallotAllocation({
     .map((item) => item.refUID);
 
     const filteredData = approvedProjects?.filter((item) => !refUIDs?.includes(item.id));
-    console.log("filteredData", filteredData);
 
 
   const allProjects = filteredData?.filter((project) => {
@@ -127,11 +126,12 @@ function BallotAllocation({
             onChange={(e) => handleSearch(e.target.value)}
           />
           <div
-            className={`flex min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
+            className={`flex max-h-[20.5rem] overflow-y-auto min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
           >
-            {filteredProjects?.map((project, index) => (
+            {filteredProjects?.map((project, index) => {
+              return(
               <ProjectItem key={project.id} project={project} />
-            ))}
+            )})}
           </div>
         </div>
       </div>
