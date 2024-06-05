@@ -1,11 +1,15 @@
 import { type GetServerSideProps } from "next";
 import { useAccount } from "wagmi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Layout } from "~/layouts/DefaultLayout";
 import ProjectDetails from "~/features/projects/components/ProjectDetails";
-import { useProjectById } from "~/features/projects/hooks/useProjects";
+import {
+  useProjectById,
+  useProjectsIds,
+} from "~/features/projects/hooks/useProjects";
 import { ProjectAddToBallot } from "~/features/projects/components/AddToBallot";
+import { NextProjectButton } from "~/features/projects/components/NextProjectButton";
 import { getAppState } from "~/utils/state";
 import { ProjectAwarded } from "~/features/projects/components/ProjectAwarded";
 import { DiscussionComponent } from "~/features/projects/components/discussion";
@@ -22,6 +26,25 @@ export default function ProjectDetailsPage({ projectId = "" }) {
   const isAdmin = useIsAdmin();
   const metadata = useProjectMetadata(project?.data?.metadataPtr);
   const [isOpen, setOpen] = useState(false);
+  const ids = useProjectsIds();
+  const [nextProjectId, setNextProjectId] = useState<string | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    if (!ids.isLoading) {
+      const idsArray = ids.data;
+      if (idsArray && idsArray.length > 0) {
+        const currentIndex = idsArray.indexOf(projectId);
+        let nextIndex = currentIndex + 1;
+        if (nextIndex >= idsArray.length) {
+          nextIndex = 0;
+        }
+        const nextId = idsArray[nextIndex];
+        setNextProjectId(nextId);
+      }
+    }
+  }, [ids, projectId]);
 
   const action =
     state === "RESULTS" ? (
@@ -44,7 +67,15 @@ export default function ProjectDetailsPage({ projectId = "" }) {
               </span>
             )}
           </div>
-          {action}
+          <div className="flex gap-2">
+            {action}
+            {nextProjectId ? (
+              <NextProjectButton
+                isAdmin={isAdmin}
+                nextProjectId={nextProjectId}
+              />
+            ) : null}
+          </div>
         </div>
       }
     >
