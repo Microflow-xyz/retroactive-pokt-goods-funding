@@ -10,7 +10,7 @@ export const ProjectAddToBallot = ({
   isAdmin?: boolean;
 }) => {
   const { address } = useAccount();
-  if (getAppState() !== "VOTING" || !isAdmin) return null;
+  if (getAppState() !== "VOTING" && !isAdmin) return null;
   return (
     <div className="ml-2">
       <Button
