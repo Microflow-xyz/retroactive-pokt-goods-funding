@@ -126,7 +126,7 @@ function BallotAllocation({
             onChange={(e) => handleSearch(e.target.value)}
           />
           <div
-            className={`flex max-h-[20.5rem] overflow-y-auto min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
+            className={`flex max-h-80 overflow-y-auto min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
           >
             {filteredProjects?.map((project, index) => {
               return(
