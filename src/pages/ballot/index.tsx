@@ -14,18 +14,23 @@ import {
   type ballotImpacts,
   type projectSchema,
 } from "~/features/ballot/types";
+
 import { useSubmitBallot } from "~/features/ballot/hooks/useSubmitBallot";
 import { Button } from "~/components/ui/Button";
 import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
-import { Alert } from "~/components/ui/Alert";
 import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { config } from "~/config";
 
 //FIXME: Ballot Page props should be removed
-export default function Ballot({ isModal = false }: { isModal?: boolean }) {
+export default function Ballot({
+  isModal = false,
+  projectName,
+}: {
+  isModal?: boolean;
+  projectName?: string;
+}) {
   const { isConnected, address } = useAccount();
   const isAdmin = useIsAdmin();
-  console.log("isConnected", config.voters);
 
   const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
@@ -56,6 +61,7 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
     );
   }, [droppedItems]);
 
+
   const submit = useSubmitBallot({
     onSuccess: () => {
       toast.success("Ballot submitted successfully!");
@@ -76,7 +82,7 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
 
   const error = submit.error;
 
-  if (!isConnected || !isAdmin || (address && !config.voters.includes(address)))
+  if (!isConnected || (!isAdmin && address && !config.voters.includes(address)))
     return (
       <Layout isFullWidth>
         <div className="mt-20 flex w-full flex-col items-center justify-between gap-10">
@@ -122,6 +128,7 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
           setDroppedItems={setDroppedItems}
           droppedItems={droppedItems}
           isModal
+          projectName={projectName}
         />
       </DndProvider>
     );
@@ -139,7 +146,11 @@ export default function Ballot({ isModal = false }: { isModal?: boolean }) {
               financial interest in the project (as an employee, contractor, or
               equity holder) or the project has asked you to vote for them.
               These may lead to the project being disqualified. (
-              <Link className=" underline" target="_blank" href="https://docs.pokt.network/community/retro-pokt-goods-funding/rules-of-conduct">
+              <Link
+                className=" underline"
+                target="_blank"
+                href="https://docs.pokt.network/community/retro-pokt-goods-funding/rules-of-conduct"
+              >
                 Learn more
               </Link>
               )

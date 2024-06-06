@@ -103,6 +103,26 @@ export const projectsRouter = createTRPCRouter({
           ),
         );
     }),
+    ids: publicProcedure.query(async () => {
+      return fetchAttestations([eas.schemas.approval], {
+        where: {
+          attester: { in: config.admins },
+          ...createDataFilter("type", "bytes32", "application"),
+        },
+      }).then((attestations = []) => {
+        const approvedIds = attestations
+          .map(({ refUID }) => refUID)
+          .filter(Boolean);
+  
+        return fetchAttestations([eas.schemas.metadata], {
+          where: {
+            id: { in: approvedIds },
+          },
+        }).then((attestations = []) => {
+          return attestations.map(({ id }) => id);
+        });
+      });
+    }),
 });
 
 function createOrderBy(

@@ -65,8 +65,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>High Impact</b>: 20% of your projects + unused upper tier capacity
-          can be here.
+          <b>High Impact</b>: 20% of your projects + unused capacity of higher tier(s) can be used here.
         </li>
         <li
           className={`flex items-center gap-1 ${hasNoProject || rulesCheck?.includes("MEDIUM_EXTRA_IMPACT") ? "text-[#FFB3B2]" : "text-[#CCF2DB]"}`}
@@ -76,8 +75,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Medium Impact</b>: 30% of your projects + unused upper tier
-          capacity can be here.
+          <b>Medium Impact</b>: 30% of your projects + unused capacity of higher tier(s) can be used here
         </li>
         <li
           className={`flex items-center gap-1 ${hasNoProject || rulesCheck?.includes("LOW_EXTRA_IMPACT") ? "text-[#FFB3B2]" : "text-[#CCF2DB]"}`}
@@ -87,8 +85,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Low Impact</b>: 40% of your projects + unused upper tier capacity
-          can be here.
+          <b>Low Impact</b>: 40% of your projects + unused capacity of higher tier(s) can be used here
         </li>
       </ul>
     </div>
