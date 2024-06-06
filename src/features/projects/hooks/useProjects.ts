@@ -36,6 +36,7 @@ export function useProjectCount() {
   return api.projects.count.useQuery();
 }
 
-export function useProjectsIds() {
-  return api.projects.ids.useQuery();
+export function useProjectsIds(filterOverride?: Partial<Filter>) {
+  const { ...filter } = useFilter();
+  return api.projects.ids.useQuery({ ...filter, ...filterOverride });
 }
