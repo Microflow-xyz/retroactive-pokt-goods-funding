@@ -6,8 +6,10 @@ import { getAppState } from "~/utils/state";
 import { useResults } from "~/hooks/useResults";
 import { SortFilter } from "~/components/SortFilter";
 import { ProjectItem, ProjectItemAwarded } from "./ProjectItem";
+import { useFilter } from "~/features/filter/hooks/useFilter";
 
 export function Projects() {
+  const { orderBy, sortOrder, search } = useFilter();
   const projects = useSearchProjects();
   const results = useResults();
 
@@ -21,8 +23,8 @@ export function Projects() {
           return (
             <Link
               key={item.id}
-              href={`/projects/${item?.id}`}
-              as={`/projects/${item?.id}`}
+              href={`/projects/${item?.id}?search=${search}&orderBy=${orderBy}&sortOrder=${sortOrder}`}
+              as={`/projects/${item?.id}?search=${search}&orderBy=${orderBy}&sortOrder=${sortOrder}`}
               prefetch
               className={clsx("relative", { ["animate-pulse"]: isLoading })}
             >
