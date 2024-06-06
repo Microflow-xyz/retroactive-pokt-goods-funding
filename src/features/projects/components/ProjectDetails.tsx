@@ -17,7 +17,7 @@ import { config } from "~/config";
 import LoadingBar from 'react-top-loading-bar';
 import type { LoadingBarRef } from 'react-top-loading-bar';
 import {useProjectMetadata} from "../hooks/useProjects";
-import {Application} from "~/features/applications/types";
+import { type Application } from "~/features/applications/types";
 
 export default function ProjectDetails({
   attestation,
@@ -113,19 +113,19 @@ export default function ProjectDetails({
             </p>
           )}
         </div>
-
+        {/* 
         {address &&
           address === attestation?.attester &&
           state &&
-          state === "APPLICATION" && (
-            <Button
-              as={Link}
-              href={`/projects/${attestation?.id}/edit`}
-              variant="outline"
-            >
-              Edit submitted project
-            </Button>
-          )}
+          state === "APPLICATION" && ( */}
+        <Button
+          as={Link}
+          href={`/projects/${attestation?.id}/edit`}
+          variant="outline"
+        >
+          Edit submitted project
+        </Button>
+        {/* )} */}
       </div>
       {(isAdmin || voters?.some((item) => item === address)) && (
         <p className="mt-6 flex items-center gap-2">
