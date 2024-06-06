@@ -41,6 +41,10 @@ export const Layout = ({ children, ...props }: Props) => {
           href: "/applications",
           children: "Applications",
         },
+        {
+          href: "/voting",
+          children: "Voting Tally",
+        },
         // {
         //   href: "/voting",
         //   children: "#",
@@ -63,8 +67,8 @@ export const Layout = ({ children, ...props }: Props) => {
     navLinks.push(
       ...[
         {
-          href: "",
-          children: "Voting",
+          href: "/voting",
+          children: "Voting Tally",
         },
         // {
         //   href: "/builderIdeas",
