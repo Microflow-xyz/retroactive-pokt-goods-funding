@@ -16,7 +16,6 @@ import { useProfileWithMetadata } from "~/hooks/useProfile";
 import { config } from "~/config";
 import { type Application } from "~/features/applications/types";
 
-
 export default function ProjectDetails({
   attestation,
   action,
@@ -101,19 +100,19 @@ export default function ProjectDetails({
             </p>
           )}
         </div>
-
+        {/* 
         {address &&
           address === attestation?.attester &&
           state &&
-          state === "APPLICATION" && (
-            <Button
-              as={Link}
-              href={`/projects/${attestation?.id}/edit`}
-              variant="outline"
-            >
-              Edit submitted project
-            </Button>
-          )}
+          state === "APPLICATION" && ( */}
+        <Button
+          as={Link}
+          href={`/projects/${attestation?.id}/edit`}
+          variant="outline"
+        >
+          Edit submitted project
+        </Button>
+        {/* )} */}
       </div>
       {(isAdmin || voters?.some((item) => item === address)) && (
         <p className="mt-6 flex items-center gap-2">
