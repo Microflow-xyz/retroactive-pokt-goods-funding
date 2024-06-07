@@ -38,7 +38,7 @@ export default function Voting() {
     if (!ballots.isLoading && !projects.isLoading) {
       const ProjectsIds = projects.data;
       const impactData = ballots.data as ImpactData[];
-      participantsCount = impactData.length;
+      participantsCount = impactData?.length;
       const table: TableDataType[] =
         ProjectsIds?.map((application) => {
           let lowImpact = 0,
@@ -50,22 +50,22 @@ export default function Voting() {
             if (impact?.lowImpactProjects) {
               lowImpact += impact.lowImpactProjects.filter(
                 (project) => project.id === application.id,
-              ).length;
+              )?.length;
             }
             if (impact.mediumImpactProjects) {
               mediumImpact += impact.mediumImpactProjects.filter(
                 (project) => project.id === application.id,
-              ).length;
+              )?.length;
             }
             if (impact.highImpactProjects) {
               highImpact += impact.highImpactProjects.filter(
                 (project) => project.id === application.id,
-              ).length;
+              )?.length;
             }
             if (impact.highestImpactProjects) {
               highestImpact += impact.highestImpactProjects.filter(
                 (project) => project.id === application.id,
-              ).length;
+              )?.length;
             }
           });
 
@@ -135,10 +135,10 @@ export default function Voting() {
   };
 
   return (
-    <Layout isFullWidth>
-      <div className="mt-20 flex flex-col gap-5 px-5 font-kumbhSans text-[#E6E1E1] md:px-20 2xl:px-0">
+    <Layout extraFullWidth>
+      <div className="mt-20 flex flex-col gap-5 px-5 font-kumbhSans text-[#E6E1E1] lg:overflow-hidden  md:px-20 2xl:px-0">
         <div className="flex flex-col gap-5 lg:flex-row">
-          <div className="flex w-full flex-col gap-3 rounded-xl border border-[#7E7576] bg-[#1C1B1B] p-5">
+          <div className="flex w-full flex-col gap-3 rounded-xl border border-[#7E7576] bg-[#1C1B1B]  p-5">
             <div className="text-base font-bold leading-5 lg:text-lg">
               Voters Participated
             </div>
@@ -163,7 +163,7 @@ export default function Voting() {
             </div>
           </div>
 
-          <div className="flex w-full flex-col gap-3 rounded-xl border border-[#7E7576] bg-[#1C1B1B] p-5">
+          <div className="flex w-full flex-col gap-3 rounded-xl border border-[#7E7576] bg-[#1C1B1B]  p-5">
             {!hasStarted ? (
               <div className="text-base font-bold leading-5 lg:text-lg">
                 Voting process has not started yet
@@ -199,7 +199,7 @@ export default function Voting() {
           These are the latest statistics based on current voting results. The
           chart will be updated 10 minutes.
         </p>
-        {tableData.length ? (
+        {tableData?.length ? (
           <Table tableData={tableData} />
         ) : (
           <div className="mt-8 flex w-full flex-col gap-5">
