@@ -567,7 +567,7 @@ function CreateApplicationButton({
   return (
     <div className="mt-8 flex items-center justify-end">
       <Button
-        disabled={isLoading || !session}
+        disabled={isLoading}
         variant="primary"
         type="submit"
         isLoading={isLoading}

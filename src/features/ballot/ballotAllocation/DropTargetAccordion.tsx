@@ -15,7 +15,7 @@ const DropTargetAccordion = ({
   label: string;
   className?: string;
   droppedItems: ballotImpacts;
-  setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
+  setDroppedItems?: React.Dispatch<React.SetStateAction<ballotImpacts>>;
   shelveName:
     | "lowImpactProjects"
     | "mediumImpactProjects"
@@ -32,31 +32,32 @@ const DropTargetAccordion = ({
     return {
       accept: "ITEM",
       drop: (item) => {
-        setDroppedItems((prevDroppedItems) => {
-          // Find the index of the item in the source DropTargetAccordion
-          const sourceShelveName = Object.keys(prevDroppedItems).find(
-            (shelve) =>
-              prevDroppedItems[shelve]?.some((i) => i?.id === item?.id),
-          );
+        if (setDroppedItems)
+          setDroppedItems((prevDroppedItems) => {
+            // Find the index of the item in the source DropTargetAccordion
+            const sourceShelveName = Object.keys(prevDroppedItems).find(
+              (shelve) =>
+                prevDroppedItems[shelve]?.some((i) => i?.id === item?.id),
+            );
 
-          // Remove the item from the source DropTargetAccordion
-          if (sourceShelveName) {
-            const updatedSourceItems = prevDroppedItems[
-              sourceShelveName
-            ].filter((i) => i?.id !== item?.id);
+            // Remove the item from the source DropTargetAccordion
+            if (sourceShelveName) {
+              const updatedSourceItems = prevDroppedItems[
+                sourceShelveName
+              ].filter((i) => i?.id !== item?.id);
+              return {
+                ...prevDroppedItems,
+                [sourceShelveName]: updatedSourceItems,
+                [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
+              };
+            }
+
+            // If the item is not found in any DropTargetAccordion, add it to the target DropTargetAccordion
             return {
               ...prevDroppedItems,
-              [sourceShelveName]: updatedSourceItems,
               [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
             };
-          }
-
-          // If the item is not found in any DropTargetAccordion, add it to the target DropTargetAccordion
-          return {
-            ...prevDroppedItems,
-            [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
-          };
-        });
+          });
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -121,15 +122,17 @@ const DropTargetAccordion = ({
       className={`${className} m-1 p-5 pb-3  ${
         isOver ? " bg-inverseSurface-light" : ""
       }`}
-      ref={drop}
+      ref={setDroppedItems ? drop : undefined}
     >
       <div className=" flex cursor-pointer items-center gap-2">
         {label}
-        <span
-          className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj?.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
-        >
-          {dynamicLabelObj?.text}
-        </span>
+        {setDroppedItems && (
+          <span
+            className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj?.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
+          >
+            {dynamicLabelObj?.text}
+          </span>
+        )}
       </div>
       <div className="flex w-full">
         <ul className="mt-3 flex w-full flex-wrap gap-2">
@@ -139,22 +142,27 @@ const DropTargetAccordion = ({
               key={index}
             >
               <ProjectItem
-                onDelete={() => {
-                  setDroppedItems({
-                    ...droppedItems,
-                    [shelveName]: [
-                      ...droppedItems[shelveName].filter(
-                        (project) => item !== project,
-                      ),
-                    ],
-                  });
-                }}
+                isDraggable={setDroppedItems ? true : false}
+                onDelete={
+                  setDroppedItems
+                    ? () => {
+                        setDroppedItems({
+                          ...droppedItems,
+                          [shelveName]: [
+                            ...droppedItems[shelveName].filter(
+                              (project) => item !== project,
+                            ),
+                          ],
+                        });
+                      }
+                    : undefined
+                }
                 key={item.id}
                 project={item}
               />
             </li>
           ))}
-          {renderEmptyBoxes(suggestCount[shelveName])}
+          {setDroppedItems && renderEmptyBoxes(suggestCount[shelveName])}
         </ul>
       </div>
     </div>

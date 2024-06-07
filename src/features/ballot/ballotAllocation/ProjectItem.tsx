@@ -8,10 +8,12 @@ import { useProjectMetadata } from "~/features/projects/hooks/useProjects";
 const ProjectItem = React.memo(
   ({
     project,
+    isDraggable = true,
     onDelete,
   }: {
-    project: { id: string; name: string;metadataPtr:string };
+    project: { id: string; name: string; metadataPtr: string };
     onDelete?: () => void;
+    isDraggable?: boolean;
   }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
       type: "ITEM",
@@ -27,8 +29,8 @@ const ProjectItem = React.memo(
       <>
         <div
           data-tooltip-id={project?.id.toString()}
-          ref={drag}
-          className={`${isDragging ? " opacity-50" : " opacity-100"} flex cursor-pointer items-center gap-1 rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
+          ref={isDraggable ? drag : null}
+          className={`${isDragging ? " opacity-50" : " opacity-100"} ${isDraggable ? "cursor-pointer" : ""} flex  items-center gap-1 rounded-lg border border-onPrimary-light px-3 py-2 text-sm font-medium`}
         >
           {onDelete && (
             <button onClick={() => onDelete()}>
