@@ -27,6 +27,7 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           Your voting check
         </h3>
         <Link
+          target="_blank"
           href="https://youtu.be/UidBGNrEFhs"
           className="flex items-center rounded-lg border border-outline-dark px-2 py-1 text-sm font-medium text-outline-dark"
         >

@@ -10,7 +10,6 @@ export function useBallot(id?: Address) {
 
 export function useBallotWithMetadata(id?: Address) {
   const ballot = useBallot(id);
-
   return {
     ballotData: { ...ballot.data },
     metadataData: useMetadata<ballotImpacts>(ballot.data?.metadataPtr),
