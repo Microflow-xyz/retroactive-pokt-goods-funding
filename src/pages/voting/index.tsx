@@ -8,18 +8,15 @@ import {
   type ImpactData,
   type TableDataType,
 } from "~/features/voting/types/TableData";
+import { config } from "~/config";
 
-const totalVoters = process.env.NEXT_PUBLIC_MAX_VOTES_TOTAL ?? 600;
-let participantsCount = 0;
-const endTime = new Date(
-  process.env.NEXT_PUBLIC_VOTING_END_TIME ?? "2024-06-21T00:00:00.000Z",
-);
-const startTime = new Date(
-  process.env.NEXT_PUBLIC_VOTING_START_TIME ?? "2024-06-01T00:00:00.000Z",
-);
+const totalVoters = config?.voters?.length;
+const endTime = config?.votingEndsAt;
+const startTime = config?.votingStartsAt;
 const WpoktMultiplier = 750000;
 const OPMultiplier = 60000;
 const ARBMultplier = 70000;
+let participantsCount = 0;
 
 export default function Voting() {
   const [remainingTime, setRemainingTime] = useState("");
