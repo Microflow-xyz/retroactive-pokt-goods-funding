@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { Check, X } from "lucide-react";
 
 const ErrorIcon = () => {
@@ -25,12 +26,15 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
         <h3 className=" text-lg font-bold text-onPrimary-light">
           Your voting check
         </h3>
-        <p className="flex items-center rounded-lg border border-outline-dark px-2 py-1 text-sm font-medium text-outline-dark">
+        <Link
+          href="https://youtu.be/UidBGNrEFhs"
+          className="flex items-center rounded-lg border border-outline-dark px-2 py-1 text-sm font-medium text-outline-dark"
+        >
           <span className=" mr-2 flex items-center rounded-full border border-outline-dark px-[0.375rem] text-xs font-bold text-outline-dark">
             i
           </span>
           How it works?
-        </p>
+        </Link>
       </div>
 
       <p
@@ -65,7 +69,8 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>High Impact</b>: 20% of your projects + unused capacity of higher tier(s) can be used here.
+          <b>High Impact</b>: 20% of your projects + unused capacity of higher
+          tier(s) can be used here.
         </li>
         <li
           className={`flex items-center gap-1 ${hasNoProject || rulesCheck?.includes("MEDIUM_EXTRA_IMPACT") ? "text-[#FFB3B2]" : "text-[#CCF2DB]"}`}
@@ -75,7 +80,8 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Medium Impact</b>: 30% of your projects + unused capacity of higher tier(s) can be used here
+          <b>Medium Impact</b>: 30% of your projects + unused capacity of higher
+          tier(s) can be used here
         </li>
         <li
           className={`flex items-center gap-1 ${hasNoProject || rulesCheck?.includes("LOW_EXTRA_IMPACT") ? "text-[#FFB3B2]" : "text-[#CCF2DB]"}`}
@@ -85,7 +91,8 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           ) : (
             <Check className="h-4 w-4" color="#CCF2DB" />
           )}
-          <b>Low Impact</b>: 40% of your projects + unused capacity of higher tier(s) can be used here
+          <b>Low Impact</b>: 40% of your projects + unused capacity of higher
+          tier(s) can be used here
         </li>
       </ul>
     </div>

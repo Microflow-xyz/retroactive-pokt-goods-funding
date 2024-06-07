@@ -8,18 +8,20 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { Check, X } from "lucide-react";
 import { Layout } from "~/layouts/DefaultLayout";
 import BallotAllocation from "~/features/ballot/ballotAllocation";
+import BallotRevocation from "~/features/ballot/ballotRevocation";
 import Rules from "~/features/ballot/Rules";
 import {
   BallotImpactsSchema,
   type ballotImpacts,
   type projectSchema,
 } from "~/features/ballot/types";
-
 import { useSubmitBallot } from "~/features/ballot/hooks/useSubmitBallot";
 import { Button } from "~/components/ui/Button";
 import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
 import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { config } from "~/config";
+import { useBallotWithMetadata } from "~/hooks/useBallot";
+import { Chip } from "~/components/ui/Chip";
 
 //FIXME: Ballot Page props should be removed
 export default function Ballot({
@@ -31,6 +33,7 @@ export default function Ballot({
 }) {
   const { isConnected, address } = useAccount();
   const isAdmin = useIsAdmin();
+  const ballot = useBallotWithMetadata(address);
 
   const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
@@ -42,6 +45,8 @@ export default function Ballot({
 
   const [rulesCheck, setRulesCheck] = useState<string[]>([]);
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
+
+  console.log("ballot", ballot);
 
   useEffect(() => {
     setDroppedItems({
@@ -60,7 +65,6 @@ export default function Ballot({
       ),
     );
   }, [droppedItems]);
-
 
   const submit = useSubmitBallot({
     onSuccess: () => {
@@ -100,7 +104,7 @@ export default function Ballot({
         </div>
       </Layout>
     );
-  if (submit.isSuccess)
+  else if (submit.isSuccess)
     return (
       <Layout isFullWidth>
         <div className="mt-20 flex w-full flex-col items-center justify-between gap-10">
@@ -113,26 +117,58 @@ export default function Ballot({
               You can revoke your vote later.
             </span>
           </p>
-          <Button variant="primary" className="w-fit">
+          <Button
+            variant="primary"
+            className="w-fit"
+            onClick={() => window.location.reload()}
+          >
             Continue
           </Button>
         </div>
       </Layout>
     );
-
-  if (isModal)
-    // FIXME: This should be removed
+  else if (!isModal && ballot?.metadataData?.data)
     return (
-      <DndProvider backend={HTML5Backend}>
-        <BallotAllocation
-          setDroppedItems={setDroppedItems}
-          droppedItems={droppedItems}
-          isModal
-          projectName={projectName}
-        />
-      </DndProvider>
+      <Layout isFullWidth>
+        <DndProvider backend={HTML5Backend}>
+          <BallotRevocation
+            ballot={{
+              time: ballot.ballotData.time,
+              id: ballot.ballotData.id,
+              data: ballot.metadataData.data,
+            }}
+            isPending={ballot?.metadataData?.isPending}
+          />
+        </DndProvider>
+      </Layout>
     );
-  else
+  else if (isModal) {
+    // FIXME: This should be removed
+    if (ballot?.metadataData?.data)
+      return (
+        <DndProvider backend={HTML5Backend}>
+          <BallotRevocation
+            ballot={{
+              time: ballot.ballotData.time,
+              id: ballot.ballotData.id,
+              data: ballot.metadataData.data,
+            }}
+            isPending={ballot?.metadataData?.isPending}
+          />
+        </DndProvider>
+      );
+    else
+      return (
+        <DndProvider backend={HTML5Backend}>
+          <BallotAllocation
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+            isModal
+            projectName={projectName}
+          />
+        </DndProvider>
+      );
+  } else
     return (
       <Layout isFullWidth>
         <DndProvider backend={HTML5Backend}>
