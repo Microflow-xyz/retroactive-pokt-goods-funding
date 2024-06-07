@@ -130,6 +130,14 @@ export default function Voting() {
     const fullTime: number = endTime.getTime() - startTime.getTime();
     return timePassed / fullTime;
   };
+  
+  const participantsCountCalculator = ()=>{
+     if (participantsCount / Number(totalVoters) >= 1) {
+      return `100%`
+     } else {
+      return `${(participantsCount / Number(totalVoters)) * 100}%`
+     }
+  }
 
   return (
     <Layout extraFullWidth>
@@ -144,7 +152,7 @@ export default function Voting() {
                 <div
                   className="h-1 bg-[#B5C4FF] transition-all"
                   style={{
-                    width: `${(participantsCount / Number(totalVoters)) * 100}%`,
+                    width: participantsCountCalculator(),
                   }}
                 />
               </div>
