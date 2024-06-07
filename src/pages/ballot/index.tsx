@@ -21,7 +21,6 @@ import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
 import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { config } from "~/config";
 import { useBallotWithMetadata } from "~/hooks/useBallot";
-import { Chip } from "~/components/ui/Chip";
 
 //FIXME: Ballot Page props should be removed
 export default function Ballot({
@@ -35,7 +34,7 @@ export default function Ballot({
   const isAdmin = useIsAdmin();
   const ballot = useBallotWithMetadata(address);
 
-  const localData: ballotImpacts = useLocalStorage("ballot-draft")[0];
+  const [draft, _, clearDraft] = useLocalStorage<ballotImpacts>("ballot-draft");
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
     lowImpactProjects: [] as projectSchema[],
     mediumImpactProjects: [] as projectSchema[],
@@ -46,14 +45,14 @@ export default function Ballot({
   const [rulesCheck, setRulesCheck] = useState<string[]>([]);
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
 
-  console.log("ballot", ballot);
+  console.log("ballot", ballot.metadataData.error);
 
   useEffect(() => {
     setDroppedItems({
-      lowImpactProjects: localData?.lowImpactProjects || [],
-      mediumImpactProjects: localData?.mediumImpactProjects || [],
-      highImpactProjects: localData?.highImpactProjects || [],
-      highestImpactProjects: localData?.highestImpactProjects || [],
+      lowImpactProjects: draft?.lowImpactProjects ?? [],
+      mediumImpactProjects: draft?.mediumImpactProjects ?? [],
+      highImpactProjects: draft?.highImpactProjects ?? [],
+      highestImpactProjects: draft?.highestImpactProjects ?? [],
     });
   }, []);
 
@@ -69,6 +68,7 @@ export default function Ballot({
   const submit = useSubmitBallot({
     onSuccess: () => {
       toast.success("Ballot submitted successfully!");
+      clearDraft();
     },
     onError: (err: { reason?: string; data?: { message: string } }) => {
       toast.error("An error occurred submitting your ballot. ", {
@@ -83,8 +83,18 @@ export default function Ballot({
       });
     },
   });
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (isConnected && (isAdmin || config.voters.includes(address))) {
+      setIsLoading(false);
+    }
+  }, [isConnected, address, isAdmin]);
   const error = submit.error;
+
+  if (isLoading) {
+    return <Layout isFullWidth></Layout>;
+  }
 
   if (!isConnected || (!isAdmin && address && !config.voters.includes(address)))
     return (
@@ -168,7 +178,7 @@ export default function Ballot({
           />
         </DndProvider>
       );
-  } else
+  } else if(!ballot.metadataData.data)
     return (
       <Layout isFullWidth>
         <DndProvider backend={HTML5Backend}>
@@ -227,17 +237,4 @@ export default function Ballot({
         </div>
       </Layout>
     );
-
-  // FIXME: Original response
-  // return (
-  //   <Layout isFullWidth>
-  //     <DndProvider backend={HTML5Backend}>
-  //     <Rules rulesCheck={rulesCheck} />
-  //     <BallotAllocation
-  //       setDroppedItems={setDroppedItems}
-  //       droppedItems={droppedItems}
-  //     />
-  //   </DndProvider>
-  // </Layout>
-  // );
 }
