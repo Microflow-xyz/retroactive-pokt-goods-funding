@@ -32,8 +32,13 @@ export default function Ballot({
 }) {
   const { isConnected, address } = useAccount();
   const isAdmin = useIsAdmin();
-  const ballot = useBallotWithMetadata(address);
-
+  const {
+    ballotData,
+    metadataData,
+    refetchBallot,
+    isLoading: loadingBallot,
+    isError,
+  } = useBallotWithMetadata(address);
   const [draft, _, clearDraft] = useLocalStorage<ballotImpacts>("ballot-draft");
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
     lowImpactProjects: [] as projectSchema[],
@@ -45,7 +50,7 @@ export default function Ballot({
   const [rulesCheck, setRulesCheck] = useState<string[]>([]);
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
 
-  console.log("ballot", ballot.metadataData.error);
+  console.log("ballot", isError);
 
   useEffect(() => {
     setDroppedItems({
@@ -83,20 +88,13 @@ export default function Ballot({
       });
     },
   });
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (isConnected && (isAdmin || config.voters.includes(address))) {
-      setIsLoading(false);
-    }
-  }, [isConnected, address, isAdmin]);
   const error = submit.error;
 
-  if (isLoading) {
-    return <Layout isFullWidth></Layout>;
-  }
-
-  if (!isConnected || (!isAdmin && address && !config.voters.includes(address)))
+  if (
+    !isConnected ||
+    (!isAdmin && address && !config.voters.includes(address))
+  ) {
     return (
       <Layout isFullWidth>
         <div className="mt-20 flex w-full flex-col items-center justify-between gap-10">
@@ -104,7 +102,7 @@ export default function Ballot({
             <X color="#FFB3B2" strokeWidth={4} className=" h-9 w-9" />
           </span>
           <p className="flex max-w-[40%] flex-col items-center gap-3 text-center text-xl font-bold text-onPrimary-light">
-            You don’t have the permission to view this section.
+            You don't have the permission to view this section.
             <span className=" text-sm font-normal text-primaryContainer-light">
               Please connect your authorized wallet or contact us through{" "}
               <b>help desk</b> to ask for further help if you think there is a
@@ -114,7 +112,9 @@ export default function Ballot({
         </div>
       </Layout>
     );
-  else if (submit.isSuccess)
+  }
+
+  if (submit.isSuccess) {
     return (
       <Layout isFullWidth>
         <div className="mt-20 flex w-full flex-col items-center justify-between gap-10">
@@ -137,48 +137,26 @@ export default function Ballot({
         </div>
       </Layout>
     );
-  else if (!isModal && ballot?.metadataData?.data)
+  }
+
+  if (!isModal && metadataData?.data) {
     return (
       <Layout isFullWidth>
         <DndProvider backend={HTML5Backend}>
           <BallotRevocation
             ballot={{
-              time: ballot.ballotData.time,
-              id: ballot.ballotData.id,
-              data: ballot.metadataData.data,
+              time: ballotData?.time,
+              id: ballotData?.id,
+              data: metadataData.data,
             }}
-            isPending={ballot?.metadataData?.isPending}
+            isPending={loadingBallot}
           />
         </DndProvider>
       </Layout>
     );
-  else if (isModal) {
-    // FIXME: This should be removed
-    if (ballot?.metadataData?.data)
-      return (
-        <DndProvider backend={HTML5Backend}>
-          <BallotRevocation
-            ballot={{
-              time: ballot.ballotData.time,
-              id: ballot.ballotData.id,
-              data: ballot.metadataData.data,
-            }}
-            isPending={ballot?.metadataData?.isPending}
-          />
-        </DndProvider>
-      );
-    else
-      return (
-        <DndProvider backend={HTML5Backend}>
-          <BallotAllocation
-            setDroppedItems={setDroppedItems}
-            droppedItems={droppedItems}
-            isModal
-            projectName={projectName}
-          />
-        </DndProvider>
-      );
-  } else if(!ballot.metadataData.data)
+  }
+
+  if (isError) {
     return (
       <Layout isFullWidth>
         <DndProvider backend={HTML5Backend}>
@@ -206,35 +184,36 @@ export default function Ballot({
           <BallotAllocation
             setDroppedItems={setDroppedItems}
             droppedItems={droppedItems}
-            //FIXME: This might need modification
             isModal={isModal}
           />
+          <div className="mt-5 flex justify-end">
+            <Button
+              disabled={
+                Object.values(droppedItems).flat().length === 0 ||
+                rulesCheck ||
+                !isConnected
+              }
+              variant="primary"
+              className="w-fit"
+              type="submit"
+              isLoading={submit.isPending}
+              onClick={async () => {
+                submit.mutate({
+                  impacts: droppedItems,
+                });
+              }}
+            >
+              {submit?.isUploading
+                ? "Uploading metadata"
+                : submit?.isAttesting
+                  ? "Creating Ballot"
+                  : "Submit Ballot"}
+            </Button>
+          </div>
         </DndProvider>
-        <div className="mt-5 flex justify-end">
-          <Button
-            disabled={
-              submit.isPending ||
-              Object.values(droppedItems).flat().length === 0 ||
-              rulesCheck ||
-              !isConnected
-            }
-            variant="primary"
-            className="w-fit"
-            type="submit"
-            isLoading={submit.isPending}
-            onClick={async () => {
-              submit.mutate({
-                impacts: droppedItems,
-              });
-            }}
-          >
-            {submit?.isUploading
-              ? "Uploading metadata"
-              : submit?.isAttesting
-                ? "Creating Ballot"
-                : "Submit Ballot"}
-          </Button>
-        </div>
       </Layout>
     );
+  }
+
+  return <Layout isFullWidth></Layout>;
 }

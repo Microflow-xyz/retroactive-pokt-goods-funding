@@ -9,9 +9,17 @@ export function useBallot(id?: Address) {
 }
 
 export function useBallotWithMetadata(id?: Address) {
-  const ballot = useBallot(id);
+  const { data: ballotData, isLoading: isBallotLoading, isError: isBallotError, refetch: refetchBallot } = useBallot(id);
+
+  const metadataData = useMetadata<ballotImpacts>(ballotData?.metadataPtr);
+  const isMetadataLoading = !metadataData;
+  const isMetadataError = metadataData instanceof Error;
+
   return {
-    ballotData: { ...ballot.data },
-    metadataData: useMetadata<ballotImpacts>(ballot.data?.metadataPtr),
+    ballotData,
+    metadataData,
+    refetchBallot,
+    isLoading: isBallotLoading || isMetadataLoading,
+    isError: isBallotError || isMetadataError,
   };
 }
