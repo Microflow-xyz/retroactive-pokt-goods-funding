@@ -36,6 +36,16 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           </span>
           How it works?
         </Link>
+        <Link
+          target="_blank"
+          href="https://docs.pokt.network/community/retro-pokt-goods-funding/voting-rubric"
+          className="flex items-center rounded-lg border border-outline-dark px-2 py-1 text-sm font-medium text-outline-dark"
+        >
+          <span className=" mr-2 flex items-center rounded-full border border-outline-dark px-[0.375rem] text-xs font-bold text-outline-dark">
+            i
+          </span>
+          Rubric
+        </Link>
       </div>
 
       <p
