@@ -102,13 +102,12 @@ const DropTargetAccordion = ({
 
     return boxes;
   };
-
   const dynamicLabelObj = dynamicLabel(
     {
-      highest: droppedItems.highestImpactProjects.length,
-      high: droppedItems.highImpactProjects.length,
-      mid: droppedItems.mediumImpactProjects.length,
-      low: droppedItems.lowImpactProjects.length,
+      highest: droppedItems?.highestImpactProjects?.length,
+      high: droppedItems?.highImpactProjects?.length,
+      mid: droppedItems?.mediumImpactProjects?.length,
+      low: droppedItems?.lowImpactProjects?.length,
     },
     {
       highest: suggestCount.highestImpactProjects,
@@ -136,32 +135,33 @@ const DropTargetAccordion = ({
       </div>
       <div className="flex w-full">
         <ul className="mt-3 flex w-full flex-wrap gap-2">
-          {droppedItems[shelveName]?.map((item, index: number) => (
-            <li
-              className={`flex items-center justify-between gap-1`}
-              key={index}
-            >
-              <ProjectItem
-                isDraggable={setDroppedItems ? true : false}
-                onDelete={
-                  setDroppedItems
-                    ? () => {
-                        setDroppedItems({
-                          ...droppedItems,
-                          [shelveName]: [
-                            ...droppedItems[shelveName].filter(
-                              (project) => item !== project,
-                            ),
-                          ],
-                        });
-                      }
-                    : undefined
-                }
-                key={item.id}
-                project={item}
-              />
-            </li>
-          ))}
+          {droppedItems[shelveName] &&
+            droppedItems[shelveName]?.map((item, index: number) => (
+              <li
+                className={`flex items-center justify-between gap-1`}
+                key={index}
+              >
+                <ProjectItem
+                  isDraggable={setDroppedItems ? true : false}
+                  onDelete={
+                    setDroppedItems
+                      ? () => {
+                          setDroppedItems({
+                            ...droppedItems,
+                            [shelveName]: [
+                              ...droppedItems[shelveName].filter(
+                                (project) => item !== project,
+                              ),
+                            ],
+                          });
+                        }
+                      : undefined
+                  }
+                  key={item.id}
+                  project={item}
+                />
+              </li>
+            ))}
           {setDroppedItems && renderEmptyBoxes(suggestCount[shelveName])}
         </ul>
       </div>
