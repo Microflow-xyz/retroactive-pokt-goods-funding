@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { X, Check, ExternalLinkIcon, Globe, Mail } from "lucide-react";
 import { ProjectBanner } from "~/features/projects/components/ProjectBanner";
@@ -9,13 +9,15 @@ import ProjectImpact from "./ProjectImpact";
 // import { NameENS } from "~/components/ENS";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { type AppState } from "~/utils/state";
-import { useProjectMetadata } from "../hooks/useProjects";
 import { type Attestation } from "~/utils/fetchAttestations";
 import { LinkBox } from "./LinkBox";
 import { Button } from "~/components/ui/Button";
 import { useProfileWithMetadata } from "~/hooks/useProfile";
-import { useVoters } from "~/features/voters/components/VotersList";
-import url from "url";
+import { config } from "~/config";
+import LoadingBar from 'react-top-loading-bar';
+import type { LoadingBarRef } from 'react-top-loading-bar';
+import {useProjectMetadata} from "../hooks/useProjects";
+import { type Application } from "~/features/applications/types";
 
 export default function ProjectDetails({
   attestation,
@@ -23,27 +25,42 @@ export default function ProjectDetails({
   address,
   state,
   isAdmin = false,
+  projectMetadata,
+  isLoading = false,
 }: {
   action: ReactNode;
   attestation?: Attestation;
   address?: string;
   state?: AppState;
   isAdmin: boolean;
+  projectMetadata: Application;
+  isLoading: boolean;
 }) {
+  const LoadingStateRef = useRef<LoadingBarRef>(null)
   const metadata = useProjectMetadata(attestation?.metadataPtr);
   const profile = useProfileWithMetadata(attestation?.recipient);
   const {
     bio,
     websiteUrl,
     // payoutAddress,
+    impactCategory,
     fundingSources,
-  } = metadata.data ?? {};
-  const { data: voters } = useVoters();
-
-  console.log("metadata?.data", metadata?.data?.impactCategory);
+    email,
+    isDAOVoters,
+    socialMedias,
+  } = projectMetadata ?? {};
+  const voters = config?.voters;
+  useEffect(()=>{
+    if(metadata?.isPending) {
+      return LoadingStateRef?.current?.continuousStart()
+    } else {
+      return LoadingStateRef?.current?.complete()
+    }
+  }, [metadata?.isPending])
 
   return (
     <div className="relative">
+      <LoadingBar color='white' ref={LoadingStateRef} />
       <div className="overflow-hidden">
         <ProjectBanner size="lg" profileId={attestation?.recipient} />
       </div>
@@ -71,7 +88,7 @@ export default function ProjectDetails({
               >
                 <Globe className=" h-4 w-4" />
                 <span>Website</span>
-                <ExternalLinkIcon className=" h-4 w-4" />
+                <ExternalLinkIcon className="h-4 w-4" />
               </Link>
             )}
           </div>
@@ -79,24 +96,23 @@ export default function ProjectDetails({
       </div>
       <div className="flex flex-col-reverse items-start justify-between gap-5 md:flex-row md:items-center md:gap-4">
         <div className="flex flex-col items-start justify-between gap-2">
-          <div className="flex items-end gap-3  ">
+          <div className="flex items-center gap-2 ">
             <h1 className="text-2xl font-bold">{attestation?.name}</h1>
-            {metadata?.data?.impactCategory && (
-              <span className=" rounded-full bg-gray-200 px-3 py-1 text-sm transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-outline-dark">
-                {metadata?.data?.impactCategory}
+            {impactCategory && (
+              <span className=" rounded-lg bg-gray-200 px-2 py-1 text-sm font-medium transition dark:border dark:border-outline-dark dark:bg-transparent dark:text-onSurface-dark">
+                {impactCategory}
               </span>
             )}
+            {action}
           </div>
           <p className="break-words text-justify text-lg ">{bio}</p>
-          {(isAdmin || voters?.some((item) => item.recipient === address)) &&
-            metadata?.data?.email && (
-              <p className="flex items-center gap-2">
-                <Mail className="h-4 w-4" strokeWidth={1.5} />
-                {metadata?.data?.email}
-              </p>
-            )}
+          {(isAdmin || voters?.some((item) => item === address)) && email && (
+            <p className="flex items-center gap-2">
+              <Mail className="h-4 w-4" strokeWidth={1.5} />
+              {email}
+            </p>
+          )}
         </div>
-        {action}
 
         {address &&
           address === attestation?.attester &&
@@ -111,9 +127,9 @@ export default function ProjectDetails({
             </Button>
           )}
       </div>
-      {(isAdmin || voters?.some((item) => item.recipient === address)) && (
+      {(isAdmin || voters?.some((item) => item === address)) && (
         <p className="mt-6 flex items-center gap-2">
-          {metadata?.data?.isDAOVoters ? (
+          {isDAOVoters ? (
             <span className=" rounded-full border border-[#00B669] p-1 ">
               <Check className="h-4 w-4" color="#00B669" strokeWidth={1.5} />
             </span>
@@ -132,12 +148,9 @@ export default function ProjectDetails({
           Impact statements
         </Heading>
 
-        <ProjectContributions
-          isLoading={metadata.isPending}
-          project={metadata.data}
-        />
+        <ProjectContributions isLoading={isLoading} project={projectMetadata} />
 
-        <ProjectImpact isLoading={metadata.isPending} project={metadata.data} />
+        <ProjectImpact isLoading={isLoading} project={projectMetadata} />
         {fundingSources?.length > 0 && (
           <div className="mt-6 md:mt-10">
             <Heading className="m-0" as="h3" size="lg">
@@ -174,13 +187,13 @@ export default function ProjectDetails({
         )}
 
         <div className="mt-6 flex flex-col items-baseline justify-between md:mt-10 md:flex-row">
-          {metadata?.data?.socialMedias.length > 0 && (
+          {socialMedias?.length > 0 && (
             <div className="w-full md:w-1/3">
               <div className=" mb-3 text-lg font-bold text-onSurface-dark">
                 Social media links
               </div>
               <LinkBox
-                links={metadata?.data?.socialMedias}
+                links={socialMedias}
                 renderItem={(link) => (
                   <div className="flex-1 truncate" title={link.type}>
                     {link.type} Link
@@ -198,7 +211,7 @@ export default function ProjectDetails({
                 </div>
                 <LinkBox
                   shouldValidateWithHttps={false}
-                  links={[{ url: `${attestation?.refUID}` }]}
+                  links={[{ url: attestation?.refUID }]}
                   renderItem={(link) => (
                     <div className="flex-1 truncate" title={link.url}>
                       {link.url}

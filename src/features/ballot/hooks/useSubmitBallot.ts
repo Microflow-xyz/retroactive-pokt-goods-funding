@@ -4,7 +4,7 @@ import { useUploadMetadata } from "~/hooks/useMetadata";
 import { config, eas } from "~/config";
 import { useEthersSigner } from "~/hooks/useEthersSigner";
 import { toast } from "sonner";
-import { type BallotImpacts } from "../../types";
+import { type ballotImpacts } from "../types";
 import { type TransactionError } from "~/features/voters/hooks/useApproveVoters";
 
 export function useSubmitBallot({
@@ -18,20 +18,17 @@ export function useSubmitBallot({
   const signer = useEthersSigner();
   const upload = useUploadMetadata();
   const attestation = useCreateAttestation();
-
-  return useMutation({
-    mutationFn: async (values: {
-      voterId: string;
-      impacts: BallotImpacts;
-    }) => {
+  const mutation =  useMutation({
+    mutationFn: async (values: { impacts: ballotImpacts }) => {
       if (!signer) throw new Error("Connect wallet first");
 
       const attestations = await Promise.all([
-        upload.mutateAsync(values.ballot).then(({ url: metadataPtr }) => {
+        upload.mutateAsync(values.impacts).then(({ url: metadataPtr }) => {
           console.log("Creating ballot attestation data");
           return attestation.mutateAsync({
-            schemaUID: eas.schemas.ballot,
+            schemaUID: eas.schemas.metadata,
             values: {
+              name: "ballot attestation",
               metadataType: 0, // "http"
               metadataPtr,
               type: "ballot",
@@ -47,4 +44,10 @@ export function useSubmitBallot({
     onSuccess,
     onError,
   });
+  return {
+    ...mutation,
+    error: attest.error ?? upload.error ?? mutation.error,
+    isAttesting: attest.isPending,
+    isUploading: upload.isPending,
+  };
 }

@@ -28,7 +28,8 @@ export const Dialog = ({
             <RadixDialog.Title className="mb-6 text-2xl font-bold">
               {title}
             </RadixDialog.Title>
-            {children}
+            <div className="max-h-[80vh] pr-[0.875rem] overflow-y-auto">{children}</div>
+
             {onOpenChange ? (
               <RadixDialog.Close asChild>
                 <IconButton
@@ -47,7 +48,7 @@ export const Dialog = ({
 const Content = createComponent(
   RadixDialog.Content,
   tv({
-    base: "z-20 fixed bottom-0 rounded-t-2xl bg-white dark:bg-surfaceContainerLow-dark dark:text-white px-7 py-6 w-full sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl",
+    base: "z-20 fixed bottom-0 rounded-t-2xl bg-white dark:bg-background-dark dark:text-white px-7 py-6 w-full sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl",
     variants: {
       size: {
         sm: "sm:w-[456px] md:w-[456px]",

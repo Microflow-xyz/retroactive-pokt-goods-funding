@@ -35,3 +35,14 @@ export function useProjectMetadata(metadataPtr?: string) {
 export function useProjectCount() {
   return api.projects.count.useQuery();
 }
+
+export function useProjectsIds(filterOverride?: Partial<Filter>) {
+  const { ...filter } = useFilter();
+  return api.projects.ids.useQuery({ ...filter, ...filterOverride });
+}
+
+export function useFetchAllProjects(options: {
+  refetchInterval: number | undefined;
+}) {
+  return api.projects.getAll.useQuery(undefined, options);
+}

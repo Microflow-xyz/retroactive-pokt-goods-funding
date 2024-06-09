@@ -30,3 +30,15 @@ export function useAttest() {
     },
   });
 }
+
+export function useRevoke() {
+  const signer = useEthersSigner();
+  return useMutation({
+    mutationFn: async (data: { schema: string; uid: string }) => {
+      if (!signer) throw new Error("Connect wallet first");
+      const eas = createEAS(signer);
+
+      return eas.revoke({ schema: data.schema, data: { uid: data.uid } });
+    },
+  });
+}

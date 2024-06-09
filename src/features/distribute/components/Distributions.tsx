@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/Button";
 import { Form } from "~/components/ui/Form";
 import { Spinner } from "~/components/ui/Spinner";
 import { Th, Thead, Tr } from "~/components/ui/Table";
-import { DistributionForm } from "~/components/AllocationList";
+// import { DistributionForm } from "~/components/AllocationList";
 import {
   type Distribution,
   DistributionSchema,
@@ -95,7 +95,7 @@ export function Distributions() {
         </div>
         <div>Total votes: {votes.data?.totalVotes}</div>
 
-        <div className="min-h-[360px] overflow-auto">
+        {/* <div className="min-h-[360px] overflow-auto">
           <DistributionForm
             renderHeader={() => (
               <Thead>
@@ -107,7 +107,7 @@ export function Distributions() {
               </Thead>
             )}
           />
-        </div>
+        </div> */}
         <ConfirmDistributionDialog
           distribution={confirmDistribution}
           onOpenChange={() => setConfirmDistribution([])}

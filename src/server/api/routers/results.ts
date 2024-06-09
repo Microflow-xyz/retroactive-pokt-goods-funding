@@ -2,11 +2,12 @@ import { z } from "zod";
 import type { PrismaClient } from "@prisma/client";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { FilterSchema } from "~/features/filter/types";
-import { fetchAttestations } from "~/utils/fetchAttestations";
+import { createDataFilter, fetchAttestations } from "~/utils/fetchAttestations";
 import { eas } from "~/config";
 import { calculateVotes } from "~/utils/calculateResults";
 import { type Vote } from "~/features/ballot-/types";
 import { getSettings } from "./config";
+import { fetchMetadata } from "~/utils/fetchMetadata";
 
 export const resultsRouter = createTRPCRouter({
   votes: publicProcedure.query(async ({ ctx }) =>
@@ -47,6 +48,23 @@ export const resultsRouter = createTRPCRouter({
         ),
       );
     }),
+
+  ballots: publicProcedure.query(async () => {
+    try {
+      const ballots = await fetchAttestations([eas.schemas.metadata], {
+        where: {
+          ...createDataFilter("type", "bytes32", "ballot"),
+        },
+      });
+      const results = await Promise.all(
+        ballots.map(async (ballot) => await fetchMetadata(ballot.metadataPtr)),
+      );
+      return results;
+    } catch (error) {
+      console.error("Error processing ballots", error);
+      throw error;
+    }
+  }),
 });
 
 const defaultCalculation = { style: "custom", threshold: 1 };

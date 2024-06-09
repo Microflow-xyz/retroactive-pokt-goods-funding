@@ -30,6 +30,28 @@ export const projectsRouter = createTRPCRouter({
       };
     });
   }),
+  getAll: publicProcedure.query(async () => {
+    return fetchAttestations([eas.schemas.approval], {
+      where: {
+        attester: { in: config.admins },
+        ...createDataFilter("type", "bytes32", "application"),
+      },
+    }).then((attestations = []) => {
+      const approvedIds = attestations
+        .map(({ refUID }) => refUID)
+        .filter(Boolean);
+
+      return fetchAttestations([eas.schemas.metadata], {
+        where: {
+          id: { in: approvedIds },
+        },
+      }).then((attestations = []) => {
+        return attestations.map((attestation) => {
+          return { id: attestation.id, name: attestation.name };
+        });
+      });
+    });
+  }),
   get: publicProcedure
     .input(z.object({ ids: z.array(z.string()) }))
     .query(async ({ input: { ids } }) => {
@@ -102,6 +124,35 @@ export const projectsRouter = createTRPCRouter({
             {},
           ),
         );
+    }),
+    ids: publicProcedure.input(FilterSchema).query(async ({ input }) => {
+      const filters = [
+        createDataFilter("type", "bytes32", "application"),
+        createDataFilter("round", "bytes32", config.roundId),
+      ];
+      if (input.search) {
+        filters.push(createSearchFilter(input.search));
+      }
+      return fetchAttestations([eas.schemas.approval], {
+        where: {
+          attester: { in: config.admins },
+          ...createDataFilter("type", "bytes32", "application"),
+        },
+      }).then((attestations = []) => {
+        const approvedIds = attestations
+          .map(({ refUID }) => refUID)
+          .filter(Boolean);
+  
+        return fetchAttestations([eas.schemas.metadata], {
+          orderBy: [createOrderBy(input.orderBy, input.sortOrder)],
+          where: {
+            id: { in: approvedIds },
+            AND: filters,
+          },
+        }).then((attestations = []) => {
+          return attestations.map(({ id }) => id);
+        });
+      });
     }),
 });
 

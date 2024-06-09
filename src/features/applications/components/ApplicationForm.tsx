@@ -36,6 +36,7 @@ import { type Attestation } from "~/utils/fetchAttestations";
 import { isBefore } from "date-fns";
 import { config } from "~/config";
 import Link from "next/link";
+import TextEditor from "./TextEditor";
 
 const ApplicationCreateSchema = z.object({
   profile: ProfileSchema,
@@ -53,9 +54,7 @@ export function ApplicationForm({
 }) {
   const metadata = useProjectMetadata(projectInfo?.metadataPtr);
   const profile = useProfileWithMetadata(projectInfo?.recipient);
-
-  const clearDraft = useLocalStorage("application-draft")[2];
-
+  const [draft, _, clearDraft] = useLocalStorage("application-draft");
   const [defaultValues, setDefaultValues] = useState();
   const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
   const { data: session } = useSession();
@@ -319,9 +318,10 @@ export function ApplicationForm({
               label="Contribution description"
               required
             >
-              <Textarea
-                rows={4}
-                placeholder="What have your project contributed to?"
+              <TextEditor
+                // @ts-ignore
+                draftedValue={draft?.application?.contributionDescription}
+                name="application.contributionDescription"
               />
             </FormControl>
 
@@ -330,9 +330,10 @@ export function ApplicationForm({
               label="Impact description"
               required
             >
-              <Textarea
-                rows={4}
-                placeholder="What impact has your project had?"
+              <TextEditor
+                // @ts-ignore
+                draftedValue={draft?.application?.impactDescription}
+                name="application.impactDescription"
               />
             </FormControl>
             <ImpactTags />
@@ -566,7 +567,7 @@ function CreateApplicationButton({
   return (
     <div className="mt-8 flex items-center justify-end">
       <Button
-        disabled={isLoading || !session}
+        disabled={isLoading}
         variant="primary"
         type="submit"
         isLoading={isLoading}

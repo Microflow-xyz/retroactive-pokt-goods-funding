@@ -155,13 +155,13 @@ const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
   return next({ ctx });
 });
 
-const enforceReviewPeriodCheck = t.middleware(({ ctx, next }) => {
+const enforceVotingPeriodCheck = t.middleware(({ ctx, next }) => {
   const address = ctx.session?.user.name;
-  const endOfReviewPeriod = config.reviewEndsAt;
+  const endOfVotingPeriod = config.votingEndsAt;
   const now = new Date();
 
-  // after review period
-  if (now >= endOfReviewPeriod) {
+  // after Voting period
+  if (now >= endOfVotingPeriod) {
     if (!address) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
@@ -205,8 +205,8 @@ export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 export const adminProcedure = protectedProcedure.use(enforceUserIsAdmin);
 export const voterProcedure = protectedProcedure.use(enforceUserIsVoter);
 export const protectedDiscussionProcedure = protectedProcedure.use(
-  enforceReviewPeriodCheck,
+  enforceVotingPeriodCheck,
 );
 export const unprotectedDiscussionProcedure = t.procedure.use(
-  enforceReviewPeriodCheck,
+  enforceVotingPeriodCheck,
 );

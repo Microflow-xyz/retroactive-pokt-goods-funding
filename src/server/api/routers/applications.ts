@@ -31,7 +31,7 @@ export const applicationsRouter = createTRPCRouter({
         },
       });
     }),
-  list: adminProcedure.input(FilterSchema).query(async ({}) => {
+  list: publicProcedure.input(FilterSchema).query(async ({}) => {
     return fetchAttestations([eas.schemas.metadata], {
       orderBy: [{ time: "desc" }],
       where: {

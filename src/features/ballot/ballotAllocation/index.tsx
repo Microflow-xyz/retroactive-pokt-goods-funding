@@ -1,54 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { z } from "zod";
-import { toast } from "sonner";
-import { useSession } from "next-auth/react";
-import { useSearchProjects } from "~/features/projects/hooks/useProjects";
-import { type Attestation } from "~/utils/fetchAttestations";
-import {
-  BallotImpactsSchema,
-  type ballotImpacts,
-  type projectSchema,
-} from "../types";
-import { Input, Form, FormControl } from "~/components/ui/Form";
+import React, { useMemo, useState } from "react";
+import { type ballotImpacts } from "../types";
+import { useApplications } from "~/features/applications/hooks/useApplications";
+import { useApprovedApplications } from "~/features/applications/hooks/useApprovedApplications";
+import { Input } from "~/components/ui/Form";
 import { useDrop } from "react-dnd";
 import ProjectItem from "./ProjectItem";
 import DropTargetAccordion from "./DropTargetAccordion";
-import { useSubmitBallot } from "./hooks/useSubmitBallot";
-import { useIsCorrectNetwork } from "~/hooks/useIsCorrectNetwork";
 
 //FIXME: This is modal should be removed
 function BallotAllocation({
   droppedItems,
   setDroppedItems,
   isModal,
+  projectName,
 }: {
   droppedItems: ballotImpacts;
   setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
   isModal: boolean;
+  projectName?: string;
 }) {
   // const projects = useSearchProjects();
-  const projects: projectSchema[] = [
-    { id: 1, name: "project1" },
-    { id: 2, name: "project2" },
-    { id: 3, name: "project3" },
-    { id: 4, name: "project4" },
-    { id: 5, name: "project5" },
-    { id: 6, name: "project6" },
-    { id: 7, name: "project7" },
-    { id: 8, name: "project8" },
-    { id: 9, name: "project9" },
-    { id: 10, name: "project10" },
-    { id: 11, name: "project11" },
-    { id: 12, name: "project12" },
-    { id: 13, name: "project13" },
-    { id: 14, name: "project14" },
-    { id: 15, name: "project15" },
-    { id: 16, name: "project16" },
-  ];
-  const allProjects = projects.filter((project) => {
+
+  const applications = useApplications();
+  const approved = useApprovedApplications();
+
+  const approvedById = useMemo(
+    () =>
+      approved.data?.reduce(
+        (map, x) => (map.set(x.refUID, true), map),
+        new Map<string, boolean>(),
+      ),
+    [approved.data],
+  );
+
+  const approvedProjects = applications.data?.filter((application) =>
+    approvedById?.get(application.id),
+  );
+
+  const refUIDs: string[] | undefined = approvedProjects
+    ?.filter(
+      (item) =>
+        item.refUID !==
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+    )
+    .map((item) => item.refUID);
+
+    const filteredData = approvedProjects?.filter((item) => !refUIDs?.includes(item.id));
+
+
+  const allProjects = filteredData?.filter((project) => {
     for (let shelve in droppedItems) {
       if (
-        droppedItems[shelve]?.findIndex((item) => item.id === project.id) !== -1
+        droppedItems[shelve]?.findIndex((item) => item?.id === project.id) !==
+        -1
       ) {
         return false; // Exclude this project from the filtered array
       }
@@ -56,42 +60,15 @@ function BallotAllocation({
     return true; // Include this project in the filtered array
   });
 
-  const { isCorrectNetwork, correctNetwork } = useIsCorrectNetwork();
-  const { data: session } = useSession();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredProjects, setFilteredProjects] = useState(allProjects);
+  const [searchTerm, setSearchTerm] = useState(projectName ?? "");
 
-  const SubmitBallotSchema = z.object({
-    voterId: z.string(),
-    impacts: BallotImpactsSchema,
-  });
-
-  const submit = useSubmitBallot({
-    onSuccess: () => {
-      toast.success("Ballot submitted successfully!");
-    },
-    onError: (err: { reason?: string; data?: { message: string } }) => {
-      toast.error("An error occurred submitting your ballot. ", {
-        description:
-          err.reason ??
-          err.data?.message ??
-          (!isCorrectNetwork &&
-            `You must be connected to ${correctNetwork.name}`) ??
-          (!session && (
-            <div>You must connect wallet to create an application</div>
-          )),
-      });
-    },
-  });
   const handleSearch = (value: string) => {
     setSearchTerm(value);
   };
 
-  useEffect(() => {
-    setFilteredProjects(
-      allProjects.filter((project) =>
-        project.name.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+  const filteredProjects = useMemo(() => {
+    return allProjects?.filter((project) =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [allProjects, searchTerm]);
 
@@ -100,7 +77,6 @@ function BallotAllocation({
       accept: "ITEM",
       drop: (item) => {
         setDroppedItems((prevDroppedItems) => {
-          // Remove the item from the corresponding shelf
           for (let shelve in prevDroppedItems) {
             if (
               prevDroppedItems[shelve]?.findIndex((i) => i.id === item.id) !==
@@ -133,21 +109,26 @@ function BallotAllocation({
         <h4 className="text-base font-semibold">
           Application Pool ({allProjects?.length})
         </h4>
-        <div className="flex flex-col items-center gap-6 rounded-xl border border-outline-dark bg-onBackground-dark p-5">
+        <div
+          ref={dropApplicationPool}
+          className={`flex flex-col items-center gap-6 rounded-xl border border-outline-dark  p-5 ${
+            isOverApplicationPool
+              ? " bg-inverseSurface-light"
+              : "bg-onBackground-dark"
+          }`}
+        >
           <Input
             placeholder="Search among projects"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
           />
           <div
-            ref={dropApplicationPool}
-            className={`flex min-h-10 w-full flex-wrap gap-2 rounded-lg p-1 ${
-              isOverApplicationPool ? " bg-inverseSurface-light" : ""
-            }`}
+            className={`flex max-h-80 overflow-y-auto min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
           >
-            {filteredProjects.map((project, index) => (
+            {filteredProjects?.map((project, index) => {
+              return(
               <ProjectItem key={project.id} project={project} />
-            ))}
+            )})}
           </div>
         </div>
       </div>
@@ -155,47 +136,38 @@ function BallotAllocation({
         className={`flex ${isModal ? "mt-3 w-full" : "w-1/2"} flex-col justify-between gap-3`}
       >
         <h4 className="text-base font-semibold">Impact Tiers</h4>
+
         <div className="rounded-xl border border-outline-dark bg-onBackground-dark">
-          <Form
-            schema={SubmitBallotSchema}
-            onSubmit={async ({ voterId, impacts }) => {
-              submit.mutate({
-                voterId,
-                impacts,
-              });
-            }}
-          >
-            <DropTargetAccordion
-              shelveName="highestImpactProjects"
-              label={`Highest Impact`}
-              setDroppedItems={setDroppedItems}
-              droppedItems={droppedItems}
-              className="border-b border-outline-dark"
-            />
+          <DropTargetAccordion
+            shelveName="highestImpactProjects"
+            label={`Highest Impact`}
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+            className="border-b border-outline-dark"
+          />
 
-            <DropTargetAccordion
-              shelveName="highImpactProjects"
-              label={`High Impact`}
-              setDroppedItems={setDroppedItems}
-              droppedItems={droppedItems}
-              className="border-b border-outline-dark"
-            />
+          <DropTargetAccordion
+            shelveName="highImpactProjects"
+            label={`High Impact`}
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+            className="border-b border-outline-dark"
+          />
 
-            <DropTargetAccordion
-              shelveName="mediumImpactProjects"
-              label={`Medium Impact`}
-              setDroppedItems={setDroppedItems}
-              droppedItems={droppedItems}
-              className="border-b border-outline-dark"
-            />
+          <DropTargetAccordion
+            shelveName="mediumImpactProjects"
+            label={`Medium Impact`}
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+            className="border-b border-outline-dark"
+          />
 
-            <DropTargetAccordion
-              shelveName="lowImpactProjects"
-              label={`Low Impact`}
-              setDroppedItems={setDroppedItems}
-              droppedItems={droppedItems}
-            />
-          </Form>
+          <DropTargetAccordion
+            shelveName="lowImpactProjects"
+            label={`Low Impact`}
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+          />
         </div>
       </div>
     </div>

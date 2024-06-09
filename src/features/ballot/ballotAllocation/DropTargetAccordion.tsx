@@ -3,8 +3,6 @@ import { useDrop } from "react-dnd";
 import { dynamicLabel, gen } from "./helpers";
 import { type ballotImpacts } from "../types";
 import { type Attestation } from "~/utils/fetchAttestations";
-import { X } from "lucide-react";
-import { ExternalLinkIcon } from "lucide-react";
 import ProjectItem from "./ProjectItem";
 
 const DropTargetAccordion = ({
@@ -17,7 +15,7 @@ const DropTargetAccordion = ({
   label: string;
   className?: string;
   droppedItems: ballotImpacts;
-  setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
+  setDroppedItems?: React.Dispatch<React.SetStateAction<ballotImpacts>>;
   shelveName:
     | "lowImpactProjects"
     | "mediumImpactProjects"
@@ -34,31 +32,32 @@ const DropTargetAccordion = ({
     return {
       accept: "ITEM",
       drop: (item) => {
-        setDroppedItems((prevDroppedItems) => {
-          // Find the index of the item in the source DropTargetAccordion
-          const sourceShelveName = Object.keys(prevDroppedItems).find(
-            (shelve) =>
-              prevDroppedItems[shelve]?.some((i) => i?.id === item?.id),
-          );
+        if (setDroppedItems)
+          setDroppedItems((prevDroppedItems) => {
+            // Find the index of the item in the source DropTargetAccordion
+            const sourceShelveName = Object.keys(prevDroppedItems).find(
+              (shelve) =>
+                prevDroppedItems[shelve]?.some((i) => i?.id === item?.id),
+            );
 
-          // Remove the item from the source DropTargetAccordion
-          if (sourceShelveName) {
-            const updatedSourceItems = prevDroppedItems[
-              sourceShelveName
-            ].filter((i) => i?.id !== item?.id);
+            // Remove the item from the source DropTargetAccordion
+            if (sourceShelveName) {
+              const updatedSourceItems = prevDroppedItems[
+                sourceShelveName
+              ].filter((i) => i?.id !== item?.id);
+              return {
+                ...prevDroppedItems,
+                [sourceShelveName]: updatedSourceItems,
+                [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
+              };
+            }
+
+            // If the item is not found in any DropTargetAccordion, add it to the target DropTargetAccordion
             return {
               ...prevDroppedItems,
-              [sourceShelveName]: updatedSourceItems,
               [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
             };
-          }
-
-          // If the item is not found in any DropTargetAccordion, add it to the target DropTargetAccordion
-          return {
-            ...prevDroppedItems,
-            [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
-          };
-        });
+          });
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -103,13 +102,12 @@ const DropTargetAccordion = ({
 
     return boxes;
   };
-
   const dynamicLabelObj = dynamicLabel(
     {
-      highest: droppedItems.highestImpactProjects.length,
-      high: droppedItems.highImpactProjects.length,
-      mid: droppedItems.mediumImpactProjects.length,
-      low: droppedItems.lowImpactProjects.length,
+      highest: droppedItems?.highestImpactProjects?.length,
+      high: droppedItems?.highImpactProjects?.length,
+      mid: droppedItems?.mediumImpactProjects?.length,
+      low: droppedItems?.lowImpactProjects?.length,
     },
     {
       highest: suggestCount.highestImpactProjects,
@@ -123,27 +121,48 @@ const DropTargetAccordion = ({
       className={`${className} m-1 p-5 pb-3  ${
         isOver ? " bg-inverseSurface-light" : ""
       }`}
-      ref={drop}
+      ref={setDroppedItems ? drop : undefined}
     >
       <div className=" flex cursor-pointer items-center gap-2">
         {label}
-        <span
-          className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj?.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
-        >
-          {dynamicLabelObj?.text}
-        </span>
+        {setDroppedItems && (
+          <span
+            className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj?.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
+          >
+            {dynamicLabelObj?.text}
+          </span>
+        )}
       </div>
       <div className="flex w-full">
         <ul className="mt-3 flex w-full flex-wrap gap-2">
-          {droppedItems[shelveName]?.map((item, index: number) => (
-            <li
-              className={`flex items-center justify-between gap-1`}
-              key={index}
-            >
-              <ProjectItem key={item.id} project={item} />
-            </li>
-          ))}
-          {renderEmptyBoxes(suggestCount[shelveName])}
+          {droppedItems[shelveName] &&
+            droppedItems[shelveName]?.map((item, index: number) => (
+              <li
+                className={`flex items-center justify-between gap-1`}
+                key={index}
+              >
+                <ProjectItem
+                  isDraggable={setDroppedItems ? true : false}
+                  onDelete={
+                    setDroppedItems
+                      ? () => {
+                          setDroppedItems({
+                            ...droppedItems,
+                            [shelveName]: [
+                              ...droppedItems[shelveName].filter(
+                                (project) => item !== project,
+                              ),
+                            ],
+                          });
+                        }
+                      : undefined
+                  }
+                  key={item.id}
+                  project={item}
+                />
+              </li>
+            ))}
+          {setDroppedItems && renderEmptyBoxes(suggestCount[shelveName])}
         </ul>
       </div>
     </div>
