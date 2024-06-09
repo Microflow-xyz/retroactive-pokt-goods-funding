@@ -24,7 +24,6 @@ export function useSubmitBallot({
 
       const attestations = await Promise.all([
         upload.mutateAsync(values.impacts).then(({ url: metadataPtr }) => {
-          console.log("Creating ballot attestation data");
           return attestation.mutateAsync({
             schemaUID: eas.schemas.metadata,
             values: {

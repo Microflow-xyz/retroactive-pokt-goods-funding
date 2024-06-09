@@ -93,7 +93,6 @@ export function ApplicationForm({
       if (!isEditMode) clearDraft();
     },
     onError: (err: { reason?: string; data?: { message: string } }) => {
-      console.log("err", err);
       toast.error("Application create error", {
         description:
           err.reason ??

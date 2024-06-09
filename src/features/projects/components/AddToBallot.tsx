@@ -19,7 +19,6 @@ export const ProjectAddToBallot = ({
     }
   }, []);
 
-  console.log("localStorage?.getItem", isSubmitted);
   const { address } = useAccount();
   if (getAppState() !== "VOTING" && !isAdmin) return null;
   return (
