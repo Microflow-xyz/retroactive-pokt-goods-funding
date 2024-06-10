@@ -5,15 +5,22 @@ import { type ballotImpacts } from "~/features/ballot/types";
 import { metadata } from "~/config";
 
 export function useBallot(id?: Address, transactionId?: string) {
-  return api.ballot.get.useQuery(
+  const { data, isLoading, isError, refetch } = api.ballot.get.useQuery(
     { id: String(id), transactionId },
-    { enabled: Boolean(id) },
+    { enabled: Boolean(id) }
   );
+
+  return {
+    ballotData: data,
+    isLoading,
+    isError: isError || data instanceof Error,
+    refetchBallot: refetch,
+  };
 }
 
 export function useBallotWithMetadata(id?: Address, transactionId?: string) {
   const {
-    data: ballotData,
+    ballotData,
     isLoading: isBallotLoading,
     isError: isBallotError,
     refetch: refetchBallot,
