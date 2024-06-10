@@ -38,14 +38,16 @@ export default function Ballot({
   const isAdmin = useIsAdmin();
 
   const [draft, _, clearDraft] = useLocalStorage<ballotImpacts>("ballot-draft");
-  const [transactionId, setTransactionId, clearTransaction] =
-    useLocalStorage<string>("transaction");
+  const [transactionId, setTransactionId] = useLocalStorage<{
+    submit?: string;
+    revoke?: string;
+  }>("transaction");
   const {
     ballotData,
     metadataData,
     isLoading: loadingBallot,
     isError,
-  } = useBallotWithMetadata(address, transactionId);
+  } = useBallotWithMetadata(address, transactionId?.submit);
 
   const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
     lowImpactProjects: [] as projectSchema[],
@@ -101,31 +103,28 @@ export default function Ballot({
   });
 
   useEffect(() => {
-    if (submit?.data?.tx?.hash) setTransactionId(submit.data?.tx?.hash);
+    if (submit?.data?.tx?.hash)
+      setTransactionId({ submit: submit.data?.tx?.hash, revoke: undefined });
   }, [submit?.data]);
 
   const error = submit?.error;
 
   useEffect(() => {
     setIsPermitted(getPermission(isAdmin, isConnected, address));
-    if (isPermitted === false) setLoadingState(false);
-  }, [isConnected, address, isAdmin, isPermitted]);
+    if (isPermitted !== undefined && isPermitted === false && !loadingBallot)
+      setLoadingState(false);
+  }, [isConnected, address, isAdmin, isPermitted, loadingBallot]);
 
-  console.log("isPermitted", isPermitted);
-  console.log("setLoadingState", loadingState);
   useEffect(() => {
     if (!loadingBallot)
-      if (ballotData && metadataData?.data) {
+      if (ballotData && metadataData?.data && !transactionId?.revoke) {
         setUserBallot({ ballot: ballotData, metadata: metadataData.data });
         setLoadingState(false);
       } else if (isError) {
         setUserBallot(undefined);
         setLoadingState(false);
-      }
+      } else if (transactionId?.revoke) setLoadingState(false);
   }, [isError, ballotData, loadingBallot, metadataData?.data]);
-  console.log("isError", isError);
-  console.log("loadingBallot", loadingBallot);
-  console.log("transactionId", transactionId);
 
   if (isModal) {
     // FIXME: This should be removed
@@ -174,8 +173,11 @@ export default function Ballot({
                       id: userBallot.ballot?.id,
                       data: userBallot.metadata,
                     }}
-                    clearTransaction={() => {
-                      clearTransaction();
+                    clearTransaction={(id: string) => {
+                      setTransactionId({
+                        submit: undefined,
+                        revoke: id,
+                      });
                       setUserBallot(undefined);
                     }}
                   />
@@ -183,7 +185,7 @@ export default function Ballot({
               );
             }
             if (!userBallot)
-              if (transactionId)
+              if (transactionId?.submit)
                 return (
                   <div className="mt-20 flex flex-col items-center gap-3">
                     <p className="flex items-center font-bold">

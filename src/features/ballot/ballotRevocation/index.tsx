@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Skeleton } from "~/components/ui/Skeleton";
 import { formatDate } from "~/utils/time";
 import { type ballotImpacts } from "~/features/ballot/types";
 import DropTargetAccordion from "../ballotAllocation/DropTargetAccordion";
@@ -14,7 +13,7 @@ const BallotRevocation = ({
   clearTransaction,
 }: {
   ballot: { time?: number; id: string; data: ballotImpacts };
-  clearTransaction: () => void;
+  clearTransaction: (id: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,7 +26,7 @@ const BallotRevocation = ({
 
   useEffect(() => {
     if (isSuccess) {
-      clearTransaction();
+      clearTransaction(data?.tx?.hash);
     }
   }, [isSuccess, data, clearTransaction]);
 
