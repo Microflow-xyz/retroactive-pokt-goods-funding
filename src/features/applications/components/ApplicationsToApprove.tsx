@@ -37,7 +37,6 @@ export function ApplicationItem({
   const form = useFormContext();
 
   const { bio, fundingSources = [], impactMetrics = [] } = metadata.data ?? {};
-
   return (
     <div className="flex items-center gap-2 rounded border-b dark:border-gray-800 hover:dark:bg-outline-dark">
       <label className="flex flex-1 cursor-pointer items-center gap-4 p-2">

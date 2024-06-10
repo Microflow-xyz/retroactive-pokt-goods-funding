@@ -26,7 +26,6 @@ async function getMarkDownData(id: string): Promise<MarkDownData | string> {
       .use(html)
       .process(matterResult.content);
     const contentHtml = processedContent.toString();
-    console.log("matterResult", matterResult.data?.["skill-sets"]);
     return {
       id: id.replace(/\.md$/, ""),
       contentHtml: contentHtml,

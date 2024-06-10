@@ -27,8 +27,10 @@ export type LayoutProps = {
   showBallot?: boolean;
   isFullWidth?: boolean;
   stickyElement?: ReactNode;
+  extraFullWidth?: boolean;
 };
 export const BaseLayout = ({
+  extraFullWidth = false,
   isFullWidth = false,
   header,
   title,
@@ -111,6 +113,7 @@ export const BaseLayout = ({
             className={clsx("w-full min-w-0 px-2 pb-6 xl:pb-16", {
               ["mx-auto max-w-5xl"]: !sidebar && !isFullWidth,
               ["mx-auto xl:max-w-7xl"]: isFullWidth,
+              ["mx-auto xl:max-w-[82rem]"]: extraFullWidth,
             })}
           >
             {children}

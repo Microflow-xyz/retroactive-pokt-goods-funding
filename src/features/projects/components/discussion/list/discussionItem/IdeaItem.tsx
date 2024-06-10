@@ -34,8 +34,6 @@ export const IdeaItem = ({
     type: undefined,
   });
 
-  console.log("session", session);
-
   useEffect(() => {
     setReaction({
       thumbsUp: data?.thumbsUp,

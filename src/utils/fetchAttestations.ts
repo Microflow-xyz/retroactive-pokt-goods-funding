@@ -60,7 +60,10 @@ const AttestationsQuery = `
 export async function fetchAttestations(
   schema: string[],
   filter?: AttestationsFilter,
+  transactionId?: string
 ) {
+  console.log("fetchAttestations called with:", { schema, filter, transactionId });
+
   const startsAt = Math.floor(+config.startsAt / 1000);
 
   return fetch<{ attestations: AttestationWithMetadata[] }>(eas.url, {
@@ -73,12 +76,17 @@ export async function fetchAttestations(
           schemaId: { in: schema },
           revoked: { equals: false },
           time: { gte: startsAt },
+          txid: transactionId ? { equals: transactionId } : undefined,
           ...filter?.where,
         },
       },
     }),
-  }).then((r) => r.data?.attestations.map(parseAttestation));
+  }).then((r) => {
+    console.log("fetchAttestations response:", r.data?.attestations);
+    return r.data?.attestations.map(parseAttestation);
+  });
 }
+
 
 export async function fetchApprovedVoter(address: string) {
   if (config.skipApprovedVoterCheck) return true;

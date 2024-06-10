@@ -1,10 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { useSearchProjects } from "~/features/projects/hooks/useProjects";
-import { type Attestation } from "~/utils/fetchAttestations";
-import { type ballotImpacts, type projectSchema } from "../types";
+import { type ballotImpacts } from "../types";
 import { useApplications } from "~/features/applications/hooks/useApplications";
 import { useApprovedApplications } from "~/features/applications/hooks/useApprovedApplications";
-
 import { Input } from "~/components/ui/Form";
 import { useDrop } from "react-dnd";
 import ProjectItem from "./ProjectItem";
@@ -22,8 +19,6 @@ function BallotAllocation({
   isModal: boolean;
   projectName?: string;
 }) {
-  // const projects = useSearchProjects();
-
   const applications = useApplications();
   const approved = useApprovedApplications();
 

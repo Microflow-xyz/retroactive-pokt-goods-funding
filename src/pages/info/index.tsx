@@ -70,14 +70,7 @@ export default function InfoPage() {
         </p>
         <p className="leading-normal">
           The funding level is determined through a community review process,
-          considering each project's goals and impact.&nbsp;
-          <Link
-            className="underline hover:text-primary-dark"
-            href="https://docs.pokt.network/community/retro-pokt-goods-funding/application-process"
-            target="_blank"
-          >
-            For more details and to apply, visit the linked application page!
-          </Link>
+          considering each project's goals and impact.
         </p>
       </div>
     </Layout>
