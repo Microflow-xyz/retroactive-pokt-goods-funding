@@ -19,8 +19,6 @@ function BallotAllocation({
   isModal: boolean;
   projectName?: string;
 }) {
-  // const projects = useSearchProjects();
-
   const applications = useApplications();
   const approved = useApprovedApplications();
 

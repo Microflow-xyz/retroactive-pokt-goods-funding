@@ -48,14 +48,18 @@ const DropTargetAccordion = ({
               return {
                 ...prevDroppedItems,
                 [sourceShelveName]: updatedSourceItems,
-                [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
+                [shelveName]: prevDroppedItems[shelveName].includes(item)
+                  ? prevDroppedItems[shelveName]
+                  : [...(prevDroppedItems[shelveName] || []), item],
               };
             }
 
             // If the item is not found in any DropTargetAccordion, add it to the target DropTargetAccordion
             return {
               ...prevDroppedItems,
-              [shelveName]: [...(prevDroppedItems[shelveName] || []), item],
+              [shelveName]: prevDroppedItems[shelveName].includes(item)
+                ? prevDroppedItems[shelveName]
+                : [...(prevDroppedItems[shelveName] || []), item],
             };
           });
       },
