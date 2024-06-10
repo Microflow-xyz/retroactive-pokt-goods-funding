@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { X, Check, ExternalLinkIcon, Globe, Mail } from "lucide-react";
 import { ProjectBanner } from "~/features/projects/components/ProjectBanner";
@@ -14,6 +14,9 @@ import { LinkBox } from "./LinkBox";
 import { Button } from "~/components/ui/Button";
 import { useProfileWithMetadata } from "~/hooks/useProfile";
 import { config } from "~/config";
+import LoadingBar from 'react-top-loading-bar';
+import type { LoadingBarRef } from 'react-top-loading-bar';
+import {useProjectMetadata} from "../hooks/useProjects";
 import { type Application } from "~/features/applications/types";
 
 export default function ProjectDetails({
@@ -33,6 +36,8 @@ export default function ProjectDetails({
   projectMetadata: Application;
   isLoading: boolean;
 }) {
+  const LoadingStateRef = useRef<LoadingBarRef>(null)
+  const metadata = useProjectMetadata(attestation?.metadataPtr);
   const profile = useProfileWithMetadata(attestation?.recipient);
   const {
     bio,
@@ -45,9 +50,17 @@ export default function ProjectDetails({
     socialMedias,
   } = projectMetadata ?? {};
   const voters = config?.voters;
+  useEffect(()=>{
+    if(metadata?.isPending) {
+      return LoadingStateRef?.current?.continuousStart()
+    } else {
+      return LoadingStateRef?.current?.complete()
+    }
+  }, [metadata?.isPending])
 
   return (
     <div className="relative">
+      <LoadingBar color='white' ref={LoadingStateRef} />
       <div className="overflow-hidden">
         <ProjectBanner size="lg" profileId={attestation?.recipient} />
       </div>
@@ -199,7 +212,6 @@ export default function ProjectDetails({
                 <LinkBox
                   shouldValidateWithHttps={false}
                   links={[{ url: attestation?.refUID }]}
-                  shouldValidateWithHttps={false}
                   renderItem={(link) => (
                     <div className="flex-1 truncate" title={link.url}>
                       {link.url}

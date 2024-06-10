@@ -36,10 +36,7 @@ export default function ProjectDetailsPage({ projectId = "" }) {
       const idsArray = ids.data;
       if (idsArray && idsArray.length > 0) {
         const currentIndex = idsArray.indexOf(projectId);
-        let nextIndex = currentIndex + 1;
-        if (nextIndex >= idsArray.length) {
-          nextIndex = 0;
-        }
+        const nextIndex = currentIndex + 1;
         const nextId = idsArray[nextIndex];
         setNextProjectId(nextId);
       }
@@ -56,7 +53,7 @@ export default function ProjectDetailsPage({ projectId = "" }) {
   return (
     <Layout
       stickyElement={
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h1 className="max-w-[75%] truncate text-2xl font-bold">
               {project?.data?.name}
