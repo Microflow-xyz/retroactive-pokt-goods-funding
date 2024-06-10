@@ -8,7 +8,7 @@
 }
 .no-scrollbar {
   -ms-overflow-style: none;
-  scrollbar-width: 0;
+  scrollbar-width: none;
 }
 
 input::placeholder,
