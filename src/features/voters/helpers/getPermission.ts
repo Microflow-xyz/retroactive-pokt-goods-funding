@@ -8,7 +8,13 @@ export const getPermission = (
   if (isConnected !== undefined) {
     if (isConnected)
       if (address !== undefined)
-        if (isAdmin || config.voters.includes(address)) return true;
+        if (
+          isAdmin ||
+          config.voters?.some(
+            (item) => item.toLowerCase() === address.toLowerCase(),
+          )
+        )
+          return true;
     return false;
   }
 };
