@@ -46,9 +46,9 @@ export const projectsRouter = createTRPCRouter({
           id: { in: approvedIds },
         },
       }).then((attestations = []) => {
-        return attestations.map((attestation) => {
+        return attestations.filter((att)=> att.revoked === false).map((attestation) => {
           return { id: attestation.id, name: attestation.name };
-        });
+      });
       });
     });
   }),
@@ -150,7 +150,7 @@ export const projectsRouter = createTRPCRouter({
             AND: filters,
           },
         }).then((attestations = []) => {
-          return attestations.map(({ id }) => id);
+          return attestations.filter(({revoked})=> revoked === false).map(({ id }) => id);
         });
       });
     }),
