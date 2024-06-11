@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { config } from "~/config";
 import { type Attestation } from "~/utils/fetchAttestations";
+import { useRouter } from "next/router";
+
+import type { DiscussionData } from "~/features/projects/types/discussion";
 import { type AppState } from "~/utils/state";
 import { Skeleton } from "~/components/ui/Skeleton";
 import { CreateNew } from "./CreateNew";
 import { List } from "./list";
 import { useGetDiscussions } from "../../hooks/useDiscussion";
 import type { Discussion } from "~/features/projects/types/discussion";
+import { useCreateDiscussion } from "~/features/projects/hooks/useDiscussion";
 
 export const DiscussionComponent = ({
   address,
@@ -19,9 +23,33 @@ export const DiscussionComponent = ({
   projectId: string;
   isAdmin: boolean;
 }) => {
+  const router = useRouter();
+  console.log("router", router);
+  const [idea, setIdea] = useState<DiscussionData>({
+    content: "",
+    type: "concern",
+    isAnonymous: false,
+    projectId: router.query.projectId as string,
+  });
+  useEffect(() => {
+    setIdea({
+      content: "",
+      type: "concern",
+      isAnonymous: false,
+      projectId: router.query.projectId as string,
+    });
+  }, [router]);
+
   const voters = config?.voters;
   const { data, refetch, isLoading } = useGetDiscussions({
     projectId: projectId,
+  });
+  const submit = useCreateDiscussion({
+    onSuccess: async () => {
+      setIdea({ ...idea, content: "" });
+      await refetch();
+    },
+    discussionData: idea,
   });
   return (
     <div className="mt-10 flex flex-col items-baseline gap-5 border-t border-outlineVariant-dark pt-10">
@@ -29,7 +57,13 @@ export const DiscussionComponent = ({
 
       {isAdmin || voters?.some((item) => item === address) ? (
         <>
-          <CreateNew onRefetch={() => refetch()} projectId={projectId} />
+          <CreateNew
+            error={submit.error?.message ?? undefined}
+            onSubmit={submit.mutate}
+            setIdea={setIdea}
+            idea={idea}
+            pending={submit.isPending ?? undefined}
+          />
           <Skeleton className="mb-1 min-h-24 w-full" isLoading={isLoading}>
             {data && (
               <List
