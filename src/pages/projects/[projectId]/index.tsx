@@ -65,7 +65,7 @@ export default function ProjectDetailsPage({ projectId = "" }) {
     <Layout
       stickyElement={
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex w-[64%] items-center gap-2">
             <h1 className="max-w-[75%] truncate text-2xl font-bold">
               {project?.data?.name}
             </h1>
@@ -75,11 +75,10 @@ export default function ProjectDetailsPage({ projectId = "" }) {
               </span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex w-[36%] gap-2 justify-end">
             {action}
             {nextProjectId ? (
               <NextProjectButton
-                isAdmin={isAdmin}
                 nextProjectId={nextProjectId}
               />
             ) : null}
