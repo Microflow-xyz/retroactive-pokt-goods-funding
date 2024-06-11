@@ -157,10 +157,17 @@ export const projectsRouter = createTRPCRouter({
             AND: filters,
           },
         }).then((attestations = []) => {
-          return attestations.filter(({revoked})=> revoked === false).map(({ id }) => id);
+          return attestations
+            .filter(
+              (attestation) =>
+                attestation.id !==
+                "0x0000000000000000000000000000000000000000000000000000000000000000",
+            )
+            .map(({ id }) => id);
         });
       });
     }),
+  
 });
 
 function createOrderBy(
