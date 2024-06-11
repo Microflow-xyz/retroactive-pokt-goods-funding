@@ -31,27 +31,34 @@ export const projectsRouter = createTRPCRouter({
     });
   }),
   getAll: publicProcedure.query(async () => {
-    return fetchAttestations([eas.schemas.approval], {
+    const initialAttestations = await fetchAttestations([eas.schemas.approval], {
       where: {
         attester: { in: config.admins },
         ...createDataFilter("type", "bytes32", "application"),
       },
-    }).then((attestations = []) => {
-      const approvedIds = attestations
-        .map(({ refUID }) => refUID)
-        .filter(Boolean);
-
-      return fetchAttestations([eas.schemas.metadata], {
-        where: {
-          id: { in: approvedIds },
-        },
-      }).then((attestations = []) => {
-        return attestations.filter((att)=> att.revoked === false).map((attestation) => {
-          return { id: attestation.id, name: attestation.name };
-      });
-      });
+    });
+    const approvedIds = initialAttestations
+      .map(({ refUID }) => refUID)
+      .filter(Boolean);
+    const approvedProjects = await fetchAttestations([eas.schemas.metadata], {
+      where: {
+        id: { in: approvedIds },
+      },
+    });
+    const activeApprovedProjects = approvedProjects.filter((att) => att.revoked === false);
+    const refUIDs = activeApprovedProjects
+      .filter(
+        (item) =>
+          item.refUID !==
+          "0x0000000000000000000000000000000000000000000000000000000000000000"
+      )
+      .map((item) => item.refUID);
+    const filteredData = activeApprovedProjects.filter((item) => !refUIDs.includes(item.id));
+    return filteredData.map((attestation) => {
+      return { id: attestation.id, name: attestation.name };
     });
   }),
+
   get: publicProcedure
     .input(z.object({ ids: z.array(z.string()) }))
     .query(async ({ input: { ids } }) => {
