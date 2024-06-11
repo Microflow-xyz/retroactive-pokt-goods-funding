@@ -1,49 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 
 import type {
   DiscussionData,
   DiscussionTypes,
 } from "~/features/projects/types/discussion";
-import { useCreateDiscussion } from "~/features/projects/hooks/useDiscussion";
 
 import { Textarea } from "~/components/ui/Form";
 import { Button } from "~/components/ui/Button";
 import { Switch } from "~/components/ui/Switch";
 
 export const CreateNew = ({
-  projectId,
-  onRefetch,
+  onSubmit,
+  error,
+  setIdea,
+  idea,
+  pending,
 }: {
-  projectId: string;
-  onRefetch: () => void;
+  onSubmit: () => void;
+  error?: string;
+  setIdea: React.Dispatch<React.SetStateAction<DiscussionData>>;
+  idea: DiscussionData;
+  pending?: boolean;
 }) => {
   const ideaType: DiscussionTypes[] = ["concern", "question", "strength"];
 
-  const [idea, setIdea] = useState<DiscussionData>({
-    content: "",
-    type: "concern",
-    isAnonymous: false,
-    projectId: projectId,
-  });
-
-  const submit = useCreateDiscussion({
-    onSuccess: async () => {
-      setIdea({ ...idea, content: "" });
-      onRefetch();
-    },
-    discussionData: idea,
-  });
-
   return (
     <div
-      className={`relative flex w-full flex-col border ${idea.content.length === 1024 ? "border-error-dark" : "border-onPrimary-light"} px-3 md:px-4 py-2`}
+      className={`relative flex w-full flex-col border ${idea.content.length === 1024 ? "border-error-dark" : "border-onPrimary-light"} px-3 py-2 md:px-4`}
     >
       <span
         className={`absolute -top-[0.625rem] flex text-xs font-normal dark:bg-background-dark ${idea.content.length === 1024 ? "text-error-dark" : "dark:text-onPrimary-light"}`}
       >
         Your idea
       </span>
-      <div className="flex flex-col md:flex-row items-start gap-3 md:items-center md:justify-between">
+      <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
         <ul className="flex w-full items-center justify-around border-b border-outline-dark">
           {ideaType.map((item: DiscussionTypes, index) => (
             <li
@@ -64,7 +54,7 @@ export const CreateNew = ({
             </li>
           ))}
         </ul>
-        <div className="md:ml-11 flex min-w-52 items-center justify-evenly gap-5">
+        <div className="flex min-w-52 items-center justify-evenly gap-5 md:ml-11">
           <Switch
             isOn={idea.isAnonymous}
             setIsOn={() => setIdea({ ...idea, isAnonymous: !idea.isAnonymous })}
@@ -75,7 +65,7 @@ export const CreateNew = ({
         </div>
       </div>
       <Textarea
-        className="mt-3 md:mt-5 resize-none border-none p-0"
+        className="mt-3 resize-none border-none p-0 md:mt-5"
         rows={3}
         placeholder={`Type your ${idea.type.toLowerCase()} here.`}
         onChange={(e) => setIdea({ ...idea, content: e.target.value })}
@@ -86,17 +76,17 @@ export const CreateNew = ({
         className="my-2 w-fit px-6"
         disabled={
           idea.content.length === 0 ||
-          submit.isPending ||
+          pending === true ||
           idea.content.length === 1024
         }
         variant="outline"
-        onClick={() => submit.mutate()}
+        onClick={() => onSubmit()}
       >
         Post idea
       </Button>
-      {submit.error && (
+      {error && (
         <p className="break-words  py-1 text-xs font-normal text-error-dark">
-          {submit.error.message}
+          {error}
         </p>
       )}
     </div>
