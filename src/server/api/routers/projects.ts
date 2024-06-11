@@ -140,34 +140,37 @@ export const projectsRouter = createTRPCRouter({
       if (input.search) {
         filters.push(createSearchFilter(input.search));
       }
-      return fetchAttestations([eas.schemas.approval], {
+      
+      const initialAttestations = await fetchAttestations([eas.schemas.approval], {
         where: {
           attester: { in: config.admins },
           ...createDataFilter("type", "bytes32", "application"),
         },
-      }).then((attestations = []) => {
-        const approvedIds = attestations
-          .map(({ refUID }) => refUID)
-          .filter(Boolean);
-  
-        return fetchAttestations([eas.schemas.metadata], {
-          orderBy: [createOrderBy(input.orderBy, input.sortOrder)],
-          where: {
-            id: { in: approvedIds },
-            AND: filters,
-          },
-        }).then((attestations = []) => {
-          return attestations
-            .filter(
-              (attestation) =>
-                attestation.id !==
-                "0x0000000000000000000000000000000000000000000000000000000000000000",
-            )
-            .map(({ id }) => id);
-        });
       });
+      const approvedIds = initialAttestations
+        .map(({ refUID }) => refUID)
+        .filter(Boolean);
+        
+      const approvedProjects = await fetchAttestations([eas.schemas.metadata], {
+        orderBy: [createOrderBy(input.orderBy, input.sortOrder)],
+        where: {
+          id: { in: approvedIds },
+          AND: filters,
+        },
+      });
+      
+      const activeApprovedProjects = approvedProjects.filter((att) => att.revoked === false);
+      const refUIDs = activeApprovedProjects
+        .filter(
+          (item) =>
+            item.refUID !==
+            "0x0000000000000000000000000000000000000000000000000000000000000000"
+        )
+        .map((item) => item.refUID);
+      const filteredData = activeApprovedProjects.filter((item) => !refUIDs.includes(item.id));
+      
+      return filteredData.map((attestation) => attestation.id);
     }),
-  
 });
 
 function createOrderBy(
