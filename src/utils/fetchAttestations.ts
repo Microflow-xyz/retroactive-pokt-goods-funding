@@ -60,9 +60,13 @@ const AttestationsQuery = `
 export async function fetchAttestations(
   schema: string[],
   filter?: AttestationsFilter,
-  transactionId?: string
+  transactionId?: string,
 ) {
-  console.log("fetchAttestations called with:", { schema, filter, transactionId });
+  console.log("fetchAttestations called with:", {
+    schema,
+    filter,
+    transactionId,
+  });
 
   const startsAt = Math.floor(+config.startsAt / 1000);
 
@@ -86,7 +90,6 @@ export async function fetchAttestations(
     return r.data?.attestations.map(parseAttestation);
   });
 }
-
 
 export async function fetchApprovedVoter(address: string) {
   if (config.skipApprovedVoterCheck) return true;
@@ -143,6 +146,7 @@ export function createSearchFilter(value: string) {
   return {
     decodedDataJson: {
       contains: `${formatter(value)}`,
+      mode: "insensitive",
     },
   };
 }

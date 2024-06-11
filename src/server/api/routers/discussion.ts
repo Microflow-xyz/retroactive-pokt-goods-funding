@@ -1,8 +1,4 @@
-import {
-  createTRPCRouter,
-  protectedDiscussionProcedure,
-  unprotectedDiscussionProcedure,
-} from "../trpc";
+import { createTRPCRouter, protectedDiscussionProcedure } from "../trpc";
 import { map, omit } from "lodash";
 import {
   CreateDiscussionSchema,
@@ -130,7 +126,7 @@ export const discussionRouter = createTRPCRouter({
       });
     }),
 
-  get: unprotectedDiscussionProcedure
+  get: protectedDiscussionProcedure
     .input(ListReqSchema)
     .query(async ({ input, ctx }) => {
       const discussions = await ctx.db.discussion.findMany({
