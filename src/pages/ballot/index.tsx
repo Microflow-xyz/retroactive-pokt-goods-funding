@@ -24,7 +24,7 @@ import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { useBallotWithMetadata } from "~/hooks/useBallot";
 import { Skeleton } from "~/components/ui/Skeleton";
 import { type Attestation } from "~/utils/fetchAttestations";
-import { getPermission } from "~/features/voters/helpers/getPermission";
+import { getPermission } from "~/features/ballot/helpers/getPermission";
 
 //FIXME: Ballot Page props should be removed
 export default function Ballot({

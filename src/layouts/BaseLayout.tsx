@@ -120,7 +120,7 @@ export const BaseLayout = ({
           </div>
           {sidebar === "right" ? wrappedSidebar : null}
         </div>
-        {stickyElement && isAdmin && (
+        {stickyElement && (
           <div
             className={` sticky bottom-0 z-10 w-full bg-onBackground-dark shadow-sm ${showStickyElement ? "" : "hidden"}`}
           >
