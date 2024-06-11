@@ -75,18 +75,18 @@ export default function ProjectDetailsPage({ projectId = "" }) {
               </span>
             )}
           </div>
-          <div className="flex w-[36%] gap-2 justify-end">
+          <div className="flex w-[36%] justify-end gap-2">
             {action}
             {nextProjectId ? (
-              <NextProjectButton
-                nextProjectId={nextProjectId}
-              />
+              <NextProjectButton nextProjectId={nextProjectId} />
             ) : null}
           </div>
         </div>
       }
     >
-      {!project?.data?.revoked && approvedById?.has(projectId) ? (
+      {approved.data &&
+      !project?.data?.revoked &&
+      approvedById?.has(projectId) ? (
         <>
           <ProjectDetails
             projectMetadata={metadata?.data}
@@ -114,9 +114,11 @@ export default function ProjectDetailsPage({ projectId = "" }) {
           </Dialog>
         </>
       ) : (
-        <p className="mt-10 flex items-center justify-center text-center">
-          Your project has been revoked.
-        </p>
+        !approved.isPending && (
+          <p className="mt-10 flex items-center justify-center text-center">
+            Your project has been removed.
+          </p>
+        )
       )}
     </Layout>
   );
