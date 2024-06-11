@@ -155,26 +155,14 @@ const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
   return next({ ctx });
 });
 
-const enforceVotingPeriodCheck = t.middleware(({ ctx, next }) => {
+const enforceAdminAndVoterCheck = t.middleware(({ ctx, next }) => {
   const address = ctx.session?.user.name;
-  const endOfVotingPeriod = config.votingEndsAt;
-  const now = new Date();
 
-  // after Voting period
-  if (now >= endOfVotingPeriod) {
-    if (!address) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Please connect your wallet",
-      });
-    }
-
-    if (!(isAdmin(address) || isVoter(address))) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Must be admin or voter to access this route",
-      });
-    }
+  if (!(isAdmin(address) || isVoter(address))) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Must be admin or voter to access this route",
+    });
   }
 
   return next({ ctx });
@@ -205,8 +193,5 @@ export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 export const adminProcedure = protectedProcedure.use(enforceUserIsAdmin);
 export const voterProcedure = protectedProcedure.use(enforceUserIsVoter);
 export const protectedDiscussionProcedure = protectedProcedure.use(
-  enforceVotingPeriodCheck,
-);
-export const unprotectedDiscussionProcedure = t.procedure.use(
-  enforceVotingPeriodCheck,
+  enforceAdminAndVoterCheck,
 );
