@@ -6,6 +6,7 @@ import { BaseLayout, type LayoutProps } from "./BaseLayout";
 import { getAppState } from "~/utils/state";
 import { config } from "~/config";
 import { useSession } from "next-auth/react";
+import { useIsVoter } from "~/hooks/useIsVoter";
 
 type Props = PropsWithChildren<
   {
@@ -26,6 +27,8 @@ export const Layout = ({ children, ...props }: Props) => {
       children: "Projects",
     },
   ];
+
+  const isVoter = useIsVoter();
 
   if (getAppState() === "RESULTS") {
     navLinks.push({
@@ -73,7 +76,7 @@ export const Layout = ({ children, ...props }: Props) => {
       ],
     );
 
-  if (config.voters.includes(address!) || config.admins.includes(address!)) {
+  if (isVoter || config.admins.includes(address!)) {
     navLinks.push({
       href: "/voting",
       children: "Voting Tally",
@@ -93,10 +96,5 @@ export const Layout = ({ children, ...props }: Props) => {
 export function LayoutWithBallot(props: Props) {
   const { address } = useAccount();
   const { data: session } = useSession();
-  return (
-    <Layout
-      sidebar={props.sidebar}
-      {...props}
-    />
-  );
+  return <Layout sidebar={props.sidebar} {...props} />;
 }

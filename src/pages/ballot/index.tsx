@@ -24,7 +24,8 @@ import { useIsAdmin } from "~/hooks/useIsAdmin";
 import { useBallotWithMetadata } from "~/hooks/useBallot";
 import { Skeleton } from "~/components/ui/Skeleton";
 import { type Attestation } from "~/utils/fetchAttestations";
-import { getPermission } from "~/features/voters/helpers/getPermission";
+import { getPermission } from "~/features/ballot/helpers/getPermission";
+import { useIsVoter } from "~/hooks/useIsVoter";
 
 //FIXME: Ballot Page props should be removed
 export default function Ballot({
@@ -36,6 +37,7 @@ export default function Ballot({
 }) {
   const { isConnected, address } = useAccount();
   const isAdmin = useIsAdmin();
+  const isVoter = useIsVoter();
 
   const [draft, _, clearDraft] = useLocalStorage<ballotImpacts>("ballot-draft");
   const [transactionId, setTransactionId] = useLocalStorage<{
@@ -110,7 +112,7 @@ export default function Ballot({
   const error = submit?.error;
 
   useEffect(() => {
-    setIsPermitted(getPermission(isAdmin, isConnected, address));
+    setIsPermitted(getPermission(isAdmin, isConnected, address, isVoter));
     if (isPermitted !== undefined && isPermitted === false && !loadingBallot)
       setLoadingState(false);
   }, [isConnected, address, isAdmin, isPermitted, loadingBallot]);

@@ -1,6 +1,6 @@
 import { type GetServerSideProps } from "next";
 import { useAccount } from "wagmi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import { Layout } from "~/layouts/DefaultLayout";
 import ProjectDetails from "~/features/projects/components/ProjectDetails";
@@ -18,6 +18,7 @@ import { useProjectMetadata } from "~/features/projects/hooks/useProjects";
 import { Dialog } from "~/components/ui/Dialog";
 // FIXME: remove direct page import here
 import Ballot from "~/pages/ballot";
+import { useApprovedApplications } from "~/features/applications/hooks/useApprovedApplications";
 
 export default function ProjectDetailsPage({ projectId = "" }) {
   const project = useProjectById(projectId);
@@ -29,6 +30,16 @@ export default function ProjectDetailsPage({ projectId = "" }) {
   const ids = useProjectsIds();
   const [nextProjectId, setNextProjectId] = useState<string | undefined>(
     undefined,
+  );
+  const approved = useApprovedApplications();
+
+  const approvedById = useMemo(
+    () =>
+      approved.data?.reduce(
+        (map, x) => (map.set(x.refUID, true), map),
+        new Map<string, boolean>(),
+      ),
+    [approved.data],
   );
 
   useEffect(() => {
@@ -54,7 +65,7 @@ export default function ProjectDetailsPage({ projectId = "" }) {
     <Layout
       stickyElement={
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex w-[64%] items-center gap-2">
             <h1 className="max-w-[75%] truncate text-2xl font-bold">
               {project?.data?.name}
             </h1>
@@ -64,37 +75,51 @@ export default function ProjectDetailsPage({ projectId = "" }) {
               </span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex w-[36%] justify-end gap-2">
             {action}
             {nextProjectId ? (
-              <NextProjectButton
-                isAdmin={isAdmin}
-                nextProjectId={nextProjectId}
-              />
+              <NextProjectButton nextProjectId={nextProjectId} />
             ) : null}
           </div>
         </div>
       }
     >
-      <ProjectDetails
-        projectMetadata={metadata?.data}
-        isLoading={metadata?.isPending}
-        isAdmin={isAdmin}
-        address={address}
-        attestation={project.data}
-        action={action}
-        state={state}
-      />
-      <DiscussionComponent
-        projectId={projectId}
-        state={state}
-        address={address}
-        isAdmin={isAdmin}
-      />
-      <Dialog size="md" isOpen={isOpen} onOpenChange={setOpen} title={`Ballot`}>
-        {/* FIXME: Ballot Page should be refactored here also modify the name */}
-        <Ballot projectName={project?.data?.name} isModal />
-      </Dialog>
+      {approved.data &&
+      !project?.data?.revoked &&
+      approvedById?.has(projectId) ? (
+        <>
+          <ProjectDetails
+            projectMetadata={metadata?.data}
+            isLoading={metadata?.isPending}
+            isAdmin={isAdmin}
+            address={address}
+            attestation={project.data}
+            action={action}
+            state={state}
+          />
+          <DiscussionComponent
+            projectId={projectId}
+            state={state}
+            address={address}
+            isAdmin={isAdmin}
+          />
+          <Dialog
+            size="md"
+            isOpen={isOpen}
+            onOpenChange={setOpen}
+            title={`Ballot`}
+          >
+            {/* FIXME: Ballot Page should be refactored here also modify the name */}
+            <Ballot projectName={project?.data?.name} isModal />
+          </Dialog>
+        </>
+      ) : (
+        !approved.isPending && (
+          <p className="mt-10 flex items-center justify-center text-center">
+            Your project has been removed.
+          </p>
+        )
+      )}
     </Layout>
   );
 }
