@@ -129,7 +129,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const isAdmin = (walletAddr: string | null | undefined) => {
-  const admins = config.admins.map((admin) => admin.toLowerCase());
+  const admins = config.admins.map((admin) => admin?.toLowerCase());
   if (!admins.includes(walletAddr?.toLowerCase() as `0x${string}`)) {
     return false;
   }
@@ -138,7 +138,7 @@ const isAdmin = (walletAddr: string | null | undefined) => {
 };
 
 const isVoter = (walletAddr: string | null | undefined) => {
-  const voters = config.voters.map((voter) => voter.toLowerCase());
+  const voters = config.voters.map((voter) => voter?.toLowerCase());
   if (!voters.includes(walletAddr?.toLowerCase() as `0x${string}`)) {
     return false;
   }
