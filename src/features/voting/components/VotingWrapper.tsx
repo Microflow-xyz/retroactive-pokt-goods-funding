@@ -173,7 +173,7 @@ export function VotingWrapper() {
           ) : (
             <>
               <div className="text-base font-bold leading-5 lg:text-lg">
-                Remained time
+                Voting Ends
               </div>
               <div className="flex items-center justify-between gap-10">
                 <div className="h-1 w-full bg-[#2B2A2A]">
@@ -189,7 +189,7 @@ export function VotingWrapper() {
                     {remainingTime}
                   </p>
                   {!hasEnded ? (
-                    <p className="text-sm leading-4">Remained</p>
+                    <p className="text-sm leading-4">Remaining</p>
                   ) : null}
                 </div>
               </div>{" "}
