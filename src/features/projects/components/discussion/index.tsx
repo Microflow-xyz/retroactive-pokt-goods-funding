@@ -11,6 +11,7 @@ import { List } from "./list";
 import { useGetDiscussions } from "../../hooks/useDiscussion";
 import type { Discussion } from "~/features/projects/types/discussion";
 import { useCreateDiscussion } from "~/features/projects/hooks/useDiscussion";
+import { useIsVoter } from "~/hooks/useIsVoter";
 
 export const DiscussionComponent = ({
   address,
@@ -24,7 +25,6 @@ export const DiscussionComponent = ({
   isAdmin: boolean;
 }) => {
   const router = useRouter();
-  console.log("router", router);
   const [idea, setIdea] = useState<DiscussionData>({
     content: "",
     type: "concern",
@@ -40,7 +40,7 @@ export const DiscussionComponent = ({
     });
   }, [router]);
 
-  const voters = config?.voters;
+  const isVoter = useIsVoter();
   const { data, refetch, isLoading } = useGetDiscussions({
     projectId: projectId,
   });
@@ -55,7 +55,7 @@ export const DiscussionComponent = ({
     <div className="mt-10 flex flex-col items-baseline gap-5 border-t border-outlineVariant-dark pt-10">
       <div className=" text-lg font-bold text-onSurface-dark">Discussions</div>
 
-      {isAdmin || voters?.some((item) => item === address) ? (
+      {isAdmin || isVoter ? (
         <>
           <CreateNew
             error={submit.error?.message ?? undefined}

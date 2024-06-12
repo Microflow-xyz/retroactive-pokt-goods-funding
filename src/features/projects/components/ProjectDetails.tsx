@@ -6,18 +6,17 @@ import { ProjectAvatar } from "~/features/projects/components/ProjectAvatar";
 import { Heading } from "~/components/ui/Heading";
 import ProjectContributions from "./ProjectContributions";
 import ProjectImpact from "./ProjectImpact";
-// import { NameENS } from "~/components/ENS";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { type AppState } from "~/utils/state";
 import { type Attestation } from "~/utils/fetchAttestations";
 import { LinkBox } from "./LinkBox";
 import { Button } from "~/components/ui/Button";
 import { useProfileWithMetadata } from "~/hooks/useProfile";
-import { config } from "~/config";
-import LoadingBar from 'react-top-loading-bar';
-import type { LoadingBarRef } from 'react-top-loading-bar';
-import {useProjectMetadata} from "../hooks/useProjects";
+import LoadingBar from "react-top-loading-bar";
+import type { LoadingBarRef } from "react-top-loading-bar";
+import { useProjectMetadata } from "../hooks/useProjects";
 import { type Application } from "~/features/applications/types";
+import { useIsVoter } from "~/hooks/useIsVoter";
 
 export default function ProjectDetails({
   attestation,
@@ -36,7 +35,7 @@ export default function ProjectDetails({
   projectMetadata: Application;
   isLoading: boolean;
 }) {
-  const LoadingStateRef = useRef<LoadingBarRef>(null)
+  const LoadingStateRef = useRef<LoadingBarRef>(null);
   const metadata = useProjectMetadata(attestation?.metadataPtr);
   const profile = useProfileWithMetadata(attestation?.recipient);
   const {
@@ -49,18 +48,18 @@ export default function ProjectDetails({
     isDAOVoters,
     socialMedias,
   } = projectMetadata ?? {};
-  const voters = config?.voters;
-  useEffect(()=>{
-    if(metadata?.isPending) {
-      return LoadingStateRef?.current?.continuousStart()
+  const isVoter = useIsVoter();
+  useEffect(() => {
+    if (metadata?.isPending) {
+      return LoadingStateRef?.current?.continuousStart();
     } else {
-      return LoadingStateRef?.current?.complete()
+      return LoadingStateRef?.current?.complete();
     }
-  }, [metadata?.isPending])
+  }, [metadata?.isPending]);
 
   return (
     <div className="relative">
-      <LoadingBar color='white' ref={LoadingStateRef} />
+      <LoadingBar color="white" ref={LoadingStateRef} />
       <div className="overflow-hidden">
         <ProjectBanner size="lg" profileId={attestation?.recipient} />
       </div>
@@ -106,7 +105,7 @@ export default function ProjectDetails({
             {action}
           </div>
           <p className="break-words text-justify text-lg ">{bio}</p>
-          {(isAdmin || voters?.some((item) => item === address)) && email && (
+          {(isAdmin || isVoter) && email && (
             <p className="flex items-center gap-2">
               <Mail className="h-4 w-4" strokeWidth={1.5} />
               {email}
@@ -127,7 +126,7 @@ export default function ProjectDetails({
             </Button>
           )}
       </div>
-      {(isAdmin || voters?.some((item) => item === address)) && (
+      {(isAdmin || isVoter) && (
         <p className="mt-6 flex items-center gap-2">
           {isDAOVoters ? (
             <span className=" rounded-full border border-[#00B669] p-1 ">
