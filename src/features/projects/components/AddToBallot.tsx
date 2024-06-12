@@ -3,6 +3,7 @@ import { useLocalStorage } from "react-use";
 import { Button } from "~/components/ui/Button";
 import { getAppState } from "~/utils/state";
 import { getPermission } from "~/features/ballot/helpers/getPermission";
+import { useIsVoter } from "~/hooks/useIsVoter";
 
 export const ProjectAddToBallot = ({
   onClick,
@@ -17,8 +18,12 @@ export const ProjectAddToBallot = ({
   }>("transaction");
 
   const { address } = useAccount();
+  const isVoter = useIsVoter();
 
-  if (getAppState() !== "VOTING" || !getPermission(isAdmin, true, address))
+  if (
+    getAppState() !== "VOTING" ||
+    !getPermission(isAdmin, true, address, isVoter)
+  )
     return null;
   return (
     <div className="ml-2">
