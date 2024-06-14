@@ -117,13 +117,16 @@ const ConnectedDetails = ({
       <div className="flex gap-2 text-white">
         {state === "VOTING" && (isAdmin || isVoter) ? (
           <>
-            {/* {!showBallot ? null : ballot?.publishedAt ? (
-              <Chip>Already submitted</Chip>
-            ) : ( */}
+            <Chip
+              className="gap-2"
+              as={Link}
+              href="https://www.notion.so/poktdao/POKT-RetroPGF-Voter-Guide-43b0f2e59d424f61a989adbdb64fe5db"
+            >
+              Voter Guide
+            </Chip>
             <Chip className="gap-2" as={Link} href={"/ballot"}>
               {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
             </Chip>
-            {/* )} */}
           </>
         ) : (
           state === "APPLICATION" && (
