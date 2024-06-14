@@ -10,22 +10,24 @@ export const ballotRouter = createTRPCRouter({
     .input(z.object({ id: z.string(), transactionId: z.string().optional() }))
     .query(async ({ input }) => {
       console.log("ballotRouter called with:", input);
-      return fetchAttestations(
+      const [attestation] = await fetchAttestations(
         [eas.schemas.metadata],
         {
           where: {
             recipient: { in: [input.id] },
             ...createDataFilter("type", "bytes32", "ballot"),
           },
-          orderBy: [{ time: "desc" }], // Add this line to order the data by the "createdAt" field in descending order
+          orderBy: [{ time: "desc" }],
         },
         input.transactionId,
-      ).then(([attestation]) => {
-        console.log("ballotRouter response:", attestation);
-        if (!attestation) {
-          throw new TRPCError({ code: "NOT_FOUND" });
-        }
-        return attestation;
-      });
+      );
+
+      console.log("ballotRouter response:", attestation);
+
+      if (!attestation) {
+        return null; // or return an empty object, depending on your requirements
+      }
+
+      return attestation;
     }),
 });
