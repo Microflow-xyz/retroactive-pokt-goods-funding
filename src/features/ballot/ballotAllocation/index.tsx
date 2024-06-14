@@ -1,5 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { type ballotImpacts } from "../types";
+import {
+  type ballotImpacts,
+  type droppedItems,
+  type projectSchema,
+} from "../types";
 import { useApplications } from "~/features/applications/hooks/useApplications";
 import { useApprovedApplications } from "~/features/applications/hooks/useApprovedApplications";
 import { Input } from "~/components/ui/Form";
@@ -14,8 +18,8 @@ function BallotAllocation({
   isModal,
   projectName,
 }: {
-  droppedItems: ballotImpacts;
-  setDroppedItems: React.Dispatch<React.SetStateAction<ballotImpacts>>;
+  droppedItems: droppedItems;
+  setDroppedItems: React.Dispatch<React.SetStateAction<droppedItems>>;
   isModal: boolean;
   projectName?: string;
 }) {
@@ -43,14 +47,16 @@ function BallotAllocation({
     )
     .map((item) => item.refUID);
 
-    const filteredData = approvedProjects?.filter((item) => !refUIDs?.includes(item.id));
-
+  const filteredData = approvedProjects?.filter(
+    (item) => !refUIDs?.includes(item.id),
+  );
 
   const allProjects = filteredData?.filter((project) => {
-    for (let shelve in droppedItems) {
+    for (const shelve in droppedItems) {
       if (
-        droppedItems[shelve]?.findIndex((item) => item?.id === project.id) !==
-        -1
+        droppedItems[shelve]?.findIndex(
+          (item: projectSchema) => item?.id === project.id,
+        ) !== -1
       ) {
         return false; // Exclude this project from the filtered array
       }
@@ -73,12 +79,13 @@ function BallotAllocation({
   const [{ isOverApplicationPool }, dropApplicationPool] = useDrop(() => {
     return {
       accept: "ITEM",
-      drop: (item) => {
+      drop: (item: projectSchema) => {
         setDroppedItems((prevDroppedItems) => {
-          for (let shelve in prevDroppedItems) {
+          for (const shelve in prevDroppedItems) {
             if (
-              prevDroppedItems[shelve]?.findIndex((i) => i.id === item.id) !==
-              -1
+              prevDroppedItems[shelve]?.findIndex(
+                (i: projectSchema) => i.id === item.id,
+              ) !== -1
             ) {
               return {
                 ...prevDroppedItems,
@@ -121,12 +128,11 @@ function BallotAllocation({
             onChange={(e) => handleSearch(e.target.value)}
           />
           <div
-            className={`flex max-h-80 overflow-y-auto min-h-10 w-full flex-wrap gap-2 rounded-lg p-1`}
+            className={`flex max-h-80 min-h-10 w-full flex-wrap gap-2 overflow-y-auto rounded-lg p-1`}
           >
             {filteredProjects?.map((project, index) => {
-              return(
-              <ProjectItem key={project.id} project={project} />
-            )})}
+              return <ProjectItem key={project.id} project={project} />;
+            })}
           </div>
         </div>
       </div>
@@ -163,6 +169,12 @@ function BallotAllocation({
           <DropTargetAccordion
             shelveName="lowImpactProjects"
             label={`Low Impact`}
+            setDroppedItems={setDroppedItems}
+            droppedItems={droppedItems}
+          />
+          <DropTargetAccordion
+            shelveName="noImpactProjects"
+            label={`No Impact`}
             setDroppedItems={setDroppedItems}
             droppedItems={droppedItems}
           />

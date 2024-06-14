@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { dynamicLabel, gen } from "./helpers";
-import { type ballotImpacts } from "../types";
-import { type Attestation } from "~/utils/fetchAttestations";
+import { type ballotImpacts, type droppedItems } from "../types";
 import ProjectItem from "./ProjectItem";
 
 const DropTargetAccordion = ({
@@ -14,13 +13,14 @@ const DropTargetAccordion = ({
 }: {
   label: string;
   className?: string;
-  droppedItems: ballotImpacts;
-  setDroppedItems?: React.Dispatch<React.SetStateAction<ballotImpacts>>;
+  droppedItems: droppedItems;
+  setDroppedItems?: React.Dispatch<React.SetStateAction<droppedItems>>;
   shelveName:
     | "lowImpactProjects"
     | "mediumImpactProjects"
     | "highImpactProjects"
-    | "highestImpactProjects";
+    | "highestImpactProjects"
+    | "noImpactProjects";
 }) => {
   const [suggestCount, setSuggestCount] = useState({
     highestImpactProjects: 0,
@@ -86,6 +86,12 @@ const DropTargetAccordion = ({
   }, [droppedItems]);
   const renderEmptyBoxes = (count: number) => {
     const boxes: JSX.Element[] = [];
+    console.log(
+      "droppedItems[shelveName].length",
+      shelveName,
+      Number(count),
+      droppedItems[shelveName].length,
+    );
     if (count === 0 && droppedItems[shelveName].length === 0) {
       boxes.push(
         <li

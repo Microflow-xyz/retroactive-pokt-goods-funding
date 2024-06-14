@@ -16,6 +16,7 @@ import {
   BallotImpactsSchema,
   type ballotImpacts,
   type projectSchema,
+  type droppedItems,
 } from "~/features/ballot/types";
 import { useSubmitBallot } from "~/features/ballot/hooks/useSubmitBallot";
 import { Button } from "~/components/ui/Button";
@@ -39,7 +40,7 @@ export default function Ballot({
   const isAdmin = useIsAdmin();
   const isVoter = useIsVoter();
 
-  const [draft, _, clearDraft] = useLocalStorage<ballotImpacts>("ballot-draft");
+  const [draft, _, clearDraft] = useLocalStorage<droppedItems>("ballot-draft");
   const [transactionId, setTransactionId] = useLocalStorage<{
     submit?: string;
     revoke?: string;
@@ -51,11 +52,12 @@ export default function Ballot({
     isError,
   } = useBallotWithMetadata(address, transactionId?.submit);
 
-  const [droppedItems, setDroppedItems] = useState<ballotImpacts>({
+  const [droppedItems, setDroppedItems] = useState<droppedItems>({
     lowImpactProjects: [] as projectSchema[],
     mediumImpactProjects: [] as projectSchema[],
     highImpactProjects: [] as projectSchema[],
     highestImpactProjects: [] as projectSchema[],
+    noImpactProjects: [] as projectSchema[],
   });
   const [rulesCheck, setRulesCheck] = useState<string[]>([]);
   const [loadingState, setLoadingState] = useState(true);
@@ -73,16 +75,25 @@ export default function Ballot({
       mediumImpactProjects: draft?.mediumImpactProjects ?? [],
       highImpactProjects: draft?.highImpactProjects ?? [],
       highestImpactProjects: draft?.highestImpactProjects ?? [],
+      noImpactProjects: draft?.noImpactProjects ?? [],
     });
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
     setRulesCheck(
-      BallotImpactsSchema?.safeParse(droppedItems)?.error?.errors?.map(
-        (error) => error?.path[0],
-      ),
+      BallotImpactsSchema?.safeParse({
+        ...(droppedItems as ballotImpacts),
+      })?.error?.errors?.map((error) => error?.path[0]),
     );
+  }, [
+    droppedItems.highImpactProjects,
+    droppedItems.highestImpactProjects,
+    droppedItems.mediumImpactProjects,
+    droppedItems.lowImpactProjects,
+  ]);
+
+  useEffect(() => {
+    localStorage.setItem("ballot-draft", JSON.stringify(droppedItems));
   }, [droppedItems]);
 
   const submit = useSubmitBallot({
@@ -249,8 +260,9 @@ export default function Ballot({
                                     <Button
                                       disabled={
                                         submit.isPending ||
-                                        Object.values(droppedItems).flat()
-                                          .length === 0 ||
+                                        Object.values({
+                                          ...(droppedItems as ballotImpacts),
+                                        }).flat().length === 0 ||
                                         rulesCheck ||
                                         !isConnected ||
                                         chain?.unsupported
@@ -261,7 +273,9 @@ export default function Ballot({
                                       isLoading={submit?.isPending}
                                       onClick={async () => {
                                         submit.mutate({
-                                          impacts: droppedItems,
+                                          impacts: {
+                                            ...(droppedItems as ballotImpacts),
+                                          },
                                         });
                                       }}
                                     >
