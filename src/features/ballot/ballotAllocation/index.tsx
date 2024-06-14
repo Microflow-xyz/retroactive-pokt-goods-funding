@@ -171,6 +171,7 @@ function BallotAllocation({
             label={`Low Impact`}
             setDroppedItems={setDroppedItems}
             droppedItems={droppedItems}
+            className="border-b border-outline-dark"
           />
           <DropTargetAccordion
             shelveName="noImpactProjects"

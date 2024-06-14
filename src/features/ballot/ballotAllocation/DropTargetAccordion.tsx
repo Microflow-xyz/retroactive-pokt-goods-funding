@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { dynamicLabel, gen } from "./helpers";
-import { type ballotImpacts, type droppedItems } from "../types";
+import {
+  type ballotImpacts,
+  type droppedItems,
+  type projectSchema,
+} from "../types";
 import ProjectItem from "./ProjectItem";
 
 const DropTargetAccordion = ({
@@ -27,24 +31,27 @@ const DropTargetAccordion = ({
     highImpactProjects: 0,
     mediumImpactProjects: 0,
     lowImpactProjects: 0,
+    noImpactProjects: 0,
   });
   const [{ isOver }, drop] = useDrop(() => {
     return {
       accept: "ITEM",
-      drop: (item) => {
+      drop: (item: projectSchema) => {
         if (setDroppedItems)
           setDroppedItems((prevDroppedItems) => {
             // Find the index of the item in the source DropTargetAccordion
             const sourceShelveName = Object.keys(prevDroppedItems).find(
               (shelve) =>
-                prevDroppedItems[shelve]?.some((i) => i?.id === item?.id),
+                prevDroppedItems[shelve]?.some(
+                  (i: projectSchema) => i?.id === item?.id,
+                ),
             );
 
             // Remove the item from the source DropTargetAccordion
             if (sourceShelveName) {
               const updatedSourceItems = prevDroppedItems[
                 sourceShelveName
-              ].filter((i) => i?.id !== item?.id);
+              ].filter((i: projectSchema) => i?.id !== item?.id);
               return {
                 ...prevDroppedItems,
                 [sourceShelveName]: updatedSourceItems,
@@ -82,16 +89,12 @@ const DropTargetAccordion = ({
         highImpactProjects: result?.high,
         mediumImpactProjects: result?.mid,
         lowImpactProjects: result?.low,
+        noImpactProjects: 0,
       });
   }, [droppedItems]);
   const renderEmptyBoxes = (count: number) => {
     const boxes: JSX.Element[] = [];
-    console.log(
-      "droppedItems[shelveName].length",
-      shelveName,
-      Number(count),
-      droppedItems[shelveName].length,
-    );
+
     if (count === 0 && droppedItems[shelveName].length === 0) {
       boxes.push(
         <li
@@ -135,7 +138,7 @@ const DropTargetAccordion = ({
     >
       <div className=" flex cursor-pointer items-center gap-2">
         {label}
-        {setDroppedItems && (
+        {setDroppedItems && dynamicLabelObj && (
           <span
             className={`rounded-lg px-2 py-[2px] text-xs font-medium ${dynamicLabelObj?.type === "error" ? " bg-[#FEDAD9] text-[#8E1F0B]" : " bg-inverseSurface-light text-onPrimary-light"}`}
           >

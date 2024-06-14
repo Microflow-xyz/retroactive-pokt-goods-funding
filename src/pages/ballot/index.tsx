@@ -119,7 +119,6 @@ export default function Ballot({
     if (submit?.data?.tx?.hash)
       setTransactionId({ submit: submit.data?.tx?.hash, revoke: undefined });
   }, [submit?.data]);
-
   const error = submit?.error;
 
   useEffect(() => {
@@ -129,14 +128,14 @@ export default function Ballot({
   }, [isConnected, address, isAdmin, isPermitted, loadingBallot]);
 
   useEffect(() => {
-    if (!loadingBallot)
+    if (!loadingBallot) {
       if (ballotData && metadataData?.data && !transactionId?.revoke) {
         setUserBallot({ ballot: ballotData, metadata: metadataData.data });
-        setLoadingState(false);
       } else if (isError) {
         setUserBallot(undefined);
-        setLoadingState(false);
-      } else if (transactionId?.revoke) setLoadingState(false);
+      }
+      setLoadingState(false);
+    }
   }, [isError, ballotData, loadingBallot, metadataData?.data]);
 
   if (isModal) {
@@ -202,10 +201,10 @@ export default function Ballot({
                 return (
                   <div className="mt-20 flex flex-col items-center gap-3">
                     <p className="flex items-center font-bold">
-                      "We have received your ballot."
+                      We have received your ballot.
                     </p>
                     <span className="text-sm font-normal text-[#C6E7FF]">
-                      "Your ballot status can take 10 minutes to be updated.
+                      Your ballot status can take 10 minutes to be updated.
                     </span>
                   </div>
                 );
@@ -262,7 +261,7 @@ export default function Ballot({
                                         submit.isPending ||
                                         Object.values({
                                           ...(droppedItems as ballotImpacts),
-                                        }).flat().length === 0 ||
+                                        }).flat()?.length === 0 ||
                                         rulesCheck ||
                                         !isConnected ||
                                         chain?.unsupported
@@ -274,7 +273,14 @@ export default function Ballot({
                                       onClick={async () => {
                                         submit.mutate({
                                           impacts: {
-                                            ...(droppedItems as ballotImpacts),
+                                            highestImpactProjects:
+                                              droppedItems.highestImpactProjects,
+                                            highImpactProjects:
+                                              droppedItems.highImpactProjects,
+                                            mediumImpactProjects:
+                                              droppedItems.mediumImpactProjects,
+                                            lowImpactProjects:
+                                              droppedItems.lowImpactProjects,
                                           },
                                         });
                                       }}
