@@ -51,7 +51,18 @@ export const ConnectButton = () => {
                 userSelect: "none",
               },
             })}
+            className="flex items-center gap-2"
           >
+            {!isMobile && (
+              <Chip
+                className="gap-2"
+                target="_blank"
+                as={Link}
+                href="https://www.notion.so/poktdao/POKT-RetroPGF-Voter-Guide-43b0f2e59d424f61a989adbdb64fe5db"
+              >
+                Voter Guide
+              </Chip>
+            )}
             {(() => {
               if (!connected) {
                 return (
@@ -59,7 +70,7 @@ export const ConnectButton = () => {
                     <Button
                       suppressHydrationWarning
                       onClick={openConnectModal}
-                      className="rounded-full"
+                      className="rounded-full h-[2.625rem]"
                       variant="primary"
                     >
                       {isMobile ? "Connect" : "Connect wallet"}
@@ -116,18 +127,9 @@ const ConnectedDetails = ({
     <div>
       <div className="flex gap-2 text-white">
         {state === "VOTING" && (isAdmin || isVoter) ? (
-          <>
-            <Chip
-              className="gap-2"
-              as={Link}
-              href="https://www.notion.so/poktdao/POKT-RetroPGF-Voter-Guide-43b0f2e59d424f61a989adbdb64fe5db"
-            >
-              Voter Guide
-            </Chip>
-            <Chip className="gap-2" as={Link} href={"/ballot"}>
-              {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
-            </Chip>
-          </>
+          <Chip className="gap-2" as={Link} href={"/ballot"}>
+            {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
+          </Chip>
         ) : (
           state === "APPLICATION" && (
             <Chip
