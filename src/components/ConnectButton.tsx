@@ -53,16 +53,6 @@ export const ConnectButton = () => {
             })}
             className="flex items-center gap-2"
           >
-            {!isMobile && (
-              <Chip
-                className="gap-2"
-                target="_blank"
-                as={Link}
-                href="https://www.notion.so/poktdao/POKT-RetroPGF-Voter-Guide-43b0f2e59d424f61a989adbdb64fe5db"
-              >
-                Voter Guide
-              </Chip>
-            )}
             {(() => {
               if (!connected) {
                 return (
@@ -70,7 +60,7 @@ export const ConnectButton = () => {
                     <Button
                       suppressHydrationWarning
                       onClick={openConnectModal}
-                      className="rounded-full h-[2.625rem]"
+                      className="h-[2.625rem] rounded-full"
                       variant="primary"
                     >
                       {isMobile ? "Connect" : "Connect wallet"}
