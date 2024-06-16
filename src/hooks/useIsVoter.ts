@@ -3,7 +3,6 @@ import { config } from "~/config";
 
 export function useIsVoter() {
   const { address } = useAccount();
-  return config.voters?.some(
-    (item) => item?.toLowerCase() === address?.toLowerCase(),
-  );
+  const voters = config?.voters?.map((voter) => voter?.toLowerCase());
+    return voters?.includes(address?.toLowerCase() as `0x${string}`);
 }
