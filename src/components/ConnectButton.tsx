@@ -53,7 +53,6 @@ export const ConnectButton = () => {
             })}
             className="flex items-center gap-2"
           >
-    
             {(() => {
               if (!connected) {
                 return (
@@ -61,7 +60,7 @@ export const ConnectButton = () => {
                     <Button
                       suppressHydrationWarning
                       onClick={openConnectModal}
-                      className="rounded-full h-[2.625rem]"
+                      className="h-[2.625rem] rounded-full"
                       variant="primary"
                     >
                       {isMobile ? "Connect" : "Connect wallet"}
