@@ -51,6 +51,7 @@ export const ConnectButton = () => {
                 userSelect: "none",
               },
             })}
+            className="flex items-center gap-2"
           >
             {(() => {
               if (!connected) {
@@ -59,7 +60,7 @@ export const ConnectButton = () => {
                     <Button
                       suppressHydrationWarning
                       onClick={openConnectModal}
-                      className="rounded-full"
+                      className="h-[2.625rem] rounded-full"
                       variant="primary"
                     >
                       {isMobile ? "Connect" : "Connect wallet"}
@@ -116,15 +117,9 @@ const ConnectedDetails = ({
     <div>
       <div className="flex gap-2 text-white">
         {state === "VOTING" && (isAdmin || isVoter) ? (
-          <>
-            {/* {!showBallot ? null : ballot?.publishedAt ? (
-              <Chip>Already submitted</Chip>
-            ) : ( */}
-            <Chip className="gap-2" as={Link} href={"/ballot"}>
-              {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
-            </Chip>
-            {/* )} */}
-          </>
+          <Chip className="gap-2" as={Link} href={"/ballot"}>
+            {isMobile ? <ListChecks className="size-4" /> : `View Ballot`}
+          </Chip>
         ) : (
           state === "APPLICATION" && (
             <Chip
