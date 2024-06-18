@@ -6,6 +6,7 @@ export interface TableDataType {
   highestImpact: number;
   totalRewards?: string;
   totalPoints?: number;
+  id: string;
 }
 
 export type Project = {
