@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { type TableDataType } from "../types/TableData";
 import { rankJSX } from "./RankingSvg";
 
@@ -38,12 +39,13 @@ export const Table = ({ tableData }: { tableData: TableDataType[] }) => {
             <tr key={index}>
               <td className="flex items-center gap-4 rounded-l-xl border border-r-0 border-[#4D4546] px-4 py-[11px] text-sm lg:text-base">
                 {rankJSX(index)}
-                <span
-                  className="max-w-[150px] truncate"
+                <Link
+                  href={`/projects/${item.id}`}
+                  className="max-w-[150px] truncate hover:text-primary-dark"
                   title={item.projectName}
                 >
                   {item.projectName}
-                </span>
+                </Link>
               </td>
               <td className="border-y border-[#4D4546] px-4 py-[11px] text-sm lg:text-base">
                 {item.lowImpact}
