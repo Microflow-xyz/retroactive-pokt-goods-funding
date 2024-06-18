@@ -66,6 +66,7 @@ export function VotingWrapper() {
           });
 
           return {
+            id: application.id,
             projectName: application.name,
             lowImpact,
             mediumImpact,
@@ -137,7 +138,7 @@ export function VotingWrapper() {
      return `${(participantsCount / Number(totalVoters)) * 100}%`
     }
  }
-
+ 
   return (
     <div className="mt-20 flex flex-col gap-5 px-5 font-kumbhSans text-[#E6E1E1] md:px-20 2xl:px-0">
       <div className="flex flex-col gap-5 lg:flex-row">
