@@ -12,7 +12,7 @@ const BallotRevocation = ({
   ballot,
   clearTransaction,
 }: {
-  ballot: { time?: number; id: string; data: ballotImpacts };
+  ballot: { time?: number; id?: string; data: ballotImpacts };
   clearTransaction: (id: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);

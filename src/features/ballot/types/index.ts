@@ -124,3 +124,6 @@ const RevokeBallotSchema = z.object({
 
 export type projectSchema = z.infer<typeof ProjectSchema>;
 export type ballotImpacts = z.infer<typeof BallotImpactsSchema>;
+export type droppedItems = ballotImpacts & {
+  noImpactProjects: projectSchema[];
+};

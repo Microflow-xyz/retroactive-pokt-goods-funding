@@ -46,6 +46,16 @@ const Rules = ({ rulesCheck }: { rulesCheck: string[] }) => {
           </span>
           Rubric
         </Link>
+        <Link
+          target="_blank"
+          href="https://www.notion.so/poktdao/POKT-RetroPGF-Voter-Guide-43b0f2e59d424f61a989adbdb64fe5db"
+          className="flex items-center rounded-lg border border-outline-dark px-2 py-1 text-sm font-medium text-outline-dark"
+        >
+          <span className=" mr-2 flex items-center rounded-full border border-outline-dark px-[0.375rem] text-xs font-bold text-outline-dark">
+            i
+          </span>
+          Voter Guide
+        </Link>
       </div>
 
       <p
