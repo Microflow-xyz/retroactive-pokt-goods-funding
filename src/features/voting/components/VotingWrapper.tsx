@@ -132,11 +132,11 @@ export function VotingWrapper() {
 
   const participantsCountCalculator = () => {
     if (participantsCount / Number(totalVoters) >= 1) {
-     return `100%`
+      return `100%`;
     } else {
-     return `${(participantsCount / Number(totalVoters)) * 100}%`
+      return `${(participantsCount / Number(totalVoters)) * 100}%`;
     }
- }
+  };
 
   return (
     <div className="mt-20 flex flex-col gap-5 px-5 font-kumbhSans text-[#E6E1E1] md:px-20 2xl:px-0">
@@ -165,10 +165,14 @@ export function VotingWrapper() {
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-3 rounded-xl border border-[#7E7576] bg-[#1C1B1B] p-5">
-          {!hasStarted ? (
+        <div className="flex w-full flex-col justify-center gap-3 rounded-xl border border-[#7E7576] bg-[#1C1B1B] p-5">
+          {hasEnded ? (
             <div className="text-base font-bold leading-5 lg:text-lg">
-              Voting process has not started yet
+              Voting process has finished.
+            </div>
+          ) : !hasStarted ? (
+            <div className="text-base font-bold leading-5 lg:text-lg">
+              Voting process has not started yet.
             </div>
           ) : (
             <>
@@ -206,7 +210,10 @@ export function VotingWrapper() {
       ) : (
         <div className="mt-8 flex w-full flex-col gap-5">
           {Array.from({ length: 10 }).map((_, index) => (
-            <div key={index} className="h-14 w-full animate-pulse rounded-xl bg-gray-200 dark:bg-surfaceContainerLow-dark"></div>
+            <div
+              key={index}
+              className="h-14 w-full animate-pulse rounded-xl bg-gray-200 dark:bg-surfaceContainerLow-dark"
+            ></div>
           ))}
         </div>
       )}
