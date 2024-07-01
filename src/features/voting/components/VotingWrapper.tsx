@@ -6,6 +6,7 @@ import { useFetchAllProjects } from "~/features/projects/hooks/useProjects";
 import {
   type ImpactData,
   type TableDataType,
+  type Ballot,
 } from "~/features/voting/types/TableData";
 import { config } from "~/config";
 
@@ -33,8 +34,10 @@ export function VotingWrapper() {
   useEffect(() => {
     if (!ballots.isLoading && !projects.isLoading) {
       const ProjectsIds = projects.data;
-      const impactData = ballots.data as ImpactData[];
-      participantsCount = impactData.length;
+
+      const ballotsData = ballots?.data as Ballot[];
+
+      participantsCount = ballotsData?.length;
       const table: TableDataType[] =
         ProjectsIds?.map((application) => {
           let lowImpact = 0,
@@ -42,30 +45,40 @@ export function VotingWrapper() {
             highImpact = 0,
             highestImpact = 0;
 
-          impactData?.forEach((impact) => {
-            if (impact?.lowImpactProjects) {
-              lowImpact += impact.lowImpactProjects.filter(
+          ballotsData?.forEach((ballot) => {
+            if (ballot.impactData?.lowImpactProjects) {
+              lowImpact += ballot.impactData?.lowImpactProjects.filter(
+                (project) =>
+                  project.id === application.id &&
+                  // FIXME: I'M HARDCODE
+                  !(
+                    application.id ===
+                      "0x8c9e0aba5eefc91facfb1f5c97eedb6bdae1e666c948acdadfe3dbad5725060f" &&
+                    ballot.attester ===
+                      "0xf2E57a8baBeaB124402b7c836B483bF3fCc28cC8"
+                  ),
+              ).length;
+            }
+
+            if (ballot.impactData?.mediumImpactProjects) {
+              mediumImpact += ballot.impactData?.mediumImpactProjects.filter(
                 (project) => project.id === application.id,
               ).length;
             }
-            if (impact.mediumImpactProjects) {
-              mediumImpact += impact.mediumImpactProjects.filter(
+            if (ballot.impactData?.highImpactProjects) {
+              highImpact += ballot.impactData?.highImpactProjects.filter(
                 (project) => project.id === application.id,
               ).length;
             }
-            if (impact.highImpactProjects) {
-              highImpact += impact.highImpactProjects.filter(
-                (project) => project.id === application.id,
-              ).length;
-            }
-            if (impact.highestImpactProjects) {
-              highestImpact += impact.highestImpactProjects.filter(
+            if (ballot.impactData?.highestImpactProjects) {
+              highestImpact += ballot.impactData?.highestImpactProjects.filter(
                 (project) => project.id === application.id,
               ).length;
             }
           });
 
           return {
+            id: application.id,
             projectName: application.name,
             lowImpact,
             mediumImpact,
