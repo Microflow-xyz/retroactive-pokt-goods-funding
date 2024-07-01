@@ -24,6 +24,11 @@ export type Project = {
   type: string;
 };
 
+export type Ballot = {
+  attester: string;
+  impactData: ImpactData;
+};
+
 export type ImpactData = {
   lowImpactProjects?: Project[];
   mediumImpactProjects?: Project[];

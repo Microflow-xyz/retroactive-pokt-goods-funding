@@ -76,12 +76,13 @@ export const Layout = ({ children, ...props }: Props) => {
       ],
     );
 
-  if (isVoter || config.admins.includes(address!)) {
+  // Uncomment this part to make the voting menu non-public
+  // if (isVoter || config.admins.includes(address!)) {
     navLinks.push({
       href: "/voting",
       children: "Voting Tally",
     });
-  }
+  // }
 
   return (
     <BaseLayout
