@@ -56,8 +56,14 @@ export const resultsRouter = createTRPCRouter({
           ...createDataFilter("type", "bytes32", "ballot"),
         },
       });
+
       const results = await Promise.all(
-        ballots.map(async (ballot) => await fetchMetadata(ballot.metadataPtr)),
+        ballots.map(async (ballot) => {
+          return {
+            attester: ballot.attester,
+            impactData: await fetchMetadata(ballot.metadataPtr),
+          };
+        }),
       );
       return results;
     } catch (error) {

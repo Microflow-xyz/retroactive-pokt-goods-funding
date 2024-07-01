@@ -76,12 +76,10 @@ export const Layout = ({ children, ...props }: Props) => {
       ],
     );
 
-  if (isVoter || config.admins.includes(address!)) {
-    navLinks.push({
-      href: "/voting",
-      children: "Voting Tally",
-    });
-  }
+  navLinks.push({
+    href: "/voting",
+    children: "Voting Tally",
+  });
 
   return (
     <BaseLayout
