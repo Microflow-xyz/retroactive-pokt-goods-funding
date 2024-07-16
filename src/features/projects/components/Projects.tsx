@@ -2,32 +2,29 @@ import clsx from "clsx";
 import Link from "next/link";
 import { InfiniteLoading } from "~/components/InfiniteLoading";
 import { useSearchProjects } from "../hooks/useProjects";
-import { getAppState } from "~/utils/state";
-import { useResults } from "~/hooks/useResults";
 import { SortFilter } from "~/components/SortFilter";
-import { ProjectItem, ProjectItemAwarded } from "./ProjectItem";
-import {useEffect, useRef} from "react";
-import LoadingBar from 'react-top-loading-bar';
-import type { LoadingBarRef } from 'react-top-loading-bar';
+import { ProjectItem } from "./ProjectItem";
+import { useEffect, useRef } from "react";
+import LoadingBar from "react-top-loading-bar";
+import type { LoadingBarRef } from "react-top-loading-bar";
 import { useFilter } from "~/features/filter/hooks/useFilter";
 
 export function Projects() {
   const { orderBy, sortOrder, search } = useFilter();
   const projects = useSearchProjects();
-  const results = useResults();
-  const LoadingStateRef = useRef<LoadingBarRef>(null)
+  const LoadingStateRef = useRef<LoadingBarRef>(null);
 
-  useEffect(()=>{
-    if(projects?.isLoading) {
-      return LoadingStateRef?.current?.continuousStart()
+  useEffect(() => {
+    if (projects?.isLoading) {
+      return LoadingStateRef?.current?.continuousStart();
     } else {
-      return LoadingStateRef?.current?.complete()
+      return LoadingStateRef?.current?.complete();
     }
-  },[projects?.isLoading])
+  }, [projects?.isLoading]);
 
   return (
     <div>
-      <LoadingBar color='white' ref={LoadingStateRef} />
+      <LoadingBar color="white" ref={LoadingStateRef} />
       <SortFilter />
 
       <InfiniteLoading
@@ -41,11 +38,6 @@ export function Projects() {
               prefetch
               className={clsx("relative", { ["animate-pulse"]: isLoading })}
             >
-              {!results.isPending && getAppState() === "RESULTS" ? (
-                <ProjectItemAwarded
-                  amount={results.data?.projects?.[item.id]?.votes}
-                />
-              ) : null}
               <ProjectItem isLoading={isLoading} attestation={item} />
             </Link>
           );
