@@ -30,12 +30,6 @@ export const Layout = ({ children, ...props }: Props) => {
 
   const isVoter = useIsVoter();
 
-  if (getAppState() === "RESULTS") {
-    navLinks.push({
-      href: "/stats",
-      children: "Stats",
-    });
-  }
 
   if (config.admins.includes(address!)) {
     navLinks.push(
